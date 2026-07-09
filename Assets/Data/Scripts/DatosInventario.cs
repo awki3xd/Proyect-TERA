@@ -1,0 +1,18 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "NuevoInventario", menuName = "Datos/Inventario")]
+public class DatosInventario : ScriptableObject
+{
+    [Header("Habilidad Especial")]
+    [Tooltip("Ranura exclusiva para la habilidad tactica activa (ej. Dash, Bengala).")]
+    public GameObject habilidadEspecial;
+
+    [Header("Armas de Fuego (Automaticas)")]
+    [Tooltip("Limite estricto de 4 armas que disparan en simultaneo.")]
+    public GameObject[] armasEquipadas = new GameObject[4];
+
+    [Header("Bolsa General")]
+    [Tooltip("Inventario dinamico sin limite para acumular recursos o armamento inactivo.")]
+    public List<GameObject> bolsa = new List<GameObject>();
+}
