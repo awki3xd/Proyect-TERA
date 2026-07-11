@@ -1,0 +1,6 @@
+.Botones_menu {
+}
+
+.Botones_menu:hover {
+    scale: 1.2 1.2;
+}
