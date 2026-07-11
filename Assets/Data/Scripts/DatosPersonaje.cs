@@ -11,7 +11,7 @@ public class DatosPersonaje : ScriptableObject
     [Header("Movilidad")]
     public float velocidadMovimiento = 100f;
 
-    [Header("Estadisticas de Combate")]
+    [Header("Estadísticas de Combate")]
     public float daño = 100f;
     public float velocidadAtaque = 100f;
     public float rangoAtaque = 100f;

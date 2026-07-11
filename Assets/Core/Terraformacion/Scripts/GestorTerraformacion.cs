@@ -191,9 +191,6 @@ public class GestorTerraformacion : MonoBehaviour
                 // Crecimiento normal hacia adelante
                 float tiempoEspera = tiempoBaseLatido / sumaActivos;
 
-                Debug.Log("Tiempo de espera: " + tiempoEspera);
-                Debug.Log("Distancia por salto: " + distanciaPorSalto);
-
                 yield return new WaitForSeconds(tiempoEspera);
 
                 float avancePorcentualPorSalto = distanciaPorSalto / radioPromedio;
@@ -216,9 +213,6 @@ public class GestorTerraformacion : MonoBehaviour
                     // Forzamos la velocidad al ritmo de las maquinas maximas
                     float sumaMaximaActivos = totalNodosInstanciados * valorPorNodo;
                     float tiempoEsperaRetroceso = tiempoBaseLatido / sumaMaximaActivos;
-                    
-                    Debug.Log("Tiempo de espera: " + tiempoEsperaRetroceso);
-                    Debug.Log("Distancia por salto: " + distanciaPorSalto);
 
                     yield return new WaitForSeconds(tiempoEsperaRetroceso);
 

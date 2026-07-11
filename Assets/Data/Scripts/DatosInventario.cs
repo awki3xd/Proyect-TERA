@@ -15,4 +15,19 @@ public class DatosInventario : ScriptableObject
     [Header("Bolsa General")]
     [Tooltip("Inventario dinamico sin limite para acumular recursos o armamento inactivo.")]
     public List<GameObject> bolsa = new List<GameObject>();
+
+    [Header("Economía")]
+    [Tooltip("Cantidad de materiales (Bridgmanita) recolectados por el jugador.")]
+    [SerializeField] private int materiales = 0;
+
+    // Propiedad pública encapsulada para acceder a los materiales (Solo lectura externa)
+    public int Materiales => materiales;
+
+    /// <summary>
+    /// Añade materiales a la bolsa del inventario de forma segura.
+    /// </summary>
+    public void AñadirMateriales(int cantidad)
+    {
+        materiales += cantidad;
+    }
 }
