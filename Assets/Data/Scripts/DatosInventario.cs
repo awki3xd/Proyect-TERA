@@ -20,6 +20,10 @@ public class DatosInventario : ScriptableObject
     [Tooltip("Cantidad de materiales (Bridgmanita) recolectados por el jugador.")]
     [SerializeField] private int materiales = 0;
 
+    [Header("Estados de Juego")]
+    [Tooltip("Indica si Génesis está actualmente reparando un nodo, lo que desactiva las ranuras 3 y 4.")]
+    public bool estaReparando = false;
+
     // Propiedad pública encapsulada para acceder a los materiales (Solo lectura externa)
     public int Materiales => materiales;
 

@@ -16,6 +16,10 @@ public class EntidadDaño : MonoBehaviour
     [Tooltip("Define quién generó este daño para segmentar los objetivos válidos.")]
     public OrigenDaño origen = OrigenDaño.Enemigo;
 
+    [Header("Comportamiento de Impacto")]
+    [Tooltip("Define si el objeto de daño se autodestruye al impactar un objetivo válido (ej: Balas).")]
+    public bool destruirAlImpactar = true;
+
     /// <summary>
     /// Inicializa los parámetros de daño y origen dinámicamente al instanciar el objeto.
     /// </summary>
@@ -27,8 +31,7 @@ public class EntidadDaño : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-
-        // Por ahora, solo procesamos el daño cuando proviene de un Enemigo
+        // 1. Daño generado por los Enemigos (hacia el Jugador o los Nodos)
         if (origen == OrigenDaño.Enemigo)
         {
             if (other.CompareTag("Player"))
@@ -46,15 +49,34 @@ public class EntidadDaño : MonoBehaviour
                     {
                         nodo.RecibirDaño(daño);
                         
-                        // Después de aplicar el daño, este objeto se destruye
-                        Destroy(gameObject);
+                        // Después de aplicar el daño, este objeto se destruye si está configurado para ello
+                        if (destruirAlImpactar)
+                        {
+                            Destroy(gameObject);
+                        }
                     }
                 }
             }
         }
+        // 2. Daño generado por el Jugador (balas, espadazos, etc.) hacia los Enemigos
         else if (origen == OrigenDaño.Jugador)
         {
-            // TODO: Implementar daño a enemigos (horda) cuando estemos programando el jugador
+            if (other.CompareTag("Enemigo"))
+            {
+                // Por ahora el escorpión es el único enemigo en la horda, buscamos su script directamente.
+                // En el futuro, crearemos una interfaz común para modularizar a todos los enemigos.
+                EscorpionController escorpion = other.GetComponent<EscorpionController>();
+                if (escorpion != null)
+                {
+                    escorpion.RecibirDaño(daño);
+                    
+                    // Si el proyectil debe autodestruirse al impactar (ej: balas)
+                    if (destruirAlImpactar)
+                    {
+                        Destroy(gameObject);
+                    }
+                }
+            }
         }
     }
 }
