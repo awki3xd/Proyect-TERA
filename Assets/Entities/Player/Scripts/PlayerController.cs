@@ -60,6 +60,12 @@ public class PlayerController : MonoBehaviour
         inicializado = true;
         vida = vidaMaxima;
 
+        // Resetear el estado de reparación en el inventario
+        if (datosInventario != null)
+        {
+            datosInventario.estaReparando = false;
+        }
+
         // 1. Mitigación de Daño (Armadura)
         float armaduraVal = datosPersonaje != null ? datosPersonaje.armadura : 100f;
         float armaduraMinima = Mathf.Max(1f, armaduraVal);
@@ -148,6 +154,10 @@ public class PlayerController : MonoBehaviour
         {
             nodosEnContacto++;
             estaReparando = true;
+            if (datosInventario != null)
+            {
+                datosInventario.estaReparando = true;
+            }
         }
     }
 
@@ -172,6 +182,10 @@ public class PlayerController : MonoBehaviour
             if (nodosEnContacto == 0)
             {
                 estaReparando = false;
+                if (datosInventario != null)
+                {
+                    datosInventario.estaReparando = false;
+                }
             }
         }
     }
