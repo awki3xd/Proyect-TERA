@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 2014133909093601599}
   - component: {fileID: 6488746360801964201}
   - component: {fileID: 4848842711425839295}
+  - component: {fileID: 8462515943918721493}
   m_Layer: 0
   m_Name: Nodo
   m_TagString: Nodo
@@ -232,6 +233,7 @@ MonoBehaviour:
   tiempoDesactivacion: 1
   estaActivo: 1
   estaRoto: 0
+  "animaci\xF3n": {fileID: 8462515943918721493}
 --- !u!50 &4848842711425839295
 Rigidbody2D:
   serializedVersion: 5
@@ -259,3 +261,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &8462515943918721493
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7243649678072180961}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7c1b80f340fabd44abc5ffe0a8aad3fa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

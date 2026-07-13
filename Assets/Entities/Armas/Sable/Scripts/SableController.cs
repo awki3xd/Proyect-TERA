@@ -140,6 +140,12 @@ public class SableController : MonoBehaviour
     {
         esAtacando = true;
 
+        // Reproducir sonido de tajo/sable
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySFX(SoundID.CorteSable);
+        }
+
         Vector3 escalaOriginal = transform.localScale;
         float originalZ = transform.localEulerAngles.z;
 

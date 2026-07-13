@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 922bb1df8283ffb4cb1d77a7054b91f3, type: 3}
   m_Name: DatosEnemigos
   m_EditorClassIdentifier: 
-  vida: 100
-  velocidadMovimiento: 100
-  "da\xF1o": 100
-  velocidadAtaque: 100
-  rangoAtaque: 100
+  vida: 133.33333
+  velocidadMovimiento: 133.33333
+  "da\xF1o": 133.33333
+  velocidadAtaque: 133.33333
+  rangoAtaque: 133.33333

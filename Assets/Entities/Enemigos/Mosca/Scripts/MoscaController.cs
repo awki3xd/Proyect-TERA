@@ -223,6 +223,12 @@ public class MoscaController : MonoBehaviour
 
         GameObject proyectil = Instantiate(prefabProyectil, posDisparo, rot);
 
+        // Reproducir sonido de disparo enemigo
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySFX(SoundID.DisparoEnemigo);
+        }
+
         // Intentar inicializar el daño si el proyectil usa EntidadDaño directamente
         EntidadDaño dañoScript = proyectil.GetComponent<EntidadDaño>();
         if (dañoScript != null)
@@ -311,6 +317,12 @@ public class MoscaController : MonoBehaviour
         if (col != null)
         {
             col.enabled = false;
+        }
+
+        // Reproducir sonido de muerte de enemigo
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySFX(SoundID.MuerteEnemigo);
         }
 
         // Quitar tag para que el jugador deje de apuntarle

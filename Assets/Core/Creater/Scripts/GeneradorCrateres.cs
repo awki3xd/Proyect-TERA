@@ -33,6 +33,7 @@ public class GeneradorCrateres : MonoBehaviour
         GenerarDatosMatematicos();
         InstanciarColisionadoresFisicos();
         StartCoroutine(DibujarBordeVisual());
+        SoundManager.Instance.PlayMusic(SoundID.MusicaNivel);
     }
 
     void Update()

@@ -37,8 +37,16 @@ public class EntidadDaño : MonoBehaviour
         {
             if (other.CompareTag("Player"))
             {
-                // TODO: Implementar el daño recibido por el jugador en el futuro
-                // Dejado en blanco temporalmente a petición del usuario
+                PlayerController player = other.GetComponent<PlayerController>();
+                if (player != null)
+                {
+                    player.RecibirDaño(daño);
+
+                    if (destruirAlImpactar)
+                    {
+                        Destroy(gameObject);
+                    }
+                }
             }
             else if (other.CompareTag("Nodo"))
             {
