@@ -10,6 +10,7 @@ public class Menu : MonoBehaviour
 
     private VisualElement _CreditosImg;
     private VisualElement _ConfiguracionPartida;
+    private VisualElement _AjustesSonido;
 
     private Button _Jugar;
     private Button _Historia;
@@ -33,27 +34,32 @@ public class Menu : MonoBehaviour
 
         _CreditosImg = root.Q<VisualElement>("CreditosFoto");
         _ConfiguracionPartida = root.Q<VisualElement>("OpcionesJuego");
+        _AjustesSonido = root.Q<VisualElement>("AjustesSonido");
 
         _Jugar.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.Flex;
+            _AjustesSonido.style.display = DisplayStyle.None;
         };
         _Historia.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.None;
+            _AjustesSonido.style.display = DisplayStyle.None;
         };
         _Ajustes.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.None;
+            _AjustesSonido.style.display = DisplayStyle.Flex;
         };
         _Creditos.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             _CreditosImg.style.display = DisplayStyle.Flex;
             _ConfiguracionPartida.style.display = DisplayStyle.None;
+            _AjustesSonido.style.display = DisplayStyle.None;
 
         };
         _Salir.clicked += () => 
@@ -61,6 +67,7 @@ public class Menu : MonoBehaviour
             
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.None;
+            _AjustesSonido.style.display = DisplayStyle.None;
         };
 
         _Salida.clicked += () =>
@@ -68,12 +75,15 @@ public class Menu : MonoBehaviour
             _audioSource.PlayOneShot(_clip);
             _CreditosImg.style.display = DisplayStyle.None;
             _ConfiguracionPartida.style.display = DisplayStyle.None;
+            _AjustesSonido.style.display = DisplayStyle.None;
         };
         _Listo.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             SceneManager.LoadSceneAsync(0);
+            _AjustesSonido.style.display = DisplayStyle.None;
         };
+
 
     }
 
