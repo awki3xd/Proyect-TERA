@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class Pausa : MonoBehaviour
@@ -70,6 +71,7 @@ public class Pausa : MonoBehaviour
         {
             Debug.Log("Menu");
             _AudioSource.PlayOneShot(AudioClik);
+            SceneManager.LoadSceneAsync(1);
         };
 
         _Volver.clicked += () =>
