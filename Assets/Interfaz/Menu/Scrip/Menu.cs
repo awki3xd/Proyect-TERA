@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class Menu : MonoBehaviour
@@ -8,6 +9,7 @@ public class Menu : MonoBehaviour
     [SerializeField] private AudioSource _audioSource;
 
     private VisualElement _CreditosImg;
+    private VisualElement _ConfiguracionPartida;
 
     private Button _Jugar;
     private Button _Historia;
@@ -15,6 +17,7 @@ public class Menu : MonoBehaviour
     private Button _Creditos;
     private Button _Salir;
     private Button _Salida;
+    private Button _Listo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,38 +29,52 @@ public class Menu : MonoBehaviour
         _Creditos=root.Q<Button>("Creditos");
         _Salir=root.Q<Button>("Salir");
         _Salida=root.Q<Button>("Salida");
+        _Listo=root.Q<Button>("BotonListo");
 
         _CreditosImg = root.Q<VisualElement>("CreditosFoto");
+        _ConfiguracionPartida = root.Q<VisualElement>("OpcionesJuego");
 
         _Jugar.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
+            _ConfiguracionPartida.style.display = DisplayStyle.Flex;
         };
         _Historia.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
+            _ConfiguracionPartida.style.display = DisplayStyle.None;
         };
         _Ajustes.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
+            _ConfiguracionPartida.style.display = DisplayStyle.None;
         };
         _Creditos.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             _CreditosImg.style.display = DisplayStyle.Flex;
+            _ConfiguracionPartida.style.display = DisplayStyle.None;
 
         };
         _Salir.clicked += () => 
         {
             
             _audioSource.PlayOneShot(_clip);
+            _ConfiguracionPartida.style.display = DisplayStyle.None;
         };
 
         _Salida.clicked += () =>
         {
             _audioSource.PlayOneShot(_clip);
             _CreditosImg.style.display = DisplayStyle.None;
+            _ConfiguracionPartida.style.display = DisplayStyle.None;
         };
+        _Listo.clicked += () => 
+        {
+            _audioSource.PlayOneShot(_clip);
+            SceneManager.LoadSceneAsync(0);
+        };
+
     }
 
     // Update is called once per frame

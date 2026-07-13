@@ -14,5 +14,27 @@
         <ui:VisualElement name="CreditosFoto" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/Creditos.png?fileID=2800000&amp;guid=9ba5e7675f8994045ab471b5a86bd1ac&amp;type=3#Creditos&quot;); display: none; justify-content: flex-start; align-items: flex-end;">
             <ui:Button text="Button" name="Salida" class="Botones_menu" style="background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/Botones.png?fileID=9016308295934094931&amp;guid=f9762b8b6166dd64f8cd51a144eb0773&amp;type=3#Botones_5&quot;); width: 100px; height: 100px; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; right: 50px; left: auto; top: 30px; display: flex;" />
         </ui:VisualElement>
+        <ui:VisualElement name="OpcionesJuego" style="flex-grow: 1; position: absolute; width: 800px; height: 600px; top: 268px; left: 777px; background-size: 100% 100%; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; justify-content: space-between; align-items: center; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/fondoBlanco.jpg?fileID=-1097057292384150690&amp;guid=575bb81c6177cf9428d5a0a07c3663d6&amp;type=3#fondoBlanco_0&quot;); -unity-background-image-tint-color: rgba(0, 0, 0, 0.43); display: none;">
+            <ui:VisualElement name="Nodos" style="flex-grow: 1; position: absolute; width: 300px; height: 500px; top: 19px; left: 45px;">
+                <ui:VisualElement name="nodo" style="flex-grow: 1; position: absolute; height: 150px; width: 300px; top: 194px; left: 1px;">
+                    <ui:VisualElement name="Imagen" style="flex-grow: 1; position: absolute; width: 100px; height: 100px; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/nodo%20boton.png?fileID=2800000&amp;guid=38d432dd8c2e52a4ab375403f17fbc80&amp;type=3#nodo boton&quot;);" />
+                    <ui:DropdownField style="height: 30px; position: absolute; top: 34px; left: 129px; width: 200px;" />
+                </ui:VisualElement>
+                <ui:Label text="Elige la cantidad de nodos:" style="position: absolute; color: rgb(255, 255, 255); -unity-font-style: bold-and-italic; font-size: 20px; top: 64px; left: 5px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Armas" style="flex-grow: 1; position: absolute; width: 300px; height: 494px; top: 69px; left: 454px; align-items: flex-start; justify-content: space-between; align-self: auto;">
+                <ui:VisualElement name="Arma1">
+                    <ui:Toggle style="position: absolute; top: 104px; left: 121px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Arma2">
+                    <ui:VisualElement name="Cuchillo" style="flex-grow: 1; position: absolute; width: 100px; height: 100px; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/sable%20boton.png?fileID=2800000&amp;guid=ac73edd711e597f49ad934a6615ccc4e&amp;type=3#sable boton&quot;); top: -245px; left: 14px;" />
+                    <ui:Toggle style="position: absolute; top: -207px; left: 124px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Pistola" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/pistolaBoton.png?fileID=2800000&amp;guid=ebde464be3ce24643a213185050c5d08&amp;type=3#pistolaBoton&quot;); width: 100px; height: 100px; position: absolute; top: 67px; left: 13px;" />
+                <ui:Label text="Elige el tu arma inicial:" name="textoArma" style="font-size: 20px; -unity-font-style: bold-and-italic; color: rgb(255, 255, 255); position: absolute; top: 14px; left: 19px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="ImgConfiguracion" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/Adobe%20Express%20-%20file.png?fileID=6630341104690361922&amp;guid=0fe9cb96ea6cce94f9c9b3184b7568b4&amp;type=3#Adobe Express - file_0&quot;); position: absolute; width: 464px; height: 47px; top: 10px; left: 170px;" />
+            <ui:Button text="Listo" name="BotonListo" class="Botones_menu" style="position: absolute; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/Botones.png?fileID=846010472778899471&amp;guid=f9762b8b6166dd64f8cd51a144eb0773&amp;type=3#Botones_0&quot;); font-size: 30px; -unity-font-style: bold-and-italic; width: 369px; height: 70px; top: 490px; left: 229px; color: rgb(255, 255, 255); border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
