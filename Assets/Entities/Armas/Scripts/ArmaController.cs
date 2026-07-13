@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[System.Serializable]
 public struct EstadisticasArma
 {
     [Tooltip("Distancia de ataque del arma.")]
@@ -16,21 +15,17 @@ public struct EstadisticasArma
 public class ArmaController : MonoBehaviour
 {
     [Header("Referencias a Datos")]
-    [Tooltip("Estadísticas del personaje (armadura, curación, velocidad, etc.).")]
     public DatosPersonaje datosPersonaje;
-    [Tooltip("Inventario de armas y habilidades de Génesis.")]
-    public DatosInventario datosInventario;
     [Tooltip("Configuración estática y de balance de esta arma.")]
     public DatosArma datosArma;
-
-    [Header("Ajustes de Ranura")]
-    [Tooltip("Ranura que ocupa esta pistola en el inventario del jugador (1 a 4).")]
-    [Range(1, 4)]
-    public int ranuraArma = 1;
 
     [Header("Referencias de Escena e Instanciación")]
     [Tooltip("Punto de salida (boca del cañón) desde donde se disparan las balas.")]
     public Transform cañonPistola;
+
+    [Header("Propiedades")]
+    [Tooltip("Indica si el arma puede disparar.")]
+    public bool puedeDisparar = true;
 
     // Estadísticas reales calculadas en el Start (multiplicadas por estadísticas del jugador)
     private EstadisticasArma estadisticasCalculadas;
@@ -83,13 +78,6 @@ public class ArmaController : MonoBehaviour
 
     private void Update()
     {
-        // CONDICIONAL DE REPARACIÓN (GDD): Si el jugador está reparando un nodo,
-        // se apaga por completo el auto-apuntado y el disparo en las ranuras 3 y 4.
-        if (datosInventario != null && datosInventario.estaReparando && (ranuraArma == 3 || ranuraArma == 4))
-        {
-            return;
-        }
-
         // 1. Buscar el enemigo más cercano (usando la búsqueda genérica por Tag)
         GameObject enemigoCercano = BuscarEnemigoMasCercano();
 
@@ -125,10 +113,10 @@ public class ArmaController : MonoBehaviour
             cooldownDisparo -= Time.deltaTime;
             
             // Solo dispara si el cooldown ha expirado y la pistola está alineada con el enemigo (tolerancia de 5 grados)
-            if (cooldownDisparo <= 0f && anguloDiferencia <= 5f)
+            if (cooldownDisparo <= 0f && anguloDiferencia <= 10f && puedeDisparar)
             {
                 Disparar();
-                cooldownDisparo = 1f / Mathf.Max(0.1f, estadisticasCalculadas.cadencia);
+                cooldownDisparo = estadisticasCalculadas.cadencia;
             }
         }
     }

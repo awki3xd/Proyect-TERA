@@ -25,6 +25,8 @@ public class EscorpionController : MonoBehaviour
     [Header("Referencias de Prefabs")]
     [Tooltip("Prefab del objeto de daño (EntidadDaño) que instanciará al atacar.")]
     public GameObject prefabEntidadDaño;
+    [Tooltip("Prefab del material o recurso (ej: Bridgmanita) que soltará al morir.")]
+    public GameObject prefabMaterial;
 
     [Header("Configuración de IA y Órbita")]
     [Tooltip("Distancia a la que el escorpión detectará un nodo y empezará a perseguirlo.")]
@@ -47,6 +49,7 @@ public class EscorpionController : MonoBehaviour
     private bool inicializado = false;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private bool estaMuerto = false;
 
     private void Start()
     {
@@ -274,21 +277,26 @@ public class EscorpionController : MonoBehaviour
         if (dañoScript != null)
         {
             // Inicializar pasándole nuestro daño y el origen
-            dañoScript.Inicializar(daño, EntidadDaño.OrigenDaño.Enemigo);
+            dañoScript.Inicializar(daño, EntidadDaño.OrigenDaño.Enemigo, true);
         }
     }
 
     private NodoEstandar BuscarNodoMasCercano()
-    {
-        NodoEstandar[] nodos = FindObjectsOfType<NodoEstandar>();
-        NodoEstandar closest = null;
-        float minDist = float.MaxValue;
+{
+    // 1. Buscamos rápidamente los objetos que tienen el tag "Nodo"
+    GameObject[] objetosNodos = GameObject.FindGameObjectsWithTag("Nodo");
+    NodoEstandar closest = null;
+    float minDist = float.MaxValue;
 
-        foreach (var nodo in nodos)
+    foreach (var obj in objetosNodos)
+    {
+        if (obj != null)
         {
+            // 2. Extraemos su componente de forma individual
+            NodoEstandar nodo = obj.GetComponent<NodoEstandar>();
             if (nodo != null && !nodo.EstaRoto())
             {
-                float dist = Vector2.Distance(transform.position, nodo.transform.position);
+                float dist = Vector2.Distance(transform.position, obj.transform.position);
                 if (dist < minDist)
                 {
                     minDist = dist;
@@ -296,18 +304,60 @@ public class EscorpionController : MonoBehaviour
                 }
             }
         }
-        return closest;
     }
+    return closest;
+}
+
 
     /// <summary>
     /// Permite al jugador infligir daño a este enemigo en el futuro.
     /// </summary>
     public void RecibirDaño(float cantidad)
     {
+        if (estaMuerto) return;
+
         vida = Mathf.Max(0f, vida - cantidad);
         if (vida <= 0f)
         {
-            Destroy(gameObject);
+            estaMuerto = true;
+            StartCoroutine(MuerteCo());
         }
+    }
+
+    /// <summary>
+    /// Corrutina que maneja la secuencia de muerte del escorpión (animación, desactivación de colisiones, drop y destrucción).
+    /// </summary>
+    private IEnumerator MuerteCo()
+    {
+        // 1. Apagar colisiones inmediatamente para que no lo golpeen más balas
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            col.enabled = false;
+        }
+
+        // Cambiar la etiqueta para que las armas del jugador dejen de apuntarle
+        gameObject.tag = "Untagged";
+
+        // Detener por completo el movimiento de IA
+        velocidadMovimiento = 0f;
+
+        // 2. Activar la animación de muerte
+        if (animator != null)
+        {
+            animator.SetTrigger("muere");
+        }
+
+        // 3. Esperar a que la animación termine (1 segundo)
+        yield return new WaitForSeconds(1f);
+
+        // 4. Instanciar el material (Bridgmanita) de forma independiente en su posición
+        if (prefabMaterial != null)
+        {
+            Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+        }
+
+        // 5. Destruir el enemigo
+        Destroy(gameObject);
     }
 }

@@ -5,11 +5,21 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Referencias a Datos")]
+    [Header("Referencias a Slots de Armas")]
+    [Tooltip("Transforms de los puntos de anclaje de las armas en el cuerpo de Génesis (Slots 1 a 4).")]
+    public Transform[] slotsArmas = new Transform[4];
+
+    [Header("Configuración de Datos")]
     [Tooltip("Estadísticas del personaje (armadura, curación, velocidad, etc.).")]
     public DatosPersonaje datosPersonaje;
     [Tooltip("Inventario de armas y habilidades de Génesis.")]
     public DatosInventario datosInventario;
+
+    [Header("Configuración de Capas Visuales de Armas")]
+    [Tooltip("Sorting Order para las armas situadas al frente (capa visible).")]
+    public int capaFrente = 8;
+    [Tooltip("Sorting Order para las armas situadas detrás (capa oculta por el cuerpo del robot).")]
+    public int capaAtras = 5;
 
     [Header("Estadísticas en Tiempo de Juego")]
     public float vidaMaxima = 100f;
@@ -28,6 +38,11 @@ public class PlayerController : MonoBehaviour
     private int nodosEnContacto = 0;
     private bool inicializado = false;
 
+    // Referencias a instancias y renderizado
+    private GameObject[] armasInstanciadas = new GameObject[4];
+    private bool mirandoDerecha = true;
+    private SpriteRenderer spriteRenderer;
+
     // Estadísticas calculadas en el Start (permanecen fijas durante la partida del nivel)
     private float factorMitigacion;
     private float velocidadReal;
@@ -41,6 +56,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         // Garantizamos que las físicas de colisión 2D no roten a Génesis
         rb.freezeRotation = true;
+        
+        // Obtener el SpriteRenderer principal de Génesis
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void Start()
@@ -49,6 +67,8 @@ public class PlayerController : MonoBehaviour
         {
             InicializarValores();
         }
+
+        InstanciarArmasEquipadas();
     }
 
     /// <summary>
@@ -90,6 +110,75 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(RegeneracionPasivaCo());
     }
 
+    /// <summary>
+    /// Instancia dinámicamente las armas del inventario en los puntos de anclaje (slotsArmas) del jugador.
+    /// </summary>
+    private void InstanciarArmasEquipadas()
+    {
+        if (datosInventario == null) return;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (i < slotsArmas.Length && slotsArmas[i] != null && i < datosInventario.armasEquipadas.Length)
+            {
+                GameObject weaponPrefab = datosInventario.armasEquipadas[i];
+                if (weaponPrefab != null)
+                {
+                    // Instanciamos el arma como hijo del slot correspondiente
+                    GameObject armaObj = Instantiate(weaponPrefab, slotsArmas[i].position, slotsArmas[i].rotation, slotsArmas[i]);
+                    armasInstanciadas[i] = armaObj;
+
+                    // Inicializar el controlador del arma directamente (a distancia, sable o motosierra)
+                    ArmaController armaScript = armaObj.GetComponent<ArmaController>();
+                    if (armaScript != null)
+                    {
+                        armaScript.datosPersonaje = datosPersonaje;
+                    }
+                    else
+                    {
+                        SableController sableScript = armaObj.GetComponent<SableController>();
+                        if (sableScript != null)
+                        {
+                            sableScript.datosPersonaje = datosPersonaje;
+                        }
+                        else
+                        {
+                            MotosierraController motosierraScript = armaObj.GetComponent<MotosierraController>();
+                            if (motosierraScript != null)
+                            {
+                                motosierraScript.datosPersonaje = datosPersonaje;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Establecer el orden de renderizado inicial (derecha)
+        ActualizarOrdenCapas(true);
+    }
+
+    /// <summary>
+    /// Actualiza el Sorting Order de los SpriteRenderers de las armas en caliente según la dirección de vista del jugador.
+    /// </summary>
+    private void ActualizarOrdenCapas(bool derecha)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (armasInstanciadas[i] != null)
+            {
+                SpriteRenderer sr = armasInstanciadas[i].GetComponentInChildren<SpriteRenderer>();
+                if (sr != null)
+                {
+                    // Si miramos a la derecha, slots 1 y 2 están al frente (capaFrente), slots 3 y 4 detrás (capaAtras)
+                    // Si miramos a la izquierda, slots 1 y 2 están detrás (capaAtras), slots 3 y 4 al frente (capaFrente)
+                    bool esFrente = (derecha && (i == 0 || i == 1)) || (!derecha && (i == 2 || i == 3));
+                    sr.sortingOrder = esFrente ? capaFrente : capaAtras;
+                }
+            }
+        }
+    }
+
     private void Update()
     {
         // 1. Capturar entradas de movimiento WASD o flechas
@@ -101,6 +190,20 @@ public class PlayerController : MonoBehaviour
         if (entradaMovimiento.sqrMagnitude > 1f)
         {
             entradaMovimiento.Normalize();
+        }
+
+        // 3. Control de volteo (Flip) visual y reordenamiento de capas según dirección del movimiento
+        if (inputX > 0f && !mirandoDerecha)
+        {
+            mirandoDerecha = true;
+            if (spriteRenderer != null) spriteRenderer.flipX = false;
+            ActualizarOrdenCapas(true);
+        }
+        else if (inputX < 0f && mirandoDerecha)
+        {
+            mirandoDerecha = false;
+            if (spriteRenderer != null) spriteRenderer.flipX = true;
+            ActualizarOrdenCapas(false);
         }
     }
 
@@ -158,6 +261,9 @@ public class PlayerController : MonoBehaviour
             {
                 datosInventario.estaReparando = true;
             }
+
+            // Desactivar armas secundarias (ranuras 3 y 4, índices 2 y 3)
+            SetPuedeDispararArmasSecundarias(false);
         }
     }
 
@@ -185,6 +291,47 @@ public class PlayerController : MonoBehaviour
                 if (datosInventario != null)
                 {
                     datosInventario.estaReparando = false;
+                }
+
+                // Reactivar armas secundarias (ranuras 3 y 4, índices 2 y 3)
+                SetPuedeDispararArmasSecundarias(true);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Cambia el estado de disparo de las armas secundarias equipadas en las ranuras 3 y 4.
+    /// </summary>
+    private void SetPuedeDispararArmasSecundarias(bool estado)
+    {
+        // Las ranuras 3 y 4 corresponden a los índices 2 y 3 del array de armas
+        for (int i = 2; i <= 3; i++)
+        {
+            if (i < armasInstanciadas.Length && armasInstanciadas[i] != null)
+            {
+                // Intentar desactivar arma a distancia
+                ArmaController arma = armasInstanciadas[i].GetComponent<ArmaController>();
+                if (arma != null)
+                {
+                    arma.puedeDisparar = estado;
+                }
+                else
+                {
+                    // Intentar desactivar el sable
+                    SableController sable = armasInstanciadas[i].GetComponent<SableController>();
+                    if (sable != null)
+                    {
+                        sable.puedeDisparar = estado;
+                    }
+                    else
+                    {
+                        // Intentar desactivar la motosierra
+                        MotosierraController motosierra = armasInstanciadas[i].GetComponent<MotosierraController>();
+                        if (motosierra != null)
+                        {
+                            motosierra.puedeDisparar = estado;
+                        }
+                    }
                 }
             }
         }

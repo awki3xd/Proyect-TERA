@@ -23,10 +23,11 @@ public class EntidadDaño : MonoBehaviour
     /// <summary>
     /// Inicializa los parámetros de daño y origen dinámicamente al instanciar el objeto.
     /// </summary>
-    public void Inicializar(float cantidadDaño, OrigenDaño origenDaño)
+    public void Inicializar(float cantidadDaño, OrigenDaño origenDaño, bool  destruir)
     {
         daño = cantidadDaño;
         origen = origenDaño;
+        destruirAlImpactar = destruir;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

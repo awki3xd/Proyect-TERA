@@ -229,7 +229,7 @@ MonoBehaviour:
   datosPersonaje: {fileID: 11400000, guid: 359f00985c3733848ac6740c92636b8b, type: 2}
   vidaMaxima: 100
   vidaActual: 0
-  tiempoDesactivacion: 3
+  tiempoDesactivacion: 1
   estaActivo: 1
   estaRoto: 0
 --- !u!50 &4848842711425839295
