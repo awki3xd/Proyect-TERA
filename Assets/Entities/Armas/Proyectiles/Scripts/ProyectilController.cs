@@ -17,7 +17,7 @@ public class ProyectilController : MonoBehaviour, IProyectil
 {
     [Header("Configuración de Vuelo")]
     [Tooltip("Velocidad de desplazamiento del proyectil.")]
-    public float velocidad = 10f;
+    public float velocidad = 4f;
 
     [Header("Personalización Visual")]
     [Tooltip("Referencia al SpriteRenderer del proyectil para cambiar su diseño visual.")]
@@ -46,7 +46,7 @@ public class ProyectilController : MonoBehaviour, IProyectil
         EntidadDaño dañoScript = GetComponent<EntidadDaño>();
         if (dañoScript != null)
         {
-            dañoScript.Inicializar(datos.daño, datos.origen);
+            dañoScript.Inicializar(datos.daño, datos.origen, true);
         }
     }
 

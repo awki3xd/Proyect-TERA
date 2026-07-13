@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   habilidadEspecial: {fileID: 0}
   armasEquipadas:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 7997188561020744048, guid: 41b4ab6db3d959c42af2d20723ad4cf8, type: 3}
+  - {fileID: 1956426435535428300, guid: f57f509fe16c94b43891f0f5935ff97d, type: 3}
+  - {fileID: 4288414786809544829, guid: 460fa31ea7f5ffe47ab7a1e89b28ad83, type: 3}
+  - {fileID: 1956426435535428300, guid: f57f509fe16c94b43891f0f5935ff97d, type: 3}
   bolsa: []
-  materiales: 12
+  materiales: 13
+  estaReparando: 0

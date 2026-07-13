@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DatosPistola
   m_EditorClassIdentifier: 
   nombreArma: pistola
-  rango: 4
-  "da\xF1o": 5
+  rango: 6
+  "da\xF1o": 10
   cadencia: 1
-  velocidadRotacion: 500
+  velocidadRotacion: 700
   prefabBala: {fileID: 720674289728660749, guid: 3841495af97c3834bb479f7187e229a9, type: 3}

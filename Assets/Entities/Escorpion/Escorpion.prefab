@@ -118,7 +118,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.0462, y: -0.0379, z: -0.1555}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2825741023396942994}
   m_Father: {fileID: 0}
@@ -141,6 +141,7 @@ MonoBehaviour:
   velocidadAtaque: 1
   rangoAtaque: 1.2
   "prefabEntidadDa\xF1o": {fileID: 5259255012541155176, guid: 1a742c7a850882e4e81f4e3b5ff2625c, type: 3}
+  prefabMaterial: {fileID: 6170809395044725060, guid: 10b8833a03cea08459238a1a544d51b3, type: 3}
   distanciaDeteccionNodo: 10
   porcentajeRadioOrbita: 0.5
   offsetDistanciaAtaque: 1
@@ -232,7 +233,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
