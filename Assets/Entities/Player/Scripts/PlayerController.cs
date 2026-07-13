@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Indica si el jugador está reparando algún nodo (desactiva ranuras de armas 3 y 4).")]
     public bool estaReparando = false;
 
+    public Animator Animaciones;
+
     private Vector2 entradaMovimiento;
     private Rigidbody2D rb;
     private int nodosEnContacto = 0;
@@ -93,7 +95,7 @@ public class PlayerController : MonoBehaviour
 
         // 2. Velocidad de Movimiento
         float multVelocidad = datosPersonaje != null ? datosPersonaje.velocidadMovimiento / 100f : 1f;
-        velocidadReal = 5f * multVelocidad; // 5f es la velocidad física base
+        velocidadReal = 3f * multVelocidad; // 3f es la velocidad física base
 
         // 3. Tasa de Regeneración y Reparación
         float factorCuracion = datosPersonaje != null ? datosPersonaje.curacion / 100f : 1f;
@@ -233,10 +235,17 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void RecibirDaño(float cantidad)
     {
+        Animaciones.SetTrigger("daño");
         // Mitigar el daño usando el factor ya calculado al inicio
         float dañoFinal = cantidad / factorMitigacion;
 
         vida = Mathf.Max(0f, vida - dañoFinal);
+
+        // Reproducir sonido de daño al personaje
+        if (SoundManager.Instance != null && vida > 0f)
+        {
+            SoundManager.Instance.PlaySFX(SoundID.DañoPersonaje);
+        }
         
         if (vida <= 0f)
         {

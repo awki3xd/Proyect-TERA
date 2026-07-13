@@ -60,6 +60,12 @@ public class RecolecciónImán : MonoBehaviour
             // Incrementar los materiales directamente a través de la referencia del ScriptableObject
             datosInventario.AñadirMateriales(1);
             Debug.Log("Bridgmanita recolectada en el Inventario. Materiales totales: " + datosInventario.Materiales);
+
+            // Reproducir sonido de recolección de materiales
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlaySFX(SoundID.RecolectarMaterial);
+            }
         }
         else
         {

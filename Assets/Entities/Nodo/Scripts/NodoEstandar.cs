@@ -18,7 +18,10 @@ public class NodoEstandar : MonoBehaviour
     [Tooltip("Indica si el nodo fue destruido permanentemente.")]
     public bool estaRoto = false;
 
+    public Animator animación;
+
     private Coroutine corrutinaReactivacion;
+    private float tiempoUltimoSonidoCuracion = 0f;
 
     private void Start()
     {
@@ -38,7 +41,14 @@ public class NodoEstandar : MonoBehaviour
 
     public void RecibirDaño(float dañoEntrante)
     {
+        animación.SetTrigger("daño");
         if (estaRoto) return;
+
+        // Reproducir sonido de daño al nodo
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySFX(SoundID.DañoNodo);
+        }
 
         // Se calcula el factorResistencia en caliente a partir de la armadura actual del personaje
         // para reflejar instantáneamente mejoras en la tienda o cambios en tiempo de ejecución.
@@ -92,5 +102,15 @@ public class NodoEstandar : MonoBehaviour
         if (estaRoto) return;
 
         vidaActual = Mathf.Clamp(vidaActual + cantidad, 0f, vidaMaxima);
+
+        // Reproducir sonido de curación periódicamente si el nodo no está curado al máximo
+        if (vidaActual < vidaMaxima && Time.time - tiempoUltimoSonidoCuracion >= 0.4f)
+        {
+            tiempoUltimoSonidoCuracion = Time.time;
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlaySFX(SoundID.CurarNodo);
+            }
+        }
     }
 }

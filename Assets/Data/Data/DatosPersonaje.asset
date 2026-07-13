@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aff9e5a1cd6b4547a0f99248023f889, type: 3}
   m_Name: DatosPersonaje
   m_EditorClassIdentifier: 
-  armadura: 1000
+  armadura: 200
   curacion: 100
   velocidadMovimiento: 100
-  "da\xF1o": 100
+  "da\xF1o": 200
   velocidadAtaque: 100
   rangoAtaque: 100

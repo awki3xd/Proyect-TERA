@@ -422,6 +422,7 @@ MonoBehaviour:
   tasaRegeneracionBase: 2
   tasaReparacionBase: 10
   estaReparando: 0
+  Animaciones: {fileID: 2873106887538057036}
 --- !u!95 &2873106887538057036
 Animator:
   serializedVersion: 7

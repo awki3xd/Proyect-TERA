@@ -131,6 +131,24 @@ public class ArmaController : MonoBehaviour
             return;
         }
 
+        // Reproducir sonido específico de disparo del arma
+        if (SoundManager.Instance != null && datosArma != null)
+        {
+            string nombre = datosArma.nombreArma.ToLower();
+            if (nombre == "pistola")
+            {
+                SoundManager.Instance.PlaySFX(SoundID.DisparoPistola);
+            }
+            else if (nombre == "rifle")
+            {
+                SoundManager.Instance.PlaySFX(SoundID.DisparoRifle);
+            }
+            else if (nombre == "metralleta")
+            {
+                SoundManager.Instance.PlaySFX(SoundID.DisparoMetralleta);
+            }
+        }
+
         // Definir punto de origen (boca de cañón o la posición propia si no está asignado)
         Vector2 origen = cañonPistola != null ? (Vector2)cañonPistola.position : (Vector2)transform.position;
         

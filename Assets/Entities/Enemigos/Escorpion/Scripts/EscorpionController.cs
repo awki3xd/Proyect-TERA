@@ -336,6 +336,12 @@ public class EscorpionController : MonoBehaviour
             col.enabled = false;
         }
 
+        // Reproducir sonido de muerte de enemigo
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySFX(SoundID.MuerteEnemigo);
+        }
+
         // Cambiar la etiqueta para que las armas del jugador dejen de apuntarle
         gameObject.tag = "Untagged";
 

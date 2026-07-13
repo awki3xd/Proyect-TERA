@@ -151,6 +151,12 @@ public class MotosierraController : MonoBehaviour
     {
         esAtacando = true;
 
+        // Reproducir sonido de motosierra activa
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySFX(SoundID.MotosierraSierra);
+        }
+
         // Escalar según el rango real
         float factorRango = rangoBase > 0.05f ? (estadisticasCalculadas.rango / rangoBase) : 1f;
         float escalaAtaque = multiplicadorEscalaAtaque * factorRango;

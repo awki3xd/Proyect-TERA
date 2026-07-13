@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vida: 30
-  "da\xF1o": 8
+  "da\xF1o": 15
   velocidadMovimiento: 3
   velocidadAtaque: 1.5
   prefabProyectil: {fileID: 720674289728660749, guid: 3841495af97c3834bb479f7187e229a9, type: 3}
