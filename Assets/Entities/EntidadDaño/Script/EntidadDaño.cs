@@ -64,17 +64,26 @@ public class EntidadDaño : MonoBehaviour
         {
             if (other.CompareTag("Enemigo"))
             {
-                // Por ahora el escorpión es el único enemigo en la horda, buscamos su script directamente.
-                // En el futuro, crearemos una interfaz común para modularizar a todos los enemigos.
+                // Buscamos si es un escorpión o una mosca
                 EscorpionController escorpion = other.GetComponent<EscorpionController>();
                 if (escorpion != null)
                 {
                     escorpion.RecibirDaño(daño);
-                    
-                    // Si el proyectil debe autodestruirse al impactar (ej: balas)
                     if (destruirAlImpactar)
                     {
                         Destroy(gameObject);
+                    }
+                }
+                else
+                {
+                    MoscaController mosca = other.GetComponent<MoscaController>();
+                    if (mosca != null)
+                    {
+                        mosca.RecibirDaño(daño);
+                        if (destruirAlImpactar)
+                        {
+                            Destroy(gameObject);
+                        }
                     }
                 }
             }
