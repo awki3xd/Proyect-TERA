@@ -1,0 +1,19 @@
+.Botones {
+}
+
+.Botones:hover {
+    scale: 1.2 1.2;
+}
+#unity-tracker
+{
+    height:30px;
+    border-radius:20px;
+
+}
+#unity-dragger
+{
+    height:50px;
+    width:50px;
+    border-radius:30px;
+
+}
