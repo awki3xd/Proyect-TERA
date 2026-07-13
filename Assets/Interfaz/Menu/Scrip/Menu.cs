@@ -7,11 +7,14 @@ public class Menu : MonoBehaviour
     [SerializeField] private AudioClip _clip;
     [SerializeField] private AudioSource _audioSource;
 
+    private VisualElement _CreditosImg;
+
     private Button _Jugar;
     private Button _Historia;
     private Button _Ajustes;
     private Button _Creditos;
     private Button _Salir;
+    private Button _Salida;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,7 +25,9 @@ public class Menu : MonoBehaviour
         _Ajustes = root.Q<Button>("Ajustes");
         _Creditos=root.Q<Button>("Creditos");
         _Salir=root.Q<Button>("Salir");
+        _Salida=root.Q<Button>("Salida");
 
+        _CreditosImg = root.Q<VisualElement>("CreditosFoto");
 
         _Jugar.clicked += () => 
         {
@@ -39,10 +44,19 @@ public class Menu : MonoBehaviour
         _Creditos.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
+            _CreditosImg.style.display = DisplayStyle.Flex;
+
         };
         _Salir.clicked += () => 
         {
+            
             _audioSource.PlayOneShot(_clip);
+        };
+
+        _Salida.clicked += () =>
+        {
+            _audioSource.PlayOneShot(_clip);
+            _CreditosImg.style.display = DisplayStyle.None;
         };
     }
 
