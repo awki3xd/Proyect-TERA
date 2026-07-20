@@ -117,14 +117,14 @@ public class SpawnEnemigos : MonoBehaviour
             int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
             float factorNivel = Mathf.InverseLerp(1f, 20f, nivel); // 0 en nivel 1, 1 en nivel 20
 
-            // Escalar intervalo de tiempo según nivel (Nivel 1 es más lento, Nivel 20 es el más rápido)
-            float minIntervalo = Mathf.Lerp(2.0f, 0.1f, factorNivel);
-            float maxIntervalo = Mathf.Lerp(5.0f, 1.0f, factorNivel);
+            // Escalar intervalo de tiempo según nivel (Dificultad Baja)
+            float minIntervalo = Mathf.Lerp(5.0f, 1.5f, factorNivel);
+            float maxIntervalo = Mathf.Lerp(10.0f, 4.0f, factorNivel);
             float intervalo = Random.Range(minIntervalo, maxIntervalo);
             yield return new WaitForSeconds(intervalo);
 
-            // La cantidad de enemigos individuales spawneados en este intervalo es igual al nivel (capado a un máximo de 20)
-            int cantidad = Mathf.Clamp(nivel, 1, 20);
+            // Cantidad baja (50% del nivel, capado a 8)
+            int cantidad = Mathf.Clamp(Mathf.CeilToInt(nivel * 0.5f), 1, 8);
 
             for (int i = 0; i < cantidad; i++)
             {
@@ -145,17 +145,15 @@ public class SpawnEnemigos : MonoBehaviour
             int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
             float factorNivel = Mathf.InverseLerp(1f, 20f, nivel);
 
-            // Escalar intervalo de grupo según nivel (Nivel 1: cada 15-30s; Nivel 20: cada 5-10s)
-            float minGrupoIntervalo = Mathf.Lerp(15f, 5f, factorNivel);
-            float maxGrupoIntervalo = Mathf.Lerp(30f, 10f, factorNivel);
+            // Escalar intervalo de grupo según nivel (Dificultad Baja)
+            float minGrupoIntervalo = Mathf.Lerp(30f, 15f, factorNivel);
+            float maxGrupoIntervalo = Mathf.Lerp(50f, 25f, factorNivel);
             float intervalo = Random.Range(minGrupoIntervalo, maxGrupoIntervalo);
             yield return new WaitForSeconds(intervalo);
 
-            // Escalar tamaño de grupos dinámicamente:
-            // Nivel 1: min 2, max 4.
-            // A partir de ahí sube linealmente. Nivel 20: min 15, max 20.
-            int minGrupo = Mathf.Clamp(2 + (nivel - 1), 2, 15);
-            int maxGrupo = Mathf.Clamp(4 + (nivel - 1) * 2, 4, 20);
+            // Escalar tamaño de grupos dinámicamente (Dificultad Baja):
+            int minGrupo = Mathf.Clamp(1 + Mathf.FloorToInt((nivel - 1) * 0.25f), 1, 5);
+            int maxGrupo = Mathf.Clamp(3 + Mathf.FloorToInt((nivel - 1) * 0.5f), 3, 10);
             int cantidadEnGrupo = Random.Range(minGrupo, maxGrupo + 1);
 
             // Generar un único punto de spawneo para todo el grupo (ellos se esparcirán solos al apuntar)
