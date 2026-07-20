@@ -71,7 +71,13 @@ public class Pausa : MonoBehaviour
         {
             Debug.Log("Menu");
             _AudioSource.PlayOneShot(AudioClik);
-            SceneManager.LoadSceneAsync(1);
+            
+            if (Unity.Netcode.NetworkManager.Singleton != null)
+            {
+                Unity.Netcode.NetworkManager.Singleton.Shutdown();
+            }
+            
+            SceneManager.LoadSceneAsync("Menu");
         };
 
         _Volver.clicked += () =>

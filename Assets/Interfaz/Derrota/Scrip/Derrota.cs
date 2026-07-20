@@ -28,7 +28,15 @@ public class Derrota : MonoBehaviour
         _VolverMenu.clicked += () => 
         {
             _AudioSource.PlayOneShot(_AudioClip);
-            SceneManager.LoadSceneAsync(1);
+            
+            // Apagar el servidor/cliente para limpiar la conexión antes de volver al menú
+            if (Unity.Netcode.NetworkManager.Singleton != null)
+            {
+                Unity.Netcode.NetworkManager.Singleton.Shutdown();
+            }
+            
+            // Cargar la escena del Menú por su nombre para evitar errores de índice
+            SceneManager.LoadSceneAsync("Menu");
         };
 
     }

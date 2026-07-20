@@ -141,8 +141,16 @@ public class Menu : MonoBehaviour
         _Listo.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
-            SceneManager.LoadSceneAsync(0);
             _AjustesSonido.style.display = DisplayStyle.None;
+            
+            // Para jugar "Offline" (Solo), iniciamos un Host local sin Relay
+            if (NetworkManager.Singleton != null)
+            {
+                // Asegurarnos de que use la IP local por defecto
+                NetworkManager.Singleton.GetComponent<Unity.Netcode.Transports.UTP.UnityTransport>().SetConnectionData("127.0.0.1", 7777);
+                NetworkManager.Singleton.StartHost();
+                NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
+            }
         };
 
 

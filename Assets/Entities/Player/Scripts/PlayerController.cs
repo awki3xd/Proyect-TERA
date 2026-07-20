@@ -265,9 +265,41 @@ public class PlayerController : NetworkBehaviour
     private void Morir()
     {
         Debug.Log("Génesis ha sido destruido. Partida Terminada.");
-        // Cargar escena de Derrota (Build Index 2)
-        SceneManager.LoadScene(2);
-        Destroy(gameObject);
+        
+        if (IsServer)
+        {
+            CargarDerrota();
+        }
+        else
+        {
+            NotificarMuerteServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void NotificarMuerteServerRpc()
+    {
+        CargarDerrota();
+    }
+
+    private void CargarDerrota()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+        {
+            // Despawnear (destruir en red) a todos los jugadores para que no pasen a la pantalla de Derrota
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.PlayerObject != null)
+                {
+                    client.PlayerObject.Despawn();
+                }
+            }
+            NetworkManager.Singleton.SceneManager.LoadScene("Derrota", LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene("Derrota");
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

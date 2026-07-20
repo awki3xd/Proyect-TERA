@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine; // Requerido para acceder a CinemachineTargetGroup en Cinemachine 3.x
-
+using Unity.Netcode;
 public class CameraTargetSetup : MonoBehaviour
 {
     [Header("Referencias de Cinemachine")]
@@ -22,8 +22,13 @@ public class CameraTargetSetup : MonoBehaviour
 
     private IEnumerator Start()
     {
-        // Esperar un frame (yield return null) para garantizar que GeneradorNodos 
-        // ya haya instanciado todos los nodos en su propio Start()
+        // Esperar a que el jugador local se conecte y se instancie en la red
+        while (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsConnectedClient || NetworkManager.Singleton.LocalClient.PlayerObject == null)
+        {
+            yield return null;
+        }
+
+        // Esperar un frame extra para garantizar que GeneradorNodos ya haya instanciado los nodos
         yield return null;
 
         // 1. Buscar el TargetGroup si no fue arrastrado al inspector
@@ -44,15 +49,15 @@ public class CameraTargetSetup : MonoBehaviour
             targetGroup.Targets.Clear();
         }
 
-        // 2. Buscar al jugador (Génesis) por Tag e incorporarlo al grupo
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        // 2. Buscar al jugador local (el que nos pertenece) e incorporarlo al grupo
+        GameObject player = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
         if (player != null)
         {
             targetGroup.AddMember(player.transform, pesoJugador, radioJugador);
         }
         else
         {
-            Debug.LogWarning("No se encontró ningún GameObject con el tag 'Player' para añadir al Target Group.");
+            Debug.LogWarning("No se encontró al jugador local para añadir al Target Group.");
         }
 
         // 3. Buscar todos los Nodos generados en la escena por su Tag e incorporarlos

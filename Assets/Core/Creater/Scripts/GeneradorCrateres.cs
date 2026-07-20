@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
 [System.Serializable]
 public struct DatosCrater
@@ -17,8 +18,9 @@ public struct DatosCrater
     }
 }
 
-public class GeneradorCrateres : MonoBehaviour
+public class GeneradorCrateres : NetworkBehaviour
 {
+    public NetworkVariable<int> mapSeed = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [Header("Renderizado Separado (Capas)")]
     [SerializeField] private SpriteShapeController shapeBorde;
     [SerializeField] private SpriteShapeController shapeSuelo;
@@ -28,12 +30,25 @@ public class GeneradorCrateres : MonoBehaviour
     
     private DatosCrater[] crateres;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
+        if (IsServer)
+        {
+            // El servidor elige una semilla aleatoria para el mapa
+            mapSeed.Value = Random.Range(1, 999999);
+        }
+
+        // Ambos (Servidor y Cliente) usan la misma semilla para generar el mismo mapa
+        Random.InitState(mapSeed.Value);
+
         GenerarDatosMatematicos();
         InstanciarColisionadoresFisicos();
         StartCoroutine(DibujarBordeVisual());
-        SoundManager.Instance.PlayMusic(SoundID.MusicaNivel);
+        
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayMusic(SoundID.MusicaNivel);
+        }
     }
 
     void Update()

@@ -3,9 +3,10 @@ using UnityEngine.U2D;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
 [RequireComponent(typeof(SpriteShapeController))]
-public class GestorTerraformacion : MonoBehaviour
+public class GestorTerraformacion : NetworkBehaviour
 {
     [Header("Referencias Externas")]
     [Tooltip("Arrastra aca el objeto que tiene el script GeneradorNodos")]
@@ -24,7 +25,7 @@ public class GestorTerraformacion : MonoBehaviour
     private SpriteShapeController shapePasto;
     private Vector2[] puntosOriginales;
     
-    public float porcentajeActual;
+    public NetworkVariable<float> porcentajeActual = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private float radioPromedio;
 
     private NodoEstandar[] nodosAsignados;
@@ -33,6 +34,18 @@ public class GestorTerraformacion : MonoBehaviour
     private void Awake()
     {
         shapePasto = GetComponent<SpriteShapeController>();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        // Cuando el servidor cambie el valor, todos los clientes redibujarán el pasto automáticamente
+        porcentajeActual.OnValueChanged += (oldValue, newValue) => 
+        {
+            if (puntosOriginales != null && puntosOriginales.Length > 0)
+            {
+                DibujarPasto(newValue);
+            }
+        };
     }
 
     public void GenerarPastoInicial(DatosCrater[] crateresBase)
@@ -120,8 +133,12 @@ public class GestorTerraformacion : MonoBehaviour
         }
         radioPromedio = sumaDistancias / cantidadPuntos;
 
-        porcentajeActual = escalaInicial;
-        DibujarPasto(porcentajeActual);
+        if (IsServer && porcentajeActual.Value == 0f)
+        {
+            porcentajeActual.Value = escalaInicial;
+        }
+        
+        DibujarPasto(porcentajeActual.Value);
 
         StartCoroutine(RutinaExpansion());
     }
@@ -170,8 +187,15 @@ public class GestorTerraformacion : MonoBehaviour
         yield return null;
         shapePasto.enabled = true;
 
-        while (porcentajeActual < 1f)
+        while (porcentajeActual.Value < 1f)
         {
+            // Solo el servidor calcula el crecimiento. Los clientes solo miran.
+            if (!IsServer)
+            {
+                yield return new WaitForSeconds(0.5f);
+                continue;
+            }
+
             float sumaActivos = 0f;
             int totalNodosInstanciados = 0;
             
@@ -195,15 +219,28 @@ public class GestorTerraformacion : MonoBehaviour
                 yield return new WaitForSeconds(tiempoEspera);
 
                 float avancePorcentualPorSalto = distanciaPorSalto / radioPromedio;
-                porcentajeActual += avancePorcentualPorSalto;
+                porcentajeActual.Value += avancePorcentualPorSalto;
 
-                if (porcentajeActual >= 1f)
+                if (porcentajeActual.Value >= 1f)
                 {
-                    porcentajeActual = 1f;
-                    SceneManager.LoadScene(2);
+                    porcentajeActual.Value = 1f;
+                    if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+                    {
+                        // Despawnear a los jugadores para que no aparezcan en la pantalla de Derrota
+                        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+                        {
+                            if (client.PlayerObject != null)
+                            {
+                                client.PlayerObject.Despawn();
+                            }
+                        }
+                        NetworkManager.Singleton.SceneManager.LoadScene("Derrota", LoadSceneMode.Single);
+                    }
+                    else
+                    {
+                        SceneManager.LoadScene(2); // Fallback por si acaso
+                    }
                 }
-
-                DibujarPasto(porcentajeActual);
             }
             else
             {
@@ -220,15 +257,13 @@ public class GestorTerraformacion : MonoBehaviour
 
                     // Restamos la distancia para que el mapa se encoja
                     float retrocesoPorcentualPorSalto = distanciaPorSalto / radioPromedio;
-                    porcentajeActual -= retrocesoPorcentualPorSalto;
+                    porcentajeActual.Value -= retrocesoPorcentualPorSalto;
 
                     // Evitamos perforar el limite minimo del charco de inicio
-                    if (porcentajeActual <= escalaInicial)
+                    if (porcentajeActual.Value <= escalaInicial)
                     {
-                        porcentajeActual = escalaInicial;
+                        porcentajeActual.Value = escalaInicial;
                     }
-
-                    DibujarPasto(porcentajeActual);
                 }
                 else
                 {
