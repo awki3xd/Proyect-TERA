@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 using UnityEngine.UIElements;
-
+using System.Collections.Generic;
 public class Menu : MonoBehaviour
 {
     [SerializeField] private UIDocument _UIDocument;
@@ -11,8 +12,12 @@ public class Menu : MonoBehaviour
     private VisualElement _CreditosImg;
     private VisualElement _ConfiguracionPartida;
     private VisualElement _AjustesSonido;
+    private DropdownField _CantidadNodos;
 
     private Button _Jugar;
+    private Button _JugarOnline;
+    private Button _UnirseOnline;
+    private TextField _CodigoSala;
     private Button _Historia;
     private Button _Ajustes;
     private Button _Creditos;
@@ -25,6 +30,9 @@ public class Menu : MonoBehaviour
     {
         var root = _UIDocument.rootVisualElement;
         _Jugar=root.Q<Button>("Jugar");
+        _JugarOnline=root.Q<Button>("JugarOnline");
+        _UnirseOnline=root.Q<Button>("UnirseOnline");
+        _CodigoSala=root.Q<TextField>("CodigoSala");
         _Historia=root.Q<Button>("Historia");
         _Ajustes = root.Q<Button>("Ajustes");
         _Creditos=root.Q<Button>("Creditos");
@@ -36,12 +44,65 @@ public class Menu : MonoBehaviour
         _ConfiguracionPartida = root.Q<VisualElement>("OpcionesJuego");
         _AjustesSonido = root.Q<VisualElement>("AjustesSonido");
 
+        _CantidadNodos = root.Q<DropdownField>("CantidadNodos");
+        if (_CantidadNodos != null)
+        {
+            _CantidadNodos.choices = new List<string> { "1", "2", "3", "4", "5" };
+            _CantidadNodos.value = "1"; // Valor por defecto
+        }
+
         _Jugar.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.Flex;
             _AjustesSonido.style.display = DisplayStyle.None;
         };
+
+        if (_JugarOnline != null)
+        {
+            _JugarOnline.clicked += async () => 
+            {
+                _audioSource.PlayOneShot(_clip);
+                if (RelayManager.Instance != null)
+                {
+                    // Desactivar botón para evitar doble clic
+                    _JugarOnline.SetEnabled(false);
+                    string joinCode = await RelayManager.Instance.CrearSalaRelay();
+                    
+                    if (!string.IsNullOrEmpty(joinCode))
+                    {
+                        Debug.Log("¡Sala creada! Comparte este código con tu amigo: " + joinCode);
+                        // Idealmente aquí mostraríamos el código en la pantalla antes de cambiar de escena,
+                        // pero por ahora lo imprimimos en consola y cargamos el nivel.
+                        NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
+                    }
+                    else
+                    {
+                        _JugarOnline.SetEnabled(true);
+                    }
+                }
+            };
+        }
+
+        if (_UnirseOnline != null && _CodigoSala != null)
+        {
+            _UnirseOnline.clicked += async () =>
+            {
+                _audioSource.PlayOneShot(_clip);
+                string codigo = _CodigoSala.value;
+                if (!string.IsNullOrEmpty(codigo) && RelayManager.Instance != null)
+                {
+                    _UnirseOnline.SetEnabled(false);
+                    bool exito = await RelayManager.Instance.UnirseSalaRelay(codigo);
+                    if (!exito)
+                    {
+                        _UnirseOnline.SetEnabled(true);
+                    }
+                    // Si tiene éxito, el NetworkManager se encarga de sincronizar la escena automáticamente
+                }
+            };
+        }
+
         _Historia.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);

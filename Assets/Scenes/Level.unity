@@ -433,7 +433,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 39.99984
+  field of view: 100
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -460,7 +460,7 @@ Transform:
   m_GameObject: {fileID: 133469574}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000028720319, y: 9.312472e-10, z: 2.6745715e-17, w: 1}
-  m_LocalPosition: {x: -0.020000014, y: -1.7500005, z: -8.409981}
+  m_LocalPosition: {x: -0.020000204, y: -1.7500063, z: -110.167496}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -524,7 +524,7 @@ Transform:
   m_GameObject: {fileID: 407902458}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000028720319, y: 9.312472e-10, z: 2.6745715e-17, w: 1}
-  m_LocalPosition: {x: -0.020000014, y: -1.7500005, z: -8.409981}
+  m_LocalPosition: {x: -0.020000204, y: -1.7500063, z: -110.167496}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1141,6 +1141,10 @@ PrefabInstance:
     - target: {fileID: 8267922747630732710, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
       propertyPath: m_Name
       value: Player (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8267922747630732710, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -185,6 +185,8 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
+        if (!IsOwner) return;
+
         // 1. Capturar entradas de movimiento WASD o flechas
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputY = Input.GetAxisRaw("Vertical");
@@ -213,6 +215,8 @@ public class PlayerController : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if (!IsOwner) return;
+
         // Mover físicamente utilizando la velocidad real precalculada
         rb.linearVelocity = entradaMovimiento * velocidadReal;
     }
