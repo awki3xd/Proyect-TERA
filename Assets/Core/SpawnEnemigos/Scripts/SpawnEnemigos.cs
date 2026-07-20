@@ -78,7 +78,7 @@ public class SpawnEnemigos : MonoBehaviour
             int indiceStat = Random.Range(1, 6); // 1: Vida, 2: VelocidadMov, 3: Daño, 4: VelAtaque, 5: Rango
             float porcentajeBoost = Random.Range(1.20f, 1.30f); // 20% a 30% de incremento
 
-            switch (indiceStat)
+            /*switch (indiceStat)
             {
                 case 1:
                     datosEnemigosLocales.vida *= porcentajeBoost;
@@ -97,10 +97,8 @@ public class SpawnEnemigos : MonoBehaviour
                     Debug.Log($"[Spawner] ¡Estadística potenciada en esta partida!: VELOCIDAD DE ATAQUE (+{Mathf.Round((porcentajeBoost - 1f) * 100f)}%)");
                     break;
                 case 5:
-                    datosEnemigosLocales.rangoAtaque *= porcentajeBoost;
-                    Debug.Log($"[Spawner] ¡Estadística potenciada en esta partida!: RANGO DE ATAQUE (+{Mathf.Round((porcentajeBoost - 1f) * 100f)}%)");
                     break;
-            }
+            }*/
         }
         else
         {

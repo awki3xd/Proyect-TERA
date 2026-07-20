@@ -214,13 +214,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vida: 30
-  "da\xF1o": 15
+  "da\xF1o": 10
   velocidadMovimiento: 3
   velocidadAtaque: 1.5
   prefabProyectil: {fileID: 720674289728660749, guid: 3841495af97c3834bb479f7187e229a9, type: 3}
   prefabMaterial: {fileID: 6170809395044725060, guid: 10b8833a03cea08459238a1a544d51b3, type: 3}
-  distanciaDeteccion: 4
-  rangoDisparo: 6
+  distanciaDeteccion: 3
+  rangoDisparo: 4
   offsetDistanciaDisparo: 0.5
   estadoActual: 0
 --- !u!50 &1630819615175619529
@@ -280,7 +280,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0

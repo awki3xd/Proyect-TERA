@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DatosMetralleta
   m_EditorClassIdentifier: 
   nombreArma: metralleta
-  rango: 5
-  "da\xF1o": 5
-  cadencia: 0.2
-  velocidadRotacion: 250
+  rango: 10
+  "da\xF1o": 20
+  cadencia: 0.1
+  velocidadRotacion: 500
   prefabBala: {fileID: 720674289728660749, guid: 3841495af97c3834bb479f7187e229a9, type: 3}

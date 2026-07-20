@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.U2D;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(SpriteShapeController))]
 public class GestorTerraformacion : MonoBehaviour
@@ -199,6 +200,7 @@ public class GestorTerraformacion : MonoBehaviour
                 if (porcentajeActual >= 1f)
                 {
                     porcentajeActual = 1f;
+                    SceneManager.LoadScene(2);
                 }
 
                 DibujarPasto(porcentajeActual);

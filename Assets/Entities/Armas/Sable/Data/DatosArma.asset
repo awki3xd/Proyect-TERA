@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DatosArma
   m_EditorClassIdentifier: 
   nombreArma: sable
-  rango: 2
-  "da\xF1o": 10
-  cadencia: 1
-  velocidadRotacion: 700
+  rango: 3
+  "da\xF1o": 20
+  cadencia: 0.5
+  velocidadRotacion: 500
   prefabBala: {fileID: 0}

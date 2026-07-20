@@ -433,7 +433,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 39.99978
+  field of view: 39.99984
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -460,7 +460,7 @@ Transform:
   m_GameObject: {fileID: 133469574}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000028720319, y: 9.312472e-10, z: 2.6745715e-17, w: 1}
-  m_LocalPosition: {x: -0.020000007, y: -1.7500002, z: -4.28874}
+  m_LocalPosition: {x: -0.020000014, y: -1.7500005, z: -8.409981}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -524,7 +524,7 @@ Transform:
   m_GameObject: {fileID: 407902458}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000028720319, y: 9.312472e-10, z: 2.6745715e-17, w: 1}
-  m_LocalPosition: {x: -0.020000007, y: -1.7500002, z: -4.28874}
+  m_LocalPosition: {x: -0.020000014, y: -1.7500005, z: -8.409981}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -875,8 +875,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   generadorNodos: {fileID: 1285804796}
   datosNivel: {fileID: 11400000, guid: 3b4724f5b9146884798d553c15e50020, type: 2}
-  escalaInicial: 0.303
-  distanciaPorSalto: 0.1
+  escalaInicial: 0.2
+  distanciaPorSalto: 0.2
   tiempoBaseLatido: 1
   porcentajeActual: 0.24
 --- !u!114 &1141786239
@@ -1073,6 +1073,10 @@ PrefabInstance:
     - target: {fileID: 1311373828786000057, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1876931610729183993, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
+      propertyPath: tasaRegeneracionBase
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2052916710785786018, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1676,7 +1680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FramingMode: 2
-  FramingSize: 0.8
+  FramingSize: 0.4
   CenterOffset: {x: 0, y: 0}
   Damping: 1.5
   SizeAdjustment: 2
@@ -1703,7 +1707,7 @@ MonoBehaviour:
       Size: {x: 0.2, y: 0.2}
     HardLimits:
       Enabled: 1
-      Size: {x: 0.4, y: 0.4}
+      Size: {x: 0.7, y: 0.7}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
@@ -1884,7 +1888,7 @@ MonoBehaviour:
     variarPitch: 0
   - id: 14
     clip: {fileID: 8300000, guid: 420b5327f3b070f4da744cf9360498d1, type: 3}
-    volumen: 0.2
+    volumen: 0.3
     pitchBase: 0.5
     variarPitch: 0
   - id: 10
