@@ -81,6 +81,7 @@ public class ProyectilController : MonoBehaviour, IProyectil
                 if (spritesBalas.Length > 2 && spritesBalas[2] != null)
                 {
                     spriteRenderer.sprite = spritesBalas[2];
+                    velocidad = 2f;
                 }
                 break;
             case "metralleta":

@@ -317,6 +317,10 @@ public class EscorpionController : MonoBehaviour
         if (estaMuerto) return;
 
         vida = Mathf.Max(0f, vida - cantidad);
+
+        // Crear número de daño flotante en color blanco
+        TextoDañoFlotante.Crear(transform.position, cantidad, Color.white);
+
         if (vida <= 0f)
         {
             estaMuerto = true;

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
@@ -95,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
         // 2. Velocidad de Movimiento
         float multVelocidad = datosPersonaje != null ? datosPersonaje.velocidadMovimiento / 100f : 1f;
-        velocidadReal = 3f * multVelocidad; // 3f es la velocidad física base
+        velocidadReal = 5f * multVelocidad; // 3f es la velocidad física base
 
         // 3. Tasa de Regeneración y Reparación
         float factorCuracion = datosPersonaje != null ? datosPersonaje.curacion / 100f : 1f;
@@ -241,6 +242,9 @@ public class PlayerController : MonoBehaviour
 
         vida = Mathf.Max(0f, vida - dañoFinal);
 
+        // Crear número de daño flotante en color rojo
+        TextoDañoFlotante.Crear(transform.position, dañoFinal, Color.red);
+
         // Reproducir sonido de daño al personaje
         if (SoundManager.Instance != null && vida > 0f)
         {
@@ -256,7 +260,8 @@ public class PlayerController : MonoBehaviour
     private void Morir()
     {
         Debug.Log("Génesis ha sido destruido. Partida Terminada.");
-        // TODO: Invocar pantalla de Game Over o reiniciar escena
+        // Cargar escena de Derrota (Build Index 2)
+        SceneManager.LoadScene(2);
         Destroy(gameObject);
     }
 

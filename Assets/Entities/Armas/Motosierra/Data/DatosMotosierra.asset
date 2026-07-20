@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DatosMotosierra
   m_EditorClassIdentifier: 
   nombreArma: motosierra
-  rango: 2
-  "da\xF1o": 3
+  rango: 3
+  "da\xF1o": 5
   cadencia: 0.2
   velocidadRotacion: 150
   prefabBala: {fileID: 0}

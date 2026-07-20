@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9529f4921eee2bf45a6e15fe172d9afe, type: 3}
   m_Name: DatosNivel
   m_EditorClassIdentifier: 
-  numeroNivel: 5
-  cantidadNodos: 3
-  modoExtremo: 1
+  numeroNivel: 20
+  cantidadNodos: 1
+  modoExtremo: 0

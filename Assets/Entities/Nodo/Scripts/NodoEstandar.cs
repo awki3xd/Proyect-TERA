@@ -59,6 +59,9 @@ public class NodoEstandar : MonoBehaviour
         // Mitigar daño según el factorResistencia
         float dañoCalculado = dañoEntrante / factorResistencia;
 
+        // Crear número de daño flotante en color rojo
+        TextoDañoFlotante.Crear(transform.position, dañoCalculado, Color.red);
+
         // Restar daño y asegurar límites entre 0 y vidaMaxima
         vidaActual = Mathf.Clamp(vidaActual - dañoCalculado, 0f, vidaMaxima);
 
