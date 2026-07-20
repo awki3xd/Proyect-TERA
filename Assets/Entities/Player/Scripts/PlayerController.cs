@@ -1,9 +1,10 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     [Header("Referencias a Slots de Armas")]
     [Tooltip("Transforms de los puntos de anclaje de las armas en el cuerpo de Génesis (Slots 1 a 4).")]
