@@ -2,11 +2,17 @@ using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using Unity.Collections;
+using TMPro;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 public class PlayerController : NetworkBehaviour
 {
+    [Header("Multijugador")]
+    public NetworkVariable<FixedString32Bytes> playerName = new NetworkVariable<FixedString32Bytes>("Jugador", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private TextMeshPro textoNombre;
+
     [Header("Referencias a Slots de Armas")]
     [Tooltip("Transforms de los puntos de anclaje de las armas en el cuerpo de Génesis (Slots 1 a 4).")]
     public Transform[] slotsArmas = new Transform[4];
@@ -63,6 +69,41 @@ public class PlayerController : NetworkBehaviour
         
         // Obtener el SpriteRenderer principal de Génesis
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        textoNombre = GetComponentInChildren<TextMeshPro>();
+
+        if (IsOwner)
+        {
+            string myName = PlayerPrefs.GetString("PlayerName", "Jugador");
+            ActualizarTextoNombre(myName); // Actualizar localmente de inmediato
+            SetPlayerNameServerRpc(myName); // Enviar al servidor para que los demás lo vean
+        }
+
+        playerName.OnValueChanged += (oldValue, newValue) => 
+        {
+            ActualizarTextoNombre(newValue.ToString());
+        };
+        
+        ActualizarTextoNombre(playerName.Value.ToString());
+    }
+
+    [ServerRpc]
+    private void SetPlayerNameServerRpc(string newName)
+    {
+        playerName.Value = newName;
+    }
+
+    private void ActualizarTextoNombre(string nombre)
+    {
+        if (textoNombre != null)
+        {
+            textoNombre.text = nombre;
+        }
     }
 
     private void Start()

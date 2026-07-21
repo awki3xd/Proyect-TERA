@@ -12,12 +12,16 @@ public class Menu : MonoBehaviour
     private VisualElement _CreditosImg;
     private VisualElement _ConfiguracionPartida;
     private VisualElement _AjustesSonido;
+    private VisualElement _PanelOnline;
     private DropdownField _CantidadNodos;
 
     private Button _Jugar;
     private Button _JugarOnline;
+    private Button _CrearSalaOnline;
     private Button _UnirseOnline;
+    private Button _VolverOnline;
     private TextField _CodigoSala;
+    private TextField _NombreJugador;
     private Button _Historia;
     private Button _Ajustes;
     private Button _Creditos;
@@ -31,8 +35,11 @@ public class Menu : MonoBehaviour
         var root = _UIDocument.rootVisualElement;
         _Jugar=root.Q<Button>("Jugar");
         _JugarOnline=root.Q<Button>("JugarOnline");
+        _CrearSalaOnline=root.Q<Button>("CrearSalaOnline");
         _UnirseOnline=root.Q<Button>("UnirseOnline");
+        _VolverOnline=root.Q<Button>("VolverOnline");
         _CodigoSala=root.Q<TextField>("CodigoSala");
+        _NombreJugador=root.Q<TextField>("NombreJugador");
         _Historia=root.Q<Button>("Historia");
         _Ajustes = root.Q<Button>("Ajustes");
         _Creditos=root.Q<Button>("Creditos");
@@ -43,6 +50,7 @@ public class Menu : MonoBehaviour
         _CreditosImg = root.Q<VisualElement>("CreditosFoto");
         _ConfiguracionPartida = root.Q<VisualElement>("OpcionesJuego");
         _AjustesSonido = root.Q<VisualElement>("AjustesSonido");
+        _PanelOnline = root.Q<VisualElement>("PanelOnline");
 
         _CantidadNodos = root.Q<DropdownField>("CantidadNodos");
         if (_CantidadNodos != null)
@@ -56,17 +64,45 @@ public class Menu : MonoBehaviour
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.Flex;
             _AjustesSonido.style.display = DisplayStyle.None;
+            if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.None;
         };
 
         if (_JugarOnline != null)
         {
-            _JugarOnline.clicked += async () => 
+            _JugarOnline.clicked += () => 
+            {
+                _audioSource.PlayOneShot(_clip);
+                _ConfiguracionPartida.style.display = DisplayStyle.None;
+                _AjustesSonido.style.display = DisplayStyle.None;
+                if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.Flex;
+            };
+        }
+
+        if (_VolverOnline != null)
+        {
+            _VolverOnline.clicked += () => 
+            {
+                _audioSource.PlayOneShot(_clip);
+                if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.None;
+            };
+        }
+
+        if (_CrearSalaOnline != null)
+        {
+            _CrearSalaOnline.clicked += async () => 
             {
                 _audioSource.PlayOneShot(_clip);
                 if (RelayManager.Instance != null)
                 {
-                    // Desactivar botón para evitar doble clic
-                    _JugarOnline.SetEnabled(false);
+                    _CrearSalaOnline.SetEnabled(false);
+                    
+                    // Guardar el nombre del jugador
+                    if (_NombreJugador != null)
+                    {
+                        PlayerPrefs.SetString("PlayerName", _NombreJugador.value);
+                        PlayerPrefs.Save();
+                    }
+
                     string joinCode = await RelayManager.Instance.CrearSalaRelay();
                     
                     if (!string.IsNullOrEmpty(joinCode))
@@ -78,7 +114,7 @@ public class Menu : MonoBehaviour
                     }
                     else
                     {
-                        _JugarOnline.SetEnabled(true);
+                        _CrearSalaOnline.SetEnabled(true);
                     }
                 }
             };
@@ -93,12 +129,19 @@ public class Menu : MonoBehaviour
                 if (!string.IsNullOrEmpty(codigo) && RelayManager.Instance != null)
                 {
                     _UnirseOnline.SetEnabled(false);
+                    
+                    // Guardar el nombre del jugador
+                    if (_NombreJugador != null)
+                    {
+                        PlayerPrefs.SetString("PlayerName", _NombreJugador.value);
+                        PlayerPrefs.Save();
+                    }
+
                     bool exito = await RelayManager.Instance.UnirseSalaRelay(codigo);
                     if (!exito)
                     {
                         _UnirseOnline.SetEnabled(true);
                     }
-                    // Si tiene éxito, el NetworkManager se encarga de sincronizar la escena automáticamente
                 }
             };
         }
@@ -108,12 +151,14 @@ public class Menu : MonoBehaviour
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.None;
             _AjustesSonido.style.display = DisplayStyle.None;
+            if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.None;
         };
         _Ajustes.clicked += () => 
         {
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.None;
             _AjustesSonido.style.display = DisplayStyle.Flex;
+            if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.None;
         };
         _Creditos.clicked += () => 
         {
@@ -121,14 +166,14 @@ public class Menu : MonoBehaviour
             _CreditosImg.style.display = DisplayStyle.Flex;
             _ConfiguracionPartida.style.display = DisplayStyle.None;
             _AjustesSonido.style.display = DisplayStyle.None;
-
+            if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.None;
         };
         _Salir.clicked += () => 
         {
-            
             _audioSource.PlayOneShot(_clip);
             _ConfiguracionPartida.style.display = DisplayStyle.None;
             _AjustesSonido.style.display = DisplayStyle.None;
+            if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.None;
         };
 
         _Salida.clicked += () =>
@@ -137,6 +182,7 @@ public class Menu : MonoBehaviour
             _CreditosImg.style.display = DisplayStyle.None;
             _ConfiguracionPartida.style.display = DisplayStyle.None;
             _AjustesSonido.style.display = DisplayStyle.None;
+            if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.None;
         };
         _Listo.clicked += () => 
         {

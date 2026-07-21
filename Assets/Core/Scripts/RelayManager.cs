@@ -24,17 +24,28 @@ public class RelayManager : MonoBehaviour
 
     private async void Start()
     {
-        // Inicializar los servicios de Unity
-        await UnityServices.InitializeAsync();
-
-        // Iniciar sesión de forma anónima (necesario para usar Relay)
-        if (!AuthenticationService.Instance.IsSignedIn)
+        try
         {
-            AuthenticationService.Instance.SignedIn += () =>
+            // Crear un perfil único para evitar conflictos entre la Ventana 1 y la Ventana 2
+            InitializationOptions options = new InitializationOptions();
+            options.SetProfile("Player_" + Random.Range(1000, 9999));
+
+            // Inicializar los servicios de Unity con el perfil único
+            await UnityServices.InitializeAsync(options);
+
+            // Iniciar sesión de forma anónima (necesario para usar Relay)
+            if (!AuthenticationService.Instance.IsSignedIn)
             {
-                Debug.Log("Sesión iniciada anónimamente en Unity Services. Player ID: " + AuthenticationService.Instance.PlayerId);
-            };
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                AuthenticationService.Instance.SignedIn += () =>
+                {
+                    Debug.Log("Sesión iniciada anónimamente. Player ID: " + AuthenticationService.Instance.PlayerId);
+                };
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Error al inicializar Unity Services: " + e.Message);
         }
     }
 
