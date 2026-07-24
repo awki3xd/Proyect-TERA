@@ -10,6 +10,7 @@ using UnityEngine;
 public class RelayManager : MonoBehaviour
 {
     public static RelayManager Instance { get; private set; }
+    public string JoinCode { get; private set; }
 
     private void Awake()
     {
@@ -61,6 +62,7 @@ public class RelayManager : MonoBehaviour
 
             // Obtener el código de la sala
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            JoinCode = joinCode;
             Debug.Log("Sala creada con éxito. Código: " + joinCode);
 
             // Configurar el NetworkManager para usar este Relay
@@ -74,6 +76,12 @@ public class RelayManager : MonoBehaviour
 
             // Iniciar el Host
             NetworkManager.Singleton.StartHost();
+
+            // Suscribirse a eventos de escena para depuración
+            if (NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
+            }
 
             return joinCode;
         }
@@ -92,6 +100,7 @@ public class RelayManager : MonoBehaviour
         try
         {
             Debug.Log("Intentando unirse a la sala con código: " + joinCode);
+            JoinCode = joinCode;
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
             // Configurar el NetworkManager para usar este Relay
@@ -106,6 +115,13 @@ public class RelayManager : MonoBehaviour
 
             // Iniciar el Cliente
             NetworkManager.Singleton.StartClient();
+
+            // Suscribirse a eventos de escena para depuración
+            if (NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
+            }
+
             return true;
         }
         catch (RelayServiceException e)
@@ -113,5 +129,10 @@ public class RelayManager : MonoBehaviour
             Debug.LogError("Error al unirse a la sala de Relay: " + e.Message);
             return false;
         }
+    }
+
+    private void OnSceneEvent(SceneEvent sceneEvent)
+    {
+        Debug.Log($"[Netcode SceneEvent] Tipo: {sceneEvent.SceneEventType}, Escena: {sceneEvent.SceneName}, Cliente: {sceneEvent.ClientId}");
     }
 }

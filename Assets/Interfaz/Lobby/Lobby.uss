@@ -1,0 +1,213 @@
+/* Estructura Base y Centrado */
+.pantalla-completa {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background-size: 100% 100%;
+}
+
+.lobby-box {
+    width: 1150px;
+    height: 700px;
+    background-color: rgba(43, 43, 43, 0); /* Transparente para que se vea el HUD del usuario */
+    padding: 20px;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+/* Cabecera */
+.cabecera {
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.titulo-lobby {
+    font-size: 36px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+/* Cuerpo (Dos Columnas) */
+.cuerpo {
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+/* Columna Izquierda (Lista de Jugadores) */
+.columna-izq {
+    width: 650px;
+    height: 580px;
+    background-size: 100% 100%;
+    border-radius: 8px;
+    padding: 30px 40px 30px 40px; /* Margen interno para que encaje con el HUD */
+    flex-shrink: 0;
+}
+
+.tabla-cabecera {
+    flex-direction: row;
+    border-bottom-width: 1px;
+    border-color: rgb(68, 68, 68);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.cabecera-texto {
+    font-size: 16px;
+    color: rgb(170, 170, 170);
+    -unity-font-style: bold;
+}
+
+.col-nombre {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.col-estado {
+    width: 120px;
+    -unity-text-align: middle-center;
+}
+
+.lista-jugadores {
+    flex-grow: 1;
+}
+
+.pie-tabla {
+    flex-direction: row;
+    justify-content: space-between;
+    border-top-width: 1px;
+    border-color: rgb(68, 68, 68);
+    padding-top: 15px;
+    margin-top: 10px;
+}
+
+.texto-codigo {
+    font-size: 20px;
+    color: rgb(255, 153, 0);
+    -unity-font-style: bold;
+}
+
+.texto-cant-jugadores {
+    font-size: 18px;
+    color: rgb(200, 200, 200);
+}
+
+/* Columna Derecha (Botones) */
+.columna-der {
+    width: 420px;
+    height: 580px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.boton-lobby {
+    width: 380px;
+    height: 85px;
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border-width: 0px; /* Quitamos bordes por defecto ya que usa imagen de fondo */
+    background-size: 100% 100%;
+    background-color: rgba(0, 0, 0, 0);
+    transition-property: scale;
+    transition-duration: 0.1s;
+}
+
+.boton-lobby:hover {
+    scale: 1.05;
+}
+
+/* Slots de Jugadores Generados Dinámicamente */
+.jugador-slot {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: rgba(45, 45, 45, 0.7);
+    border-width: 1px;
+    border-color: rgb(62, 62, 62);
+    border-radius: 6px;
+}
+
+.jugador-avatar {
+    width: 44px;
+    height: 44px;
+    background-color: rgb(26, 26, 26);
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.jugador-info {
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.jugador-nombre-contenedor {
+    flex-direction: row;
+    align-items: center;
+}
+
+.jugador-nombre {
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}
+
+.jugador-rol {
+    font-size: 11px;
+    color: rgb(241, 196, 15);
+    -unity-font-style: bold;
+    margin-left: 10px;
+    background-color: rgba(241, 196, 15, 0.15);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.jugador-estado-contenedor {
+    width: 120px;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-estado {
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    min-width: 100px;
+}
+
+.estado-listo {
+    background-color: rgba(46, 204, 113, 0.2);
+    border-width: 1px;
+    border-color: rgb(46, 204, 113);
+    color: rgb(46, 204, 113);
+}
+
+.estado-esperando {
+    background-color: rgba(230, 126, 34, 0.2);
+    border-width: 1px;
+    border-color: rgb(230, 126, 34);
+    color: rgb(230, 126, 34);
+}
+
+.slot-vacio {
+    border-style: dashed;
+    border-color: rgb(68, 68, 68);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.slot-vacio-texto {
+    font-size: 18px;
+    color: rgb(100, 100, 100);
+    -unity-font-style: italic;
+    margin-left: 15px;
+}

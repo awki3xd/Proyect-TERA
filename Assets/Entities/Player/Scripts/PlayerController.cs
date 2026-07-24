@@ -11,6 +11,7 @@ public class PlayerController : NetworkBehaviour
 {
     [Header("Multijugador")]
     public NetworkVariable<FixedString32Bytes> playerName = new NetworkVariable<FixedString32Bytes>("Jugador", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<bool> isReady = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private TextMeshPro textoNombre;
 
     [Header("Referencias a Slots de Armas")]
@@ -98,11 +99,69 @@ public class PlayerController : NetworkBehaviour
         playerName.Value = newName;
     }
 
+    [ServerRpc]
+    public void SetReadyStatusServerRpc(bool ready)
+    {
+        isReady.Value = ready;
+    }
+
     private void ActualizarTextoNombre(string nombre)
     {
         if (textoNombre != null)
         {
             textoNombre.text = nombre;
+        }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ActualizarVisibilidadSegunEscena();
+    }
+
+    private void ActualizarVisibilidadSegunEscena()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        bool esEscenaJuego = (sceneName != "Menu" && sceneName != "Lobby");
+
+        // Activar/desactivar renderers
+        if (spriteRenderer != null) spriteRenderer.enabled = esEscenaJuego;
+        
+        // Ocultar armas instanciadas
+        for (int i = 0; i < 4; i++)
+        {
+            if (armasInstanciadas[i] != null)
+            {
+                armasInstanciadas[i].SetActive(esEscenaJuego);
+            }
+        }
+
+        // Ocultar texto de nombre
+        if (textoNombre != null)
+        {
+            textoNombre.enabled = esEscenaJuego;
+        }
+
+        // Desactivar colisiones y físicas
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = esEscenaJuego;
+
+        if (rb != null)
+        {
+            rb.simulated = esEscenaJuego;
+            if (!esEscenaJuego)
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
         }
     }
 
@@ -114,6 +173,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         InstanciarArmasEquipadas();
+        ActualizarVisibilidadSegunEscena();
     }
 
     /// <summary>
@@ -228,6 +288,13 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == "Menu" || sceneName == "Lobby")
+        {
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         // 1. Capturar entradas de movimiento WASD o flechas
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputY = Input.GetAxisRaw("Vertical");
@@ -317,7 +384,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void NotificarMuerteServerRpc()
     {
         CargarDerrota();

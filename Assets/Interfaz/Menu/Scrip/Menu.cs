@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using UnityEngine.UIElements;
+using System.Collections;
 using System.Collections.Generic;
 public class Menu : MonoBehaviour
 {
@@ -108,9 +109,8 @@ public class Menu : MonoBehaviour
                     if (!string.IsNullOrEmpty(joinCode))
                     {
                         Debug.Log("¡Sala creada! Comparte este código con tu amigo: " + joinCode);
-                        // Idealmente aquí mostraríamos el código en la pantalla antes de cambiar de escena,
-                        // pero por ahora lo imprimimos en consola y cargamos el nivel.
-                        NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
+                        // Cargar la escena de la sala de espera (Lobby) usando una corrutina para dar tiempo a Netcode a inicializarse
+                        StartCoroutine(CargarLobbyCo());
                     }
                     else
                     {
@@ -200,6 +200,22 @@ public class Menu : MonoBehaviour
         };
 
 
+    }
+
+    private IEnumerator CargarLobbyCo()
+    {
+        // Esperar un momento para asegurar que el servidor esté completamente iniciado y listo
+        yield return new WaitForSeconds(0.2f);
+        
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+        {
+            var status = NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            Debug.Log($"[Lobby] Intentando cargar escena Lobby. Estado: {status}");
+        }
+        else
+        {
+            Debug.LogError("[Lobby] No se pudo cargar la escena porque NetworkManager o SceneManager es nulo.");
+        }
     }
 
     // Update is called once per frame
