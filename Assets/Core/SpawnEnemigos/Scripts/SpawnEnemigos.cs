@@ -65,7 +65,6 @@ public class SpawnEnemigos : MonoBehaviour
         datosGlobalesEnemigos.velocidadMovimiento *= factorEscala;
         datosGlobalesEnemigos.daño *= factorEscala;
         datosGlobalesEnemigos.velocidadAtaque *= factorEscala;
-        datosGlobalesEnemigos.rangoAtaque *= factorEscala;
 
         // 3. Clonar el ScriptableObject global ya modificado en memoria para el spawner local
         // Las modificaciones aleatorias temporales se aplicarán sobre este clon y no alterarán el asset.
@@ -75,7 +74,7 @@ public class SpawnEnemigos : MonoBehaviour
         float probabilidadBoost = Random.Range(0f, 1f);
         if (probabilidadBoost <= 0.60f)
         {
-            int indiceStat = Random.Range(1, 6); // 1: Vida, 2: VelocidadMov, 3: Daño, 4: VelAtaque, 5: Rango
+            int indiceStat = Random.Range(1, 5); // 1: Vida, 2: VelocidadMov, 3: Daño, 4: VelAtaque
             float porcentajeBoost = Random.Range(1.20f, 1.30f); // 20% a 30% de incremento
 
             /*switch (indiceStat)
@@ -95,8 +94,6 @@ public class SpawnEnemigos : MonoBehaviour
                 case 4:
                     datosEnemigosLocales.velocidadAtaque *= porcentajeBoost;
                     Debug.Log($"[Spawner] ¡Estadística potenciada en esta partida!: VELOCIDAD DE ATAQUE (+{Mathf.Round((porcentajeBoost - 1f) * 100f)}%)");
-                    break;
-                case 5:
                     break;
             }*/
         }

@@ -19,6 +19,8 @@ public class NodoEstandar : MonoBehaviour
     public bool estaRoto = false;
 
     public Animator animación;
+    [Tooltip("Referencia a la barra de vida de la antena/nodo (asignada en inspector).")]
+    public BarraVida barraVida;
 
     private Coroutine corrutinaReactivacion;
     private float tiempoUltimoSonidoCuracion = 0f;
@@ -26,6 +28,12 @@ public class NodoEstandar : MonoBehaviour
     private void Start()
     {
         vidaActual = vidaMaxima;
+
+        // Inicializar la barra de vida del nodo si está asignada en el inspector
+        if (barraVida != null)
+        {
+            barraVida.Inicializar(() => vidaActual, () => vidaMaxima);
+        }
     }
 
     // Esta función es la que lee el gestor de terraformación

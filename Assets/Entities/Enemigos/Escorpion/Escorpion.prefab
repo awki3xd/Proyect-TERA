@@ -140,7 +140,7 @@ MonoBehaviour:
   "da\xF1o": 5
   velocidadMovimiento: 0.7
   velocidadAtaque: 0.5
-  rangoAtaque: 0.5
+  rangoAtaque: 1
   "prefabEntidadDa\xF1o": {fileID: 5259255012541155176, guid: 1a742c7a850882e4e81f4e3b5ff2625c, type: 3}
   prefabMaterial: {fileID: 6170809395044725060, guid: 10b8833a03cea08459238a1a544d51b3, type: 3}
   distanciaDeteccionNodo: 10

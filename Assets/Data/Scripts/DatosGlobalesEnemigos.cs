@@ -12,5 +12,4 @@ public class DatosGlobalesEnemigos : ScriptableObject
     [Header("Estadisticas de Combate")]
     public float daño = 100f;
     public float velocidadAtaque = 100f;
-    public float rangoAtaque = 100f;
 }

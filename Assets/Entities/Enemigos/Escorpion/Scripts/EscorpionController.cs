@@ -82,14 +82,12 @@ public class EscorpionController : MonoBehaviour
         float multDaño = datosGlobales != null ? datosGlobales.daño / 100f : 1f;
         float multVelocidad = datosGlobales != null ? datosGlobales.velocidadMovimiento / 100f : 1f;
         float multVelocidadAtaque = datosGlobales != null ? datosGlobales.velocidadAtaque / 100f : 1f;
-        float multRango = datosGlobales != null ? datosGlobales.rangoAtaque / 100f : 1f;
 
         // Sobrescribir las variables aplicando los multiplicadores directamente
         vida = vida * multVida;
         daño = daño * multDaño;
         velocidadMovimiento = velocidadMovimiento * multVelocidad;
         velocidadAtaque = velocidadAtaque * multVelocidadAtaque;
-        rangoAtaque = rangoAtaque * multRango;
 
         estadoActual = EstadoEscorpion.PatrullandoCentro;
         nodoObjetivo = null;

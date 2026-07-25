@@ -92,15 +92,12 @@ public class MoscaController : MonoBehaviour
         float multDaño = datosGlobales != null ? datosGlobales.daño / 100f : 1f;
         float multVelocidad = datosGlobales != null ? datosGlobales.velocidadMovimiento / 100f : 1f;
         float multVelocidadAtaque = datosGlobales != null ? datosGlobales.velocidadAtaque / 100f : 1f;
-        float multRango = datosGlobales != null ? datosGlobales.rangoAtaque / 100f : 1f;
 
         // Sobrescribir variables de balance aplicando los modificadores
         vida = vida * multVida;
         daño = daño * multDaño;
         velocidadMovimiento = velocidadMovimiento * multVelocidad;
         velocidadAtaque = velocidadAtaque * multVelocidadAtaque;
-        distanciaDeteccion = distanciaDeteccion * multRango;
-        rangoDisparo = rangoDisparo * multRango;
 
         cooldownDisparo = 0f;
         estadoActual = EstadoMosca.PatrullandoCentro;
@@ -217,8 +214,12 @@ public class MoscaController : MonoBehaviour
     {
         if (prefabProyectil == null) return;
 
-        Vector2 posDisparo = (Vector2)transform.position + direccion * offsetDistanciaDisparo;
-        float angulo = Mathf.Atan2(direccion.y, direccion.x) * Mathf.Rad2Deg;
+        // Calcular desviación aleatoria entre -20 y +20 grados
+        float desviacion = Random.Range(-20f, 20f);
+        Vector2 direccionDesviada = Quaternion.Euler(0f, 0f, desviacion) * direccion;
+
+        Vector2 posDisparo = (Vector2)transform.position + direccionDesviada * offsetDistanciaDisparo;
+        float angulo = Mathf.Atan2(direccionDesviada.y, direccionDesviada.x) * Mathf.Rad2Deg;
         Quaternion rot = Quaternion.Euler(0f, 0f, angulo);
 
         GameObject proyectil = Instantiate(prefabProyectil, posDisparo, rot);
@@ -229,26 +230,19 @@ public class MoscaController : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundID.DisparoEnemigo);
         }
 
-        // Intentar inicializar el daño si el proyectil usa EntidadDaño directamente
-        EntidadDaño dañoScript = proyectil.GetComponent<EntidadDaño>();
-        if (dañoScript != null)
+        // Inicializar la bala de la mosca usando su controlador independiente
+        ValaMoscaController valaScript = proyectil.GetComponent<ValaMoscaController>();
+        if (valaScript != null)
         {
-            dañoScript.Inicializar(daño, EntidadDaño.OrigenDaño.Enemigo, true);
+            valaScript.Inicializar(daño, rangoDisparo);
         }
         else
         {
-            // O inicializar si es compatible con la interfaz IProyectil (como las balas de las armas)
-            IProyectil proyectilScript = proyectil.GetComponent<IProyectil>();
-            if (proyectilScript != null)
+            // Fallback por compatibilidad
+            EntidadDaño dañoScript = proyectil.GetComponent<EntidadDaño>();
+            if (dañoScript != null)
             {
-                DatosProyectil datos = new DatosProyectil
-                {
-                    daño = daño,
-                    rango = rangoDisparo,
-                    origen = EntidadDaño.OrigenDaño.Enemigo,
-                    arma = "enemigo"
-                };
-                proyectilScript.Inicializar(datos);
+                dañoScript.Inicializar(daño, EntidadDaño.OrigenDaño.Enemigo, true);
             }
         }
     }

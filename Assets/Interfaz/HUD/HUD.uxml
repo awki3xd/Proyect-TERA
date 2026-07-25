@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Interfaz/HUD/HUD.uss?fileID=7433441132597879392&amp;guid=ce43450eb7b0b3c428d3e88b11bb15cf&amp;type=3#HUD" />
+    <ui:VisualElement name="hud-root" class="hud-root" style="top: 0; left: 4px;">
+        <ui:VisualElement name="left-container" class="left-container" style="align-items: auto; justify-content: flex-start; align-self: stretch; flex-direction: column; width: 235px; height: 370px;">
+            <ui:VisualElement name="VisualElement" class="hud-bar-container">
+                <ui:VisualElement name="terra-fondo" class="hud-bar-fondo" style="top: 9px; bottom: -10px; right: 16px; left: 14px;" />
+                <ui:VisualElement name="terra-relleno" class="hud-bar-relleno-terra" style="width: 1px; top: 10px; bottom: -9px; left: 25px;" />
+                <ui:VisualElement name="terra-marco" class="hud-bar-marco" style="bottom: -19px; left: 1px; width: 249px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="right-container" class="right-container" style="align-self: stretch; justify-content: space-between;">
+            <ui:VisualElement name="local-player-card" class="player-bar-card">
+                <ui:Label name="local-player-name" text="Génesis" class="player-name-label" />
+                <ui:VisualElement class="hud-bar-container">
+                    <ui:VisualElement name="local-health-fondo" class="hud-bar-fondo" style="top: 3px; bottom: -1px; right: 11px; left: 14px;" />
+                    <ui:VisualElement name="local-health-relleno" class="hud-bar-relleno-health" style="top: 2px; bottom: 2px; left: 23px; width: 208px;" />
+                    <ui:VisualElement name="local-health-marco" class="hud-bar-marco" style="bottom: -9px; left: -2px; width: 256px; top: -9px; right: -3px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="extra-players-container" style="flex-direction: column;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

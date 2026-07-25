@@ -23,6 +23,8 @@ public class PlayerController : NetworkBehaviour
     public DatosPersonaje datosPersonaje;
     [Tooltip("Inventario de armas y habilidades de Génesis.")]
     public DatosInventario datosInventario;
+    [Tooltip("Referencia a la barra de vida del jugador (asignada en inspector).")]
+    public BarraVida barraVida;
 
     [Header("Configuración de Capas Visuales de Armas")]
     [Tooltip("Sorting Order para las armas situadas al frente (capa visible).")]
@@ -34,7 +36,7 @@ public class PlayerController : NetworkBehaviour
     public float vidaMaxima = 100f;
     public float vida;
     [Tooltip("Porcentaje de vida máxima regenerada por segundo.")]
-    public float tasaRegeneracionBase = 2f;
+    public float tasaRegeneracionBase = 5f;
     [Tooltip("Cantidad de vida que repara a los nodos por segundo.")]
     public float tasaReparacionBase = 10f;
 
@@ -174,6 +176,12 @@ public class PlayerController : NetworkBehaviour
 
         InstanciarArmasEquipadas();
         ActualizarVisibilidadSegunEscena();
+
+        // Inicializar la barra de vida del jugador si está asignada en el inspector
+        if (barraVida != null)
+        {
+            barraVida.Inicializar(() => vida, () => vidaMaxima);
+        }
     }
 
     /// <summary>

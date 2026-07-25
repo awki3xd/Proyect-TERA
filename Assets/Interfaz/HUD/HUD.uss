@@ -1,0 +1,73 @@
+.hud-root {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.left-container {
+    align-self: flex-start;
+}
+
+.right-container {
+    align-self: flex-start;
+    flex-direction: column;
+}
+
+.hud-bar-container {
+    width: 250px;
+    height: 30px;
+    position: relative;
+}
+
+.hud-bar-fondo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=5013247292153317939&guid=1698d93e1fc540c43bb03029e62585d5&type=3#vida-terra HUD_1");
+}
+
+.hud-bar-relleno-terra {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%;
+    background-image: url("project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=-3143055521200603430&guid=1698d93e1fc540c43bb03029e62585d5&type=3#vida-terra HUD_2");
+}
+
+.hud-bar-relleno-health {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background-image: url("project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=8592394909808685837&guid=1698d93e1fc540c43bb03029e62585d5&type=3#vida-terra HUD_3");
+}
+
+.hud-bar-marco {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=4459677210193543077&guid=1698d93e1fc540c43bb03029e62585d5&type=3#vida-terra HUD_0");
+    background-repeat: no-repeat no-repeat;
+    -unity-slice-type: sliced;
+}
+
+.player-bar-card {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.player-name-label {
+    margin-right: 12px;
+    color: white;
+    -unity-font-style: bold;
+}
