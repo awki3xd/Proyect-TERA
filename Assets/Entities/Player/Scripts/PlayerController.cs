@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Unity.Collections;
 using TMPro;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
@@ -63,6 +64,8 @@ public class PlayerController : NetworkBehaviour
     private float tasaReparacionReal;
     private float dañoReal;
     private float rangoAtaqueReal;
+
+  
 
     private void Awake()
     {
@@ -181,6 +184,7 @@ public class PlayerController : NetworkBehaviour
         if (barraVida != null)
         {
             barraVida.Inicializar(() => vida, () => vidaMaxima);
+        
         }
     }
 
@@ -192,6 +196,7 @@ public class PlayerController : NetworkBehaviour
     {
         inicializado = true;
         vida = vidaMaxima;
+       
 
         // Resetear el estado de reparación en el inventario
         if (datosInventario != null)
@@ -327,6 +332,8 @@ public class PlayerController : NetworkBehaviour
             if (spriteRenderer != null) spriteRenderer.flipX = true;
             ActualizarOrdenCapas(false);
         }
+
+        
     }
 
     private void FixedUpdate()
@@ -503,4 +510,5 @@ public class PlayerController : NetworkBehaviour
             }
         }
     }
+   
 }
