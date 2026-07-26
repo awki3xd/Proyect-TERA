@@ -1110,6 +1110,67 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!1001 &1224477612
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3775789935348600613, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6535400890216927562, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_Name
+      value: MenuPausa
+      objectReference: {fileID: 0}
+    - target: {fileID: 6535400890216927562, guid: 56ef9ce026b368445925857caea54488, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 56ef9ce026b368445925857caea54488, type: 3}
 --- !u!1 &1285804795
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,6 +1248,10 @@ PrefabInstance:
       value: 1471052407
       objectReference: {fileID: 0}
     - target: {fileID: 1876931610729183993, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
+      propertyPath: _ImgVida
+      value: 
+      objectReference: {fileID: 1333524096}
+    - target: {fileID: 1876931610729183993, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
       propertyPath: tasaRegeneracionBase
       value: 5
       objectReference: {fileID: 0}
@@ -1263,6 +1328,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
+--- !u!114 &1333524096 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 36438564885612445, guid: b226b338f2d6af54eafa401e01e39231, type: 3}
+  m_PrefabInstance: {fileID: 1333524095}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1448023127
 GameObject:
   m_ObjectHideFlags: 0
@@ -2077,4 +2153,6 @@ SceneRoots:
   - {fileID: 110429902}
   - {fileID: 612449747}
   - {fileID: 2104181548}
-  - {fileID: 575545851}
+
+  - {fileID: 1460494220}
+  - {fileID: 1224477612}
