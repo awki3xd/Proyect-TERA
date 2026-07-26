@@ -17,7 +17,7 @@
                 <ui:Label name="local-player-name" text="Player" class="player-name-label" />
                 <ui:VisualElement class="hud-bar-container">
                     <ui:VisualElement name="local-health-fondo" class="hud-bar-fondo" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=5013247292153317939&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_1&quot;); top: -2px; bottom: 3px; right: 15px; left: 25px;" />
-                    <ui:VisualElement name="local-health-relleno" class="hud-bar-relleno-health" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=8592394909808685837&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_3&quot;); top: 2px; bottom: 4px; left: 27px; width: 203px;" />
+                    <ui:VisualElement name="local-health-relleno" class="hud-bar-relleno-health" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=8592394909808685837&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_3&quot;); top: 0; bottom: 4px; left: 25px; width: 206px;" />
                     <ui:VisualElement name="local-health-marco" class="hud-bar-marco" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=4459677210193543077&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_0&quot;); bottom: -6px; top: -11px; right: -4px; left: 5px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
