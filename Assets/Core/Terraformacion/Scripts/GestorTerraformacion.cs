@@ -224,42 +224,22 @@ public class GestorTerraformacion : NetworkBehaviour
                 if (porcentajeActual.Value >= 1f)
                 {
                     porcentajeActual.Value = 1f;
-
-                    // 1. Mostrar anuncio de victoria en la UI de todos los jugadores
-                    if (HudController.Instance != null)
+                    if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
                     {
-                        int nivelActual = datosNivel != null ? datosNivel.numeroNivel : 1;
-                        HudController.Instance.MostrarVictoria(nivelActual);
-                    }
-
-                    // 2. Detener el spawneo de enemigos
-                    SpawnEnemigos spawner = FindAnyObjectByType<SpawnEnemigos>();
-                    if (spawner != null)
-                    {
-                        spawner.enabled = false;
-                    }
-
-                    // 3. Esperar 3.5 segundos en celebración de victoria
-                    yield return new WaitForSeconds(3.5f);
-
-                    // 4. Incrementar el nivel en el ScriptableObject para escalar la dificultad del siguiente mapa
-                    if (datosNivel != null)
-                    {
-                        datosNivel.numeroNivel += 1;
-                    }
-
-                    // 5. Recargar la escena de juego para jugar la siguiente ronda
-                    string escenaActual = SceneManager.GetActiveScene().name;
-                    if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null && IsServer)
-                    {
-                        NetworkManager.Singleton.SceneManager.LoadScene(escenaActual, LoadSceneMode.Single);
+                        // Despawnear a los jugadores para que no aparezcan en la pantalla de Derrota
+                        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+                        {
+                            if (client.PlayerObject != null)
+                            {
+                                client.PlayerObject.Despawn();
+                            }
+                        }
+                        NetworkManager.Singleton.SceneManager.LoadScene("Derrota", LoadSceneMode.Single);
                     }
                     else
                     {
-                        SceneManager.LoadScene(escenaActual);
+                        SceneManager.LoadScene(2); // Fallback por si acaso
                     }
-
-                    yield break;
                 }
             }
             else
