@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnEnemigos : MonoBehaviour
@@ -17,10 +16,6 @@ public class SpawnEnemigos : MonoBehaviour
     public GameObject prefabEscorpion;
     [Tooltip("Prefab del enemigo Mosca (a distancia).")]
     public GameObject prefabMosca;
-    [Tooltip("Prefab del enemigo Avispa (francotirador).")]
-    public GameObject prefabAvispa;
-    [Tooltip("Prefab del enemigo Escarabajo (escudo).")]
-    public GameObject prefabEscarabajo;
 
     [Header("Configuración de Spawneo")]
     [Tooltip("Radio de la circunferencia alrededor del centro (0,0) desde la cual nacerán los enemigos fuera de pantalla.")]
@@ -30,21 +25,19 @@ public class SpawnEnemigos : MonoBehaviour
     [Tooltip("Instancia local en memoria de los datos de enemigos. Las modificaciones hechas aquí no afectarán al archivo en disco y desaparecerán al terminar la partida.")]
     public DatosGlobalesEnemigos datosEnemigosLocales;
 
-    private bool alternarGrupo = false;
-
     private void Start()
     {
         // 1. Inicializar y aplicar modificadores de estadísticas globales
         CalcularEstadisticasEnemigosPartida();
 
-        // 2. Iniciar rutinas procedurales de oleadas
+        // 2. Iniciar rutinas procedurales e infinitas de oleadas
         StartCoroutine(SpawneoIndividualCo());
         StartCoroutine(SpawneoGrupalCo());
     }
 
     /// <summary>
     /// Calcula las estadísticas de los enemigos para la partida actual en base al nivel de poder del jugador,
-    /// clona los datos para que sean temporales.
+    /// clona los datos para que sean temporales, y aplica la probabilidad de potenciar una estadística aleatoria.
     /// </summary>
     private void CalcularEstadisticasEnemigosPartida()
     {
@@ -74,12 +67,45 @@ public class SpawnEnemigos : MonoBehaviour
         datosGlobalesEnemigos.velocidadAtaque *= factorEscala;
 
         // 3. Clonar el ScriptableObject global ya modificado en memoria para el spawner local
+        // Las modificaciones aleatorias temporales se aplicarán sobre este clon y no alterarán el asset.
         datosEnemigosLocales = Instantiate(datosGlobalesEnemigos);
+
+        // 4. Aplicar un 60% de probabilidad de potenciar una estadística de forma aleatoria (entre 20% y 30%)
+        float probabilidadBoost = Random.Range(0f, 1f);
+        if (probabilidadBoost <= 0.60f)
+        {
+            int indiceStat = Random.Range(1, 5); // 1: Vida, 2: VelocidadMov, 3: Daño, 4: VelAtaque
+            float porcentajeBoost = Random.Range(1.20f, 1.30f); // 20% a 30% de incremento
+
+            /*switch (indiceStat)
+            {
+                case 1:
+                    datosEnemigosLocales.vida *= porcentajeBoost;
+                    Debug.Log($"[Spawner] ¡Estadística potenciada en esta partida!: VIDA (+{Mathf.Round((porcentajeBoost - 1f) * 100f)}%)");
+                    break;
+                case 2:
+                    datosEnemigosLocales.velocidadMovimiento *= porcentajeBoost;
+                    Debug.Log($"[Spawner] ¡Estadística potenciada en esta partida!: VELOCIDAD DE MOVIMIENTO (+{Mathf.Round((porcentajeBoost - 1f) * 100f)}%)");
+                    break;
+                case 3:
+                    datosEnemigosLocales.daño *= porcentajeBoost;
+                    Debug.Log($"[Spawner] ¡Estadística potenciada en esta partida!: DAÑO (+{Mathf.Round((porcentajeBoost - 1f) * 100f)}%)");
+                    break;
+                case 4:
+                    datosEnemigosLocales.velocidadAtaque *= porcentajeBoost;
+                    Debug.Log($"[Spawner] ¡Estadística potenciada en esta partida!: VELOCIDAD DE ATAQUE (+{Mathf.Round((porcentajeBoost - 1f) * 100f)}%)");
+                    break;
+            }*/
+        }
+        else
+        {
+            Debug.Log("[Spawner] No se potenció ninguna estadística para los enemigos en esta partida.");
+        }
     }
 
     /// <summary>
-    /// Corrutina de spawneo individual secundario.
-    /// Spawnea únicamente unidades básicas (Escorpiones o Moscas) en baja cantidad.
+    /// Corrutina que spawnea de forma continua e individual enemigos a lo largo de la circunferencia exterior.
+    /// La cantidad de enemigos que nacen en cada intervalo se escala linealmente según el nivel actual de la partida.
     /// </summary>
     private IEnumerator SpawneoIndividualCo()
     {
@@ -88,36 +114,26 @@ public class SpawnEnemigos : MonoBehaviour
             int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
             float factorNivel = Mathf.InverseLerp(1f, 20f, nivel); // 0 en nivel 1, 1 en nivel 20
 
-            // Escalar intervalo de tiempo secundario
-            float minIntervalo = Mathf.Lerp(8.0f, 3.0f, factorNivel);
-            float maxIntervalo = Mathf.Lerp(12.0f, 6.0f, factorNivel);
+            // Escalar intervalo de tiempo según nivel (Dificultad Baja)
+            float minIntervalo = Mathf.Lerp(5.0f, 1.5f, factorNivel);
+            float maxIntervalo = Mathf.Lerp(10.0f, 4.0f, factorNivel);
             float intervalo = Random.Range(minIntervalo, maxIntervalo);
             yield return new WaitForSeconds(intervalo);
 
-            // Cantidad baja (1 a 4 enemigos sueltos por intervalo)
-            int cantidad = Mathf.Clamp(Mathf.CeilToInt(nivel * 0.25f), 1, 4);
+            // Cantidad baja (50% del nivel, capado a 8)
+            int cantidad = Mathf.Clamp(Mathf.CeilToInt(nivel * 0.5f), 1, 8);
 
             for (int i = 0; i < cantidad; i++)
             {
                 Vector2 puntoSpawneo = ObtenerPuntoSpawneoAleatorio();
-                // Seleccionar solo entre Escorpión o Mosca
-                GameObject prefabBasico = (Random.value < 0.5f && prefabEscorpion != null) ? prefabEscorpion : prefabMosca;
-                if (prefabBasico == null) prefabBasico = prefabEscorpion ?? prefabMosca;
-
-                if (prefabBasico != null)
-                {
-                    InstanciarPrefabEspecifico(prefabBasico, puntoSpawneo);
-                }
+                InstanciarYInicializarEnemigo(puntoSpawneo);
             }
         }
     }
 
     /// <summary>
-    /// Corrutina principal de spawneo en oleadas grupales.
-    /// Spawnea grupos especializados de Escorpiones (Melee) o Moscas (Rango).
-    /// El tiempo entre hordas escala según el nivel (10s en Nivel 1 -> 3s en Nivel 20).
-    /// La probabilidad de incluir una unidad especial (Escarabajo en cuerpo a cuerpo / Avispa en rango)
-    /// escala de 5% (Nivel 1) a 100% (Nivel 20).
+    /// Corrutina que spawnea oleadas grupales (un grupo de enemigos concentrados en un mismo punto de la circunferencia).
+    /// El tamaño del grupo escala dinámicamente según el nivel. Ocurre en intervalos largos de tiempo.
     /// </summary>
     private IEnumerator SpawneoGrupalCo()
     {
@@ -126,62 +142,26 @@ public class SpawnEnemigos : MonoBehaviour
             int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
             float factorNivel = Mathf.InverseLerp(1f, 20f, nivel);
 
-            // Tiempo entre grupos: 10s en Nivel 1 -> 3s en Nivel 20
-            float intervalo = Mathf.Lerp(10.0f, 3.0f, factorNivel);
+            // Escalar intervalo de grupo según nivel (Dificultad Baja)
+            float minGrupoIntervalo = Mathf.Lerp(30f, 15f, factorNivel);
+            float maxGrupoIntervalo = Mathf.Lerp(50f, 25f, factorNivel);
+            float intervalo = Random.Range(minGrupoIntervalo, maxGrupoIntervalo);
             yield return new WaitForSeconds(intervalo);
 
-            // Tamaño del grupo escala dinámicamente según nivel
-            int minGrupo = Mathf.Clamp(2 + Mathf.FloorToInt((nivel - 1) * 0.3f), 2, 6);
-            int maxGrupo = Mathf.Clamp(4 + Mathf.FloorToInt((nivel - 1) * 0.5f), 4, 12);
+            // Escalar tamaño de grupos dinámicamente (Dificultad Baja):
+            int minGrupo = Mathf.Clamp(1 + Mathf.FloorToInt((nivel - 1) * 0.25f), 1, 5);
+            int maxGrupo = Mathf.Clamp(3 + Mathf.FloorToInt((nivel - 1) * 0.5f), 3, 10);
             int cantidadEnGrupo = Random.Range(minGrupo, maxGrupo + 1);
 
-            // Probabilidad de spawnear una unidad especial en el grupo (5% en Nivel 1 -> 100% en Nivel 20)
-            float probabilidadEspecial = Mathf.Lerp(0.05f, 1.0f, factorNivel);
-            bool incluirEspecial = Random.value <= probabilidadEspecial;
-
-            // Punto de origen de la horda en el perímetro
+            // Generar un único punto de spawneo para todo el grupo (ellos se esparcirán solos al apuntar)
             Vector2 puntoGrupo = ObtenerPuntoSpawneoAleatorio();
 
-            // Alternar o seleccionar tipo de grupo: Melee (Escorpiones) o Rango (Moscas)
-            alternarGrupo = !alternarGrupo;
-            bool esGrupoMelee = alternarGrupo;
-
-            if (esGrupoMelee)
+            for (int i = 0; i < cantidadEnGrupo; i++)
             {
-                // Horda Cuerpo a Cuerpo: Escorpiones + (Opcional 1 Escarabajo)
-                if (incluirEspecial && prefabEscarabajo != null)
-                {
-                    InstanciarPrefabEspecifico(prefabEscarabajo, puntoGrupo + Random.insideUnitCircle * 0.5f);
-                }
-
-                if (prefabEscorpion != null)
-                {
-                    for (int i = 0; i < cantidadEnGrupo; i++)
-                    {
-                        Vector2 offsetPos = puntoGrupo + Random.insideUnitCircle * 0.5f;
-                        InstanciarPrefabEspecifico(prefabEscorpion, offsetPos);
-                    }
-                }
-            }
-            else
-            {
-                // Horda a Distancia: Moscas + (Opcional 1 Avispa)
-                if (incluirEspecial && prefabAvispa != null)
-                {
-                    InstanciarPrefabEspecifico(prefabAvispa, puntoGrupo + Random.insideUnitCircle * 0.5f);
-                }
-
-                if (prefabMosca != null)
-                {
-                    for (int i = 0; i < cantidadEnGrupo; i++)
-                    {
-                        Vector2 offsetPos = puntoGrupo + Random.insideUnitCircle * 0.5f;
-                        InstanciarPrefabEspecifico(prefabMosca, offsetPos);
-                    }
-                }
+                InstanciarYInicializarEnemigo(puntoGrupo);
             }
 
-            Debug.Log($"[Spawner] Spawneada horda {(esGrupoMelee ? "Melee" : "Rango")} (Tamaño: {cantidadEnGrupo}, Especial: {incluirEspecial}) en Nivel {nivel}. Siguiente en {intervalo:F1}s");
+            Debug.Log($"[Spawner] Spawned group of size {cantidadEnGrupo} at {puntoGrupo} (Level {nivel})");
         }
     }
 
@@ -195,40 +175,42 @@ public class SpawnEnemigos : MonoBehaviour
     }
 
     /// <summary>
-    /// Instancia un prefab específico y llama a su método de inicialización correspondiente.
+    /// Instancia aleatoriamente un Escorpión o una Mosca y lo inicializa con las estadísticas locales correspondientes de la partida.
     /// </summary>
-    private void InstanciarPrefabEspecifico(GameObject prefab, Vector2 posicion)
+    private void InstanciarYInicializarEnemigo(Vector2 posicion)
     {
-        if (prefab == null) return;
+        GameObject prefabElegido = null;
 
-        GameObject objEnemigo = Instantiate(prefab, posicion, Quaternion.identity);
+        if (prefabEscorpion != null && prefabMosca != null)
+        {
+            prefabElegido = Random.value < 0.5f ? prefabEscorpion : prefabMosca;
+        }
+        else if (prefabEscorpion != null)
+        {
+            prefabElegido = prefabEscorpion;
+        }
+        else if (prefabMosca != null)
+        {
+            prefabElegido = prefabMosca;
+        }
 
+        if (prefabElegido == null) return;
+
+        GameObject objEnemigo = Instantiate(prefabElegido, posicion, Quaternion.identity);
+
+        // Inicializar componentes correspondientes del enemigo
         EscorpionController escorpion = objEnemigo.GetComponent<EscorpionController>();
         if (escorpion != null)
         {
             escorpion.Inicializar(datosEnemigosLocales, posicion);
-            return;
         }
-
-        MoscaController mosca = objEnemigo.GetComponent<MoscaController>();
-        if (mosca != null)
+        else
         {
-            mosca.Inicializar(datosEnemigosLocales, posicion);
-            return;
-        }
-
-        AvispaController avispa = objEnemigo.GetComponent<AvispaController>();
-        if (avispa != null)
-        {
-            avispa.Inicializar(datosEnemigosLocales, posicion);
-            return;
-        }
-
-        EscarabajoController escarabajo = objEnemigo.GetComponent<EscarabajoController>();
-        if (escarabajo != null)
-        {
-            escarabajo.Inicializar(datosEnemigosLocales, posicion);
-            return;
+            MoscaController mosca = objEnemigo.GetComponent<MoscaController>();
+            if (mosca != null)
+            {
+                mosca.Inicializar(datosEnemigosLocales, posicion);
+            }
         }
     }
 }

@@ -93,30 +93,6 @@ public class EntidadDaño : MonoBehaviour
                             Destroy(gameObject);
                         }
                     }
-                    else
-                    {
-                        AvispaController avispa = other.GetComponent<AvispaController>();
-                        if (avispa != null)
-                        {
-                            avispa.RecibirDaño(daño);
-                            if (destruirAlImpactar)
-                            {
-                                Destroy(gameObject);
-                            }
-                        }
-                        else
-                        {
-                            EscarabajoController escarabajo = other.GetComponent<EscarabajoController>();
-                            if (escarabajo != null)
-                            {
-                                escarabajo.RecibirDaño(daño);
-                                if (destruirAlImpactar)
-                                {
-                                    Destroy(gameObject);
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
