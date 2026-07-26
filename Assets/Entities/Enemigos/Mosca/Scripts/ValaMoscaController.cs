@@ -14,7 +14,7 @@ public class ValaMoscaController : MonoBehaviour
     /// Inicializa la bala de la mosca con el daño y el rango correspondientes.
     /// También inicializa el componente EntidadDaño para aplicar daño al jugador/nodos.
     /// </summary>
-    public void Inicializar(float daño, float rango, bool destruir = true)
+    public void Inicializar(float daño, float rango)
     {
         rangoMaximo = rango;
         posicionInicial = transform.position;
@@ -22,14 +22,9 @@ public class ValaMoscaController : MonoBehaviour
 
         // Configurar el daño y origen de colisión
         EntidadDaño dañoScript = GetComponent<EntidadDaño>();
-        if (dañoScript == null)
-        {
-            dañoScript = GetComponentInChildren<EntidadDaño>();
-        }
-
         if (dañoScript != null)
         {
-            dañoScript.Inicializar(daño, EntidadDaño.OrigenDaño.Enemigo, destruir);
+            dañoScript.Inicializar(daño, EntidadDaño.OrigenDaño.Enemigo, true);
         }
     }
 

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -6,15 +5,9 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(UIDocument))]
 public class HudController : MonoBehaviour
 {
-    public static HudController Instance { get; private set; }
-
     [Header("Plantillas UXML")]
     [Tooltip("La plantilla UXML del card de barra de vida de jugador (PlayerHealthBar.uxml).")]
     [SerializeField] private VisualTreeAsset playerBarTemplate;
-
-    [Header("Referencias de Datos")]
-    [Tooltip("Referencia a DatosNivel para conocer el nivel actual en partida.")]
-    [SerializeField] private DatosNivel datosNivel;
 
     private UIDocument uiDocument;
     private VisualElement root;
@@ -30,29 +23,11 @@ public class HudController : MonoBehaviour
     // Contenedor de jugadores extra
     private VisualElement extraPlayersContainer;
 
-    // Cartel Central de Nivel / Victoria
-    private VisualElement bannerContainer;
-    private Label bannerTitle;
-    private Label bannerSubtitle;
-    private Coroutine corrutinaBanner;
-
     // Instancia del gestor en escena
     private GestorTerraformacion gestorTerra;
 
     // Mapeo para controlar qué jugador tiene cuál tarjeta de vida instanciada en la UI
     private Dictionary<ulong, VisualElement> playerBars = new Dictionary<ulong, VisualElement>();
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void OnEnable()
     {
@@ -71,56 +46,18 @@ public class HudController : MonoBehaviour
 
         // Enlazar contenedor de jugadores extra (Derecha - Dinámico)
         extraPlayersContainer = root.Q<VisualElement>("extra-players-container");
-
-        // Enlazar Cartel Central
-        bannerContainer = root.Q<VisualElement>("banner-container");
-        bannerTitle = root.Q<Label>("banner-title");
-        bannerSubtitle = root.Q<Label>("banner-subtitle");
     }
 
     private void Start()
     {
         // Buscar el gestor de terraformación en la escena
         gestorTerra = FindAnyObjectByType<GestorTerraformacion>();
-
-        // Mostrar el cartel del nivel actual al iniciar la partida
-        int nivelActual = datosNivel != null ? datosNivel.numeroNivel : 1;
-        MostrarCartelTemporizado($"NIVEL {nivelActual}", "¡Defiende las Antenas de Terraformación!", 3.5f);
     }
 
     private void Update()
     {
         ActualizarTerraformacion();
         ActualizarListaJugadores();
-    }
-
-    public void MostrarCartelTemporizado(string titulo, string subtitulo, float duracion)
-    {
-        if (bannerContainer == null) return;
-
-        if (corrutinaBanner != null)
-        {
-            StopCoroutine(corrutinaBanner);
-        }
-
-        corrutinaBanner = StartCoroutine(MostrarCartelCo(titulo, subtitulo, duracion));
-    }
-
-    public void MostrarVictoria(int nivelCompletado)
-    {
-        MostrarCartelTemporizado("¡VICTORIA!", $"¡Nivel {nivelCompletado} Completado!", 4.0f);
-    }
-
-    private IEnumerator MostrarCartelCo(string titulo, string subtitulo, float duracion)
-    {
-        if (bannerTitle != null) bannerTitle.text = titulo;
-        if (bannerSubtitle != null) bannerSubtitle.text = subtitulo;
-        if (bannerContainer != null) bannerContainer.style.display = DisplayStyle.Flex;
-
-        yield return new WaitForSeconds(duracion);
-
-        if (bannerContainer != null) bannerContainer.style.display = DisplayStyle.None;
-        corrutinaBanner = null;
     }
 
     private void ActualizarTerraformacion()

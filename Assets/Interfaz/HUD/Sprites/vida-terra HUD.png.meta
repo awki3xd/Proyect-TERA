@@ -112,12 +112,12 @@ TextureImporter:
       name: vida-terra HUD_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 269
-        width: 919
-        height: 220
+        x: 15
+        y: 270
+        width: 917
+        height: 218
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: vida-terra HUD_1
       rect:
         serializedVersion: 2
-        x: 956
-        y: 389
-        width: 781
-        height: 170
+        x: 957
+        y: 390
+        width: 779
+        height: 168
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +156,12 @@ TextureImporter:
       name: vida-terra HUD_2
       rect:
         serializedVersion: 2
-        x: 957
-        y: 198
-        width: 781
-        height: 170
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
+        x: 958
+        y: 199
+        width: 779
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: vida-terra HUD_3
       rect:
         serializedVersion: 2
-        x: 952
-        y: 7
-        width: 781
-        height: 170
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
+        x: 954
+        y: 8
+        width: 779
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
