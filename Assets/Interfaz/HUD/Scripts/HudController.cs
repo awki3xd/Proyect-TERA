@@ -133,24 +133,23 @@ public class HudController : MonoBehaviour
 
         float porcentaje = Mathf.Clamp01(gestorTerra.porcentajeActual.Value);
 
-        // Actualizar únicamente el ancho (width) de la barra de progreso
+        // Escalar la barra de terraformación de 0 a 1 en el eje X respecto a su tamaño diseñado
         if (barTerraRelleno != null)
         {
-            barTerraRelleno.style.width = Length.Percent(porcentaje * 100f);
+            barTerraRelleno.style.transformOrigin = new TransformOrigin(Length.Percent(0), Length.Percent(50));
+            barTerraRelleno.style.scale = new Scale(new Vector2(porcentaje, 1f));
         }
     }
 
     private void ActualizarListaJugadores()
     {
-        if (extraPlayersContainer == null || playerBarTemplate == null) return;
-
-        // Buscar todos los jugadores activos en la red
+        // 1. Buscar todos los jugadores activos en la escena
         PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
 
         PlayerController localPlayer = null;
         List<PlayerController> remotePlayers = new List<PlayerController>();
 
-        // Identificar cuál es el cliente local
+        // Identificar cuál es el cliente local de Netcode (Host / Client local)
         foreach (var p in players)
         {
             if (p == null) continue;
@@ -165,7 +164,7 @@ public class HudController : MonoBehaviour
             }
         }
 
-        // Fallback: si no hay un cliente local de red (ej: testing offline), tomar el primero como local
+        // Fallback para Singleplayer / Editor Offline: tomar el primer jugador como local
         if (localPlayer == null && players.Length > 0)
         {
             localPlayer = players[0];
@@ -176,7 +175,7 @@ public class HudController : MonoBehaviour
             }
         }
 
-        // 1. Actualizar barra estática del jugador local
+        // 2. Actualizar barra estática del jugador local (SIEMPRE se ejecuta)
         if (localPlayer != null)
         {
             if (localPlayerCard != null && !localPlayerCard.visible) localPlayerCard.visible = true;
@@ -190,7 +189,10 @@ public class HudController : MonoBehaviour
             if (localHealthRelleno != null)
             {
                 float pct = localPlayer.vidaMaxima > 0f ? Mathf.Clamp01(localPlayer.vida / localPlayer.vidaMaxima) : 0f;
-                localHealthRelleno.style.width = Length.Percent(pct * 100f);
+                
+                // Escalar el relleno de la salud de 0 a 1 en el eje X respecto a tu diseño del 100% en UI Builder
+                localHealthRelleno.style.transformOrigin = new TransformOrigin(Length.Percent(0), Length.Percent(50));
+                localHealthRelleno.style.scale = new Scale(new Vector2(pct, 1f));
             }
         }
         else
@@ -198,7 +200,10 @@ public class HudController : MonoBehaviour
             if (localPlayerCard != null && localPlayerCard.visible) localPlayerCard.visible = false;
         }
 
-        // 2. Limpiar barras dinámicas para jugadores extra que se desconectaron
+        // 3. Para jugadores remotos/extra, verificar que el contenedor y plantilla estén asignados
+        if (extraPlayersContainer == null || playerBarTemplate == null) return;
+
+        // Limpiar barras dinámicas para jugadores extra que se desconectaron
         List<ulong> idsParaEliminar = new List<ulong>();
         foreach (var key in playerBars.Keys)
         {
@@ -226,7 +231,7 @@ public class HudController : MonoBehaviour
             playerBars.Remove(id);
         }
 
-        // 3. Crear o actualizar barras dinámicas para jugadores extra
+        // Crear o actualizar barras dinámicas para jugadores extra
         foreach (var p in remotePlayers)
         {
             if (p == null) continue;
@@ -252,12 +257,13 @@ public class HudController : MonoBehaviour
                 nameLabel.text = string.IsNullOrEmpty(nombre) ? $"Jugador {clientId}" : nombre;
             }
 
-            // Actualizar Relleno de Barra
+            // Actualizar Relleno de Barra mediante Escala X
             VisualElement healthRelleno = barElement.Q<VisualElement>("health-relleno");
             if (healthRelleno != null)
             {
                 float pct = p.vidaMaxima > 0f ? Mathf.Clamp01(p.vida / p.vidaMaxima) : 0f;
-                healthRelleno.style.width = Length.Percent(pct * 100f);
+                healthRelleno.style.transformOrigin = new TransformOrigin(Length.Percent(0), Length.Percent(50));
+                healthRelleno.style.scale = new Scale(new Vector2(pct, 1f));
             }
         }
     }
