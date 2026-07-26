@@ -1,19 +1,23 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Interfaz/HUD/HUD.uss?fileID=7433441132597879392&amp;guid=ce43450eb7b0b3c428d3e88b11bb15cf&amp;type=3#HUD" />
-    <ui:VisualElement name="hud-root" class="hud-root" style="top: 0; left: 4px;">
-        <ui:VisualElement name="left-container" class="left-container" style="align-items: auto; justify-content: flex-start; align-self: stretch; flex-direction: column; width: 235px; height: 370px;">
-            <ui:VisualElement name="VisualElement" class="hud-bar-container">
-                <ui:VisualElement name="terra-fondo" class="hud-bar-fondo" style="top: 9px; bottom: -10px; right: 16px; left: 14px;" />
-                <ui:VisualElement name="terra-relleno" class="hud-bar-relleno-terra" style="width: 1px; top: 10px; bottom: -9px; left: 25px;" />
-                <ui:VisualElement name="terra-marco" class="hud-bar-marco" style="bottom: -19px; left: 1px; width: 249px;" />
+    <ui:VisualElement name="hud-root" class="hud-root" style="top: 1px; left: -2px;">
+        <ui:VisualElement name="left-container" class="left-container" style="height: 190px; width: 272px;">
+            <ui:VisualElement class="hud-bar-container">
+                <ui:VisualElement name="terra-fondo" class="hud-bar-fondo" style="top: 6px; bottom: -2px; right: 32px; left: 4px; background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=5013247292153317939&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_1&quot;);" />
+                <ui:VisualElement name="terra-relleno" class="hud-bar-relleno-terra" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=-3143055521200603430&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_2&quot;); width: 201px; top: 6px; bottom: 0; left: 14px;" />
+                <ui:VisualElement name="terra-marco" class="hud-bar-marco" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=4459677210193543077&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_0&quot;); bottom: -11px; top: -6px; right: 11px; left: -9px;" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="right-container" class="right-container" style="align-self: stretch; justify-content: space-between;">
+        <ui:VisualElement name="banner-container" class="hud-banner-container">
+            <ui:Label name="banner-title" text="NIVEL 1" class="hud-banner-title" />
+            <ui:Label name="banner-subtitle" text="¡Defiende las Antenas!" class="hud-banner-subtitle" />
+        </ui:VisualElement>
+        <ui:VisualElement name="right-container" class="right-container">
             <ui:VisualElement name="local-player-card" class="player-bar-card">
-                <ui:Label name="local-player-name" text="Génesis" class="player-name-label" />
+                <ui:Label name="local-player-name" text="Player" class="player-name-label" />
                 <ui:VisualElement class="hud-bar-container">
                     <ui:VisualElement name="local-health-fondo" class="hud-bar-fondo" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=5013247292153317939&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_1&quot;); top: -2px; bottom: 3px; right: 15px; left: 25px;" />
-                    <ui:VisualElement name="local-health-relleno" class="hud-bar-relleno-health" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=8592394909808685837&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_3&quot;); top: 0; bottom: 4px; left: 25px; width: 206px;" />
+                    <ui:VisualElement name="local-health-relleno" class="hud-bar-relleno-health" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=8592394909808685837&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_3&quot;); top: 2px; bottom: 4px; left: 27px; width: 203px;" />
                     <ui:VisualElement name="local-health-marco" class="hud-bar-marco" style="background-image: url(&quot;project://database/Assets/Interfaz/HUD/Sprites/vida-terra%20HUD.png?fileID=4459677210193543077&amp;guid=1698d93e1fc540c43bb03029e62585d5&amp;type=3#vida-terra HUD_0&quot;); bottom: -6px; top: -11px; right: -4px; left: 5px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
