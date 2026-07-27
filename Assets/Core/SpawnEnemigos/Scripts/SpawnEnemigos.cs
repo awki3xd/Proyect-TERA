@@ -27,54 +27,22 @@ public class SpawnEnemigos : MonoBehaviour
     public float radioSpawneo = 15f;
 
     [Header("Estadísticas de Enemigos para esta Partida (Clonadas)")]
-    [Tooltip("Instancia local en memoria de los datos de enemigos. Las modificaciones hechas aquí no afectarán al archivo en disco y desaparecerán al terminar la partida.")]
+    [Tooltip("Instancia local en memoria de los datos de enemigos. Las modificaciones hechas aquí no afectarán al archivo en disco.")]
     public DatosGlobalesEnemigos datosEnemigosLocales;
 
     private bool alternarGrupo = false;
 
     private void Start()
     {
-        // 1. Inicializar y aplicar modificadores de estadísticas globales
-        CalcularEstadisticasEnemigosPartida();
-
-        // 2. Iniciar rutinas procedurales de oleadas
-        StartCoroutine(SpawneoIndividualCo());
-        StartCoroutine(SpawneoGrupalCo());
-    }
-
-    /// <summary>
-    /// Calcula las estadísticas de los enemigos para la partida actual en base al nivel de poder del jugador,
-    /// clona los datos para que sean temporales.
-    /// </summary>
-    private void CalcularEstadisticasEnemigosPartida()
-    {
-        if (datosPersonaje == null || datosGlobalesEnemigos == null)
+        // Usar los datos globales calculados previamente en la base
+        if (datosGlobalesEnemigos != null)
         {
-            Debug.LogWarning("DatosPersonaje o DatosGlobalesEnemigos no asignados en el Spawner.");
-            return;
+            datosEnemigosLocales = Instantiate(datosGlobalesEnemigos);
         }
 
-        // 1. Calcular la media (promedio) de las estadísticas de Génesis (Base 100)
-        float sumaStatsPlayer = datosPersonaje.armadura +
-                               datosPersonaje.curacion +
-                               datosPersonaje.velocidadMovimiento +
-                               datosPersonaje.daño +
-                               datosPersonaje.velocidadAtaque +
-                               datosPersonaje.rangoAtaque;
-
-        float promedioPlayer = sumaStatsPlayer / 6f;
-        float factorEscala = promedioPlayer / 100f; // Ej: Si el promedio es 150, el factor es 1.5x (50% más fuerte)
-
-        Debug.Log($"[Spawner] Promedio de estadísticas del Jugador: {promedioPlayer}%. Factor de escalado de enemigos: {factorEscala}x");
-
-        // 2. Modificar directamente el ScriptableObject global original en disco/proyecto (persistente)
-        datosGlobalesEnemigos.vida *= factorEscala;
-        datosGlobalesEnemigos.velocidadMovimiento *= factorEscala;
-        datosGlobalesEnemigos.daño *= factorEscala;
-        datosGlobalesEnemigos.velocidadAtaque *= factorEscala;
-
-        // 3. Clonar el ScriptableObject global ya modificado en memoria para el spawner local
-        datosEnemigosLocales = Instantiate(datosGlobalesEnemigos);
+        // Iniciar rutinas procedurales de oleadas
+        StartCoroutine(SpawneoIndividualCo());
+        StartCoroutine(SpawneoGrupalCo());
     }
 
     /// <summary>

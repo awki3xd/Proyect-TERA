@@ -12,4 +12,13 @@ public class DatosGlobalesEnemigos : ScriptableObject
     [Header("Estadisticas de Combate")]
     public float daño = 100f;
     public float velocidadAtaque = 100f;
+
+    [ContextMenu("Resetear a Valores por Defecto")]
+    public void ResetearAValoresPorDefecto()
+    {
+        vida = 100f;
+        velocidadMovimiento = 100f;
+        daño = 100f;
+        velocidadAtaque = 100f;
+    }
 }

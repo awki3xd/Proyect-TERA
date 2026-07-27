@@ -108,7 +108,14 @@ public class HudController : MonoBehaviour
 
     public void MostrarVictoria(int nivelCompletado)
     {
+        if (bannerTitle != null) bannerTitle.style.color = new StyleColor(new Color(0.2f, 1.0f, 0.3f));
         MostrarCartelTemporizado("¡VICTORIA!", $"¡Nivel {nivelCompletado} Completado!", 4.0f);
+    }
+
+    public void MostrarDerrota(string motivo = "¡Todas las Antenas han sido destruidas!")
+    {
+        if (bannerTitle != null) bannerTitle.style.color = new StyleColor(new Color(1.0f, 0.2f, 0.2f));
+        MostrarCartelTemporizado("DERROTA", motivo, 4.0f);
     }
 
     private IEnumerator MostrarCartelCo(string titulo, string subtitulo, float duracion)

@@ -10,7 +10,7 @@ public class GeneradorNodos : MonoBehaviour
     [SerializeField] private float distanciaDosNodos = 5f;
     [SerializeField] private float radioTresNodos = 4f;
 
-    // Propiedad de solo lectura para que el pasto pueda ver las maquinas creadas
+    // Propiedad de solo lectura para que el pasto y el LevelManager puedan ver las maquinas creadas
     public NodoEstandar[] NodosCreados { get; private set; }
 
     private void Start()

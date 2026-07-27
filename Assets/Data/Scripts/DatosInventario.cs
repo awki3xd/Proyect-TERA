@@ -14,7 +14,7 @@ public class DatosInventario : ScriptableObject
 
     [Header("Bolsa General")]
     [Tooltip("Inventario dinamico sin limite para acumular recursos o armamento inactivo.")]
-    public List<GameObject> bolsa = new List<GameObject>();
+    public GameObject[] bolsa = new GameObject[15];
 
     [Header("Economía")]
     [Tooltip("Cantidad de materiales (Bridgmanita) recolectados por el jugador.")]
@@ -33,5 +33,29 @@ public class DatosInventario : ScriptableObject
     public void AñadirMateriales(int cantidad)
     {
         materiales += cantidad;
+    }
+
+    /// <summary>
+    /// Descuenta materiales si hay suficiente saldo disponible.
+    /// Devuelve true si se pudo realizar la compra.
+    /// </summary>
+    public bool GastarMateriales(int cantidad)
+    {
+        if (materiales >= cantidad)
+        {
+            materiales -= cantidad;
+            return true;
+        }
+        return false;
+    }
+
+    [ContextMenu("Resetear a Valores por Defecto")]
+    public void ResetearAValoresPorDefecto()
+    {
+        habilidadEspecial = null;
+        armasEquipadas = new GameObject[4];
+        bolsa = new GameObject[15];
+        materiales = 0;
+        estaReparando = false;
     }
 }

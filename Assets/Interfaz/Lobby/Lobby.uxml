@@ -3,23 +3,19 @@
     <ui:VisualElement name="ContenedorPrincipal" class="pantalla-completa" style="background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/Fondo.png?fileID=2800000&amp;guid=a5ddc299df126fc4488f8d7fbb17895b&amp;type=3#Fondo&quot;);">
         <ui:VisualElement name="LobbyBox" class="lobby-box" style="height: 728px;">
             <ui:VisualElement name="Cabecera" class="cabecera">
-                <ui:Label text="SALA DE ESPERA ONLINE" name="TituloLobby" class="titulo-lobby" />
+                <ui:Label text="SALA DE ESPERA ONLINE" name="TituloLobby" class="titulo-lobby" style="-unity-text-outline-width: 2px; -unity-text-outline-color: rgb(0, 0, 0);" />
             </ui:VisualElement>
             <ui:VisualElement name="Cuerpo" class="cuerpo">
                 <ui:VisualElement name="ColumnaIzquierda" class="columna-izq" style="background-image: url(&quot;project://database/Assets/Interfaz/Lobby/Imagenes/HUD_SALA.png?fileID=5337952&amp;guid=46f54c3d28b367943bed415ced767ddf&amp;type=3#HUD_SALA_2&quot;); height: 599px;">
-                    <ui:VisualElement class="tabla-cabecera">
-                        <ui:Label text="JUGADOR" class="cabecera-texto col-nombre" style="-unity-text-align: middle-left;" />
-                        <ui:Label text="ESTADO" class="cabecera-texto col-estado" />
-                    </ui:VisualElement>
                     <ui:ScrollView name="ListaJugadores" class="lista-jugadores" style="width: 546px;" />
                     <ui:VisualElement class="pie-tabla">
-                        <ui:Label text="Código de Sala: ------" name="TextoCodigo" class="texto-codigo" style="white-space: nowrap;" />
-                        <ui:Label text="Máx jugadores: 1/4" name="TextoCantJugadores" class="texto-cant-jugadores" style="-unity-text-align: upper-center;" />
+                        <ui:Label text="Código de Sala: ------" name="TextoCodigo" class="texto-codigo" style="white-space: nowrap; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(156, 39, 0);" />
+                        <ui:Label text="Máx jugadores: 1/4" name="TextoCantJugadores" class="texto-cant-jugadores" style="-unity-text-align: upper-center; -unity-text-outline-width: 0.5px; -unity-text-outline-color: rgb(0, 0, 0);" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="ColumnaDerecha" class="columna-der">
-                    <ui:Button text="COMENZAR PARTIDA" name="BotonAccion" class="boton-lobby boton-accion-principal" style="background-image: url(&quot;project://database/Assets/Interfaz/Lobby/Imagenes/HUD_SALA.png?fileID=-1040030525&amp;guid=46f54c3d28b367943bed415ced767ddf&amp;type=3#HUD_SALA_0&quot;);" />
-                    <ui:Button text="SALIR DE LA SALA" name="BotonSalir" class="boton-lobby boton-salir-lobby" style="background-image: url(&quot;project://database/Assets/Interfaz/Lobby/Imagenes/HUD_SALA.png?fileID=1410600292&amp;guid=46f54c3d28b367943bed415ced767ddf&amp;type=3#HUD_SALA_1&quot;);" />
+                    <ui:Button text="COMENZAR PARTIDA" name="BotonAccion" class="boton-lobby boton-accion-principal" style="background-image: url(&quot;project://database/Assets/Interfaz/Lobby/Imagenes/HUD_SALA.png?fileID=-1040030525&amp;guid=46f54c3d28b367943bed415ced767ddf&amp;type=3#HUD_SALA_0&quot;); -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
+                    <ui:Button text="SALIR DE LA SALA" name="BotonSalir" class="boton-lobby boton-salir-lobby" style="background-image: url(&quot;project://database/Assets/Interfaz/Lobby/Imagenes/HUD_SALA.png?fileID=1410600292&amp;guid=46f54c3d28b367943bed415ced767ddf&amp;type=3#HUD_SALA_1&quot;); -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0);" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

@@ -231,10 +231,21 @@ public class PlayerController : NetworkBehaviour
     /// <summary>
     /// Instancia dinámicamente las armas del inventario en los puntos de anclaje (slotsArmas) del jugador.
     /// </summary>
-    private void InstanciarArmasEquipadas()
+    public void RecargarArmasEquipadas()
     {
+        // 1. Destruir cualquier arma previamente instanciada
+        for (int i = 0; i < armasInstanciadas.Length; i++)
+        {
+            if (armasInstanciadas[i] != null)
+            {
+                Destroy(armasInstanciadas[i]);
+                armasInstanciadas[i] = null;
+            }
+        }
+
         if (datosInventario == null) return;
 
+        // 2. Instanciar según el ScriptableObject datosInventario actualizado
         for (int i = 0; i < 4; i++)
         {
             if (i < slotsArmas.Length && slotsArmas[i] != null && i < datosInventario.armasEquipadas.Length)
@@ -242,11 +253,9 @@ public class PlayerController : NetworkBehaviour
                 GameObject weaponPrefab = datosInventario.armasEquipadas[i];
                 if (weaponPrefab != null)
                 {
-                    // Instanciamos el arma como hijo del slot correspondiente
                     GameObject armaObj = Instantiate(weaponPrefab, slotsArmas[i].position, slotsArmas[i].rotation, slotsArmas[i]);
                     armasInstanciadas[i] = armaObj;
 
-                    // Inicializar el controlador del arma directamente (a distancia, sable o motosierra)
                     ArmaController armaScript = armaObj.GetComponent<ArmaController>();
                     if (armaScript != null)
                     {
@@ -272,8 +281,12 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        // Establecer el orden de renderizado inicial (derecha)
         ActualizarOrdenCapas(true);
+    }
+
+    private void InstanciarArmasEquipadas()
+    {
+        RecargarArmasEquipadas();
     }
 
     /// <summary>
@@ -332,8 +345,6 @@ public class PlayerController : NetworkBehaviour
             if (spriteRenderer != null) spriteRenderer.flipX = true;
             ActualizarOrdenCapas(false);
         }
-
-        
     }
 
     private void FixedUpdate()
@@ -407,21 +418,20 @@ public class PlayerController : NetworkBehaviour
 
     private void CargarDerrota()
     {
-        if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+        if (LevelManager.Instance != null)
         {
-            // Despawnear (destruir en red) a todos los jugadores para que no pasen a la pantalla de Derrota
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                if (client.PlayerObject != null)
-                {
-                    client.PlayerObject.Despawn();
-                }
-            }
-            NetworkManager.Singleton.SceneManager.LoadScene("Derrota", LoadSceneMode.Single);
+            LevelManager.Instance.NotificarMuerteJugador();
         }
         else
         {
-            SceneManager.LoadScene("Derrota");
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene("Derrota", LoadSceneMode.Single);
+            }
+            else
+            {
+                SceneManager.LoadScene("Derrota");
+            }
         }
     }
 
