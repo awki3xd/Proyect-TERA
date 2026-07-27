@@ -24,6 +24,8 @@ public class LevelManager : MonoBehaviour
     private bool victoriaProcesada = false;
     private bool derrotaProcesada = false;
 
+    public GameObject olaTerraformacion;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -163,9 +165,26 @@ public class LevelManager : MonoBehaviour
 
     public void NotificarMuerteJugador()
     {
-        if (!partidaFinalizada)
+        if (partidaFinalizada) return;
+
+        // Buscar todos los controladores de jugador en la escena (incluyendo objetos deshabilitados/muertos)
+        PlayerController[] jugadores = FindObjectsOfType<PlayerController>(true);
+
+        int jugadoresVivos = 0;
+        foreach (var p in jugadores)
         {
-            ProcesarDerrota("¡Génesis ha sido destruido!");
+            if (p != null && p.gameObject.activeSelf && p.vida > 0f)
+            {
+                jugadoresVivos++;
+            }
+        }
+
+        Debug.Log($"[LevelManager] Notificación de muerte recibida. Jugadores con vida activa: {jugadoresVivos}");
+
+        // Se declara la derrota únicamente cuando TODOS los jugadores están muertos (0 vivos)
+        if (jugadoresVivos == 0)
+        {
+            ProcesarDerrota("¡Todos los exploradores han sido destruidos!");
         }
     }
 
@@ -174,10 +193,19 @@ public class LevelManager : MonoBehaviour
         partidaFinalizada = true;
         victoriaProcesada = true;
 
-        Debug.Log("[LevelManager] ¡Victoria Alcanzada!");
+        Debug.Log("[LevelManager] ¡Victoria Alcanzada! Disparando onda de terraformación verde.");
 
         if (spawnEnemigos != null)
             spawnEnemigos.enabled = false;
+
+        // Bloquear inputs del jugador deshabilitando el controlador de movimiento
+        PlayerController[] jugadores = FindObjectsOfType<PlayerController>();
+        foreach (var p in jugadores)
+        {
+            if (p != null) p.enabled = false;
+            Rigidbody2D rb = p.GetComponent<Rigidbody2D>();
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+        }
 
         int nivelActual = datosNivel != null ? datosNivel.numeroNivel : 1;
         if (HudController.Instance != null)
@@ -185,7 +213,39 @@ public class LevelManager : MonoBehaviour
             HudController.Instance.MostrarVictoria(nivelActual);
         }
 
+        StartCoroutine(OlaTerraformacionCo());
         StartCoroutine(RutinaVictoriaCo());
+    }
+
+    private IEnumerator OlaTerraformacionCo()
+    {
+        if (olaTerraformacion != null)
+        {
+            // 1. Activar el GameObject de la ola de terraformación
+            olaTerraformacion.SetActive(true);
+
+            // 2. Disparar el trigger 'ola' en el Animator
+            Animator anim = olaTerraformacion.GetComponent<Animator>();
+            if (anim == null)
+            {
+                anim = olaTerraformacion.GetComponentInChildren<Animator>();
+            }
+
+            if (anim != null)
+            {
+                anim.SetTrigger("ola");
+            }
+
+            // 3. Esperar 2 segundos mientras la animación se expande e impacta a los enemigos
+            yield return new WaitForSeconds(2.0f);
+
+            // 4. Apagar el GameObject
+            olaTerraformacion.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning("[LevelManager] Referencia 'olaTerraformacion' no asignada en el Inspector.");
+        }
     }
 
     private IEnumerator RutinaVictoriaCo()

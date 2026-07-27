@@ -229,6 +229,24 @@ public class PlayerController : NetworkBehaviour
     }
 
     /// <summary>
+    /// Reactiva el GameObject del jugador, restaura su vida al máximo y habilita sus controles.
+    /// </summary>
+    public void ReactivarYRestaurar()
+    {
+        gameObject.SetActive(true);
+        enabled = true;
+        vida = vidaMaxima;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        RecargarArmasEquipadas();
+        Debug.Log($"Jugador {gameObject.name} reactivado y restaurado con vida {vida}/{vidaMaxima}.");
+    }
+
+    /// <summary>
     /// Instancia dinámicamente las armas del inventario en los puntos de anclaje (slotsArmas) del jugador.
     /// </summary>
     public void RecargarArmasEquipadas()
@@ -345,6 +363,43 @@ public class PlayerController : NetworkBehaviour
             if (spriteRenderer != null) spriteRenderer.flipX = true;
             ActualizarOrdenCapas(false);
         }
+
+        // 4. Actualizar parámetros del Animator para movimiento direccional
+        if (Animaciones != null)
+        {
+            bool estaMoviendo = entradaMovimiento.sqrMagnitude > 0.01f;
+
+            if (!estaMoviendo)
+            {
+                Animaciones.SetBool("Caminando", false);
+                Animaciones.SetBool("CaminandoArriba", false);
+                Animaciones.SetBool("CaminandoAbajo", false);
+            }
+            else
+            {
+                // Si se mueve horizontalmente o en diagonal, usar la animación lateral ("Caminando")
+                if (Mathf.Abs(inputX) > 0.1f)
+                {
+                    Animaciones.SetBool("Caminando", true);
+                    Animaciones.SetBool("CaminandoArriba", false);
+                    Animaciones.SetBool("CaminandoAbajo", false);
+                }
+                // Si solo se mueve hacia arriba (espalda)
+                else if (inputY > 0.1f)
+                {
+                    Animaciones.SetBool("Caminando", false);
+                    Animaciones.SetBool("CaminandoArriba", true);
+                    Animaciones.SetBool("CaminandoAbajo", false);
+                }
+                // Si solo se mueve hacia abajo (frente)
+                else if (inputY < -0.1f)
+                {
+                    Animaciones.SetBool("Caminando", false);
+                    Animaciones.SetBool("CaminandoArriba", false);
+                    Animaciones.SetBool("CaminandoAbajo", true);
+                }
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -363,9 +418,15 @@ public class PlayerController : NetworkBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1f);
-            if (vida < vidaMaxima)
+            if (vida < vidaMaxima && vida > 0f)
             {
+                float vidaAnterior = vida;
                 vida = Mathf.Min(vidaMaxima, vida + tasaRegeneracionReal);
+                float curacion = vida - vidaAnterior;
+                if (curacion >= 0.5f)
+                {
+                    TextoDañoFlotante.CrearCuracion(transform.position, curacion);
+                }
             }
         }
     }
@@ -400,14 +461,32 @@ public class PlayerController : NetworkBehaviour
     {
         Debug.Log("Génesis ha sido destruido. Partida Terminada.");
         
-        if (IsServer)
+        // 1. Activar animación de muerte en el Animator existente
+        if (Animaciones != null)
         {
-            CargarDerrota();
+            Animaciones.SetTrigger("muere");
         }
-        else
+
+        // 2. Detener física y movimiento
+        if (rb != null)
         {
-            NotificarMuerteServerRpc();
+            rb.linearVelocity = Vector2.zero;
         }
+
+        // 3. Notificar la muerte al LevelManager
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.NotificarMuerteJugador();
+        }
+
+        // 4. Desactivar el GameObject del jugador tras la animación de muerte
+        StartCoroutine(RutinaMuerteCo());
+    }
+
+    private IEnumerator RutinaMuerteCo()
+    {
+        yield return new WaitForSeconds(1.2f);
+        gameObject.SetActive(false);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]

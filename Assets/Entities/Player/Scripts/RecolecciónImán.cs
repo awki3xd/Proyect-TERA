@@ -7,11 +7,22 @@ public class RecolecciónImán : MonoBehaviour
     [Tooltip("Inventario de Génesis donde se guardarán los materiales recolectados.")]
     public DatosInventario datosInventario;
 
+    [Tooltip("ScriptableObject de datos del nivel para escalar la cantidad de materiales.")]
+    public DatosNivel datosNivel;
+
     [Header("Configuración de Atracción")]
     [Tooltip("Velocidad con la que se atraen los cristales de Bridgmanita.")]
     public float velocidadAtraccion = 5f;
 
     private List<Transform> materialesEnRango = new List<Transform>();
+
+    private void Start()
+    {
+        if (datosNivel == null)
+        {
+            datosNivel = Resources.Load<DatosNivel>("DatosNivel");
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -53,13 +64,30 @@ public class RecolecciónImán : MonoBehaviour
         }
     }
 
+    private int CalcularCantidadMateriales()
+    {
+        int nivelActual = datosNivel != null ? Mathf.Max(1, datosNivel.numeroNivel) : 1;
+        int n = Mathf.Clamp(nivelActual, 1, 20);
+        float t = (n - 1f) / 19f;
+
+        int minMats = Mathf.RoundToInt(Mathf.Lerp(1f, 10f, t));
+        int maxMats = Mathf.RoundToInt(Mathf.Lerp(3f, 30f, t));
+
+        return Random.Range(minMats, maxMats + 1);
+    }
+
     private void Recolectar(GameObject materialObj)
     {
+        int cantidadMateriales = CalcularCantidadMateriales();
+
         if (datosInventario != null)
         {
-            // Incrementar los materiales directamente a través de la referencia del ScriptableObject
-            datosInventario.AñadirMateriales(1);
-            Debug.Log("Bridgmanita recolectada en el Inventario. Materiales totales: " + datosInventario.Materiales);
+            // Incrementar los materiales dinámicamente según el nivel
+            datosInventario.AñadirMateriales(cantidadMateriales);
+            Debug.Log($"Bridgmanita recolectada (+{cantidadMateriales}). Total: " + datosInventario.Materiales);
+
+            // Crear texto flotante animado de color amarillo-naranjoso
+            TextoDañoFlotante.CrearMaterial(transform.position, cantidadMateriales);
 
             // Reproducir sonido de recolección de materiales
             if (SoundManager.Instance != null)

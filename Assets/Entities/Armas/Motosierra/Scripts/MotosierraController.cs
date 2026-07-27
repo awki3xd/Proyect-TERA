@@ -43,10 +43,8 @@ public class MotosierraController : MonoBehaviour
 
     private void Start()
     {
-        if (!inicializado)
-        {
-            InicializarEstadisticas();
-        }
+        ActualizarEstadisticas();
+        cooldownAtaque = 0f;
 
         // Registrar estados originales de transform
         escalaOriginal = transform.localScale;
@@ -59,12 +57,10 @@ public class MotosierraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Calcula las estadísticas finales de rango, daño y cadencia.
+    /// Recalcula dinámicamente las estadísticas de la motosierra basadas en los modificadores del personaje.
     /// </summary>
-    private void InicializarEstadisticas()
+    public void ActualizarEstadisticas()
     {
-        inicializado = true;
-
         if (datosArma != null)
         {
             estadisticasCalculadas.rango = datosArma.rango;
@@ -74,25 +70,28 @@ public class MotosierraController : MonoBehaviour
 
             if (datosPersonaje != null)
             {
-                float multRango = datosPersonaje.rangoAtaque / 100f;
-                float multDaño = datosPersonaje.daño / 100f;
-                float multVelocidadAtaque = datosPersonaje.velocidadAtaque / 100f;
+                float multRango = Mathf.Max(0.1f, datosPersonaje.rangoAtaque / 100f);
+                float multDaño = Mathf.Max(0.1f, datosPersonaje.daño / 100f);
+                float multVelocidadAtaque = Mathf.Max(0.1f, datosPersonaje.velocidadAtaque / 100f);
 
                 estadisticasCalculadas.rango *= multRango;
                 estadisticasCalculadas.daño *= multDaño;
-                estadisticasCalculadas.cadencia *= multVelocidadAtaque;
+
+                // La cadencia es el intervalo en segundos entre ticks de colisión de aserrado.
+                // A mayor velocidad de ataque del jugador, menor es el intervalo entre ticks de daño.
+                estadisticasCalculadas.cadencia /= multVelocidadAtaque;
             }
         }
         else
         {
             Debug.LogWarning("DatosArma no asignado en " + gameObject.name);
         }
-
-        cooldownAtaque = 0f;
     }
 
     private void Update()
     {
+        ActualizarEstadisticas();
+
         // 1. Buscar enemigo en el rango amplio de detección
         GameObject enemigoCercano = BuscarEnemigoEnRangoDeteccion();
 

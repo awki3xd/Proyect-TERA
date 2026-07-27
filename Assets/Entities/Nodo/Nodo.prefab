@@ -371,6 +371,8 @@ MonoBehaviour:
   estaRoto: 0
   "animaci\xF3n": {fileID: 8462515943918721493}
   barraVida: {fileID: 3268376830486016587}
+  spriteDestruido: {fileID: -1391729383432304557, guid: 5ebb46290dc2b384f8ad09d4d05aca48, type: 3}
+  spriteRenderer: {fileID: 5012952286030380960}
 --- !u!50 &4848842711425839295
 Rigidbody2D:
   serializedVersion: 5
