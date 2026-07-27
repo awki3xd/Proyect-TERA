@@ -8,6 +8,10 @@ public class HudController : MonoBehaviour
 {
     public static HudController Instance { get; private set; }
 
+    [Header("Plantillas UXML")]
+    [Tooltip("La plantilla UXML del card de barra de vida de jugador (PlayerHealthBar.uxml).")]
+    [SerializeField] private VisualTreeAsset playerBarTemplate;
+
     [Header("Referencias de Datos")]
     [Tooltip("Referencia a DatosNivel para conocer el nivel actual en partida.")]
     [SerializeField] private DatosNivel datosNivel;
@@ -23,14 +27,20 @@ public class HudController : MonoBehaviour
     private Label localNameLabel;
     private VisualElement localHealthRelleno;
 
+    // Contenedor de jugadores extra
+    private VisualElement extraPlayersContainer;
+
     // Cartel Central de Nivel / Victoria
     private VisualElement bannerContainer;
     private Label bannerTitle;
     private Label bannerSubtitle;
     private Coroutine corrutinaBanner;
 
-    // Instancia del gestor de terraformación en escena
+    // Instancia del gestor en escena
     private GestorTerraformacion gestorTerra;
+
+    // Mapeo para controlar qué jugador tiene cuál tarjeta de vida instanciada en la UI
+    private Dictionary<ulong, VisualElement> playerBars = new Dictionary<ulong, VisualElement>();
 
     private void Awake()
     {
@@ -59,6 +69,9 @@ public class HudController : MonoBehaviour
         localNameLabel = root.Q<Label>("local-player-name");
         localHealthRelleno = root.Q<VisualElement>("local-health-relleno");
 
+        // Enlazar contenedor de jugadores extra (Derecha - Dinámico)
+        extraPlayersContainer = root.Q<VisualElement>("extra-players-container");
+
         // Enlazar Cartel Central
         bannerContainer = root.Q<VisualElement>("banner-container");
         bannerTitle = root.Q<Label>("banner-title");
@@ -78,7 +91,7 @@ public class HudController : MonoBehaviour
     private void Update()
     {
         ActualizarTerraformacion();
-        ActualizarVidaJugador();
+        ActualizarListaJugadores();
     }
 
     public void MostrarCartelTemporizado(string titulo, string subtitulo, float duracion)
@@ -120,41 +133,137 @@ public class HudController : MonoBehaviour
 
         float porcentaje = Mathf.Clamp01(gestorTerra.porcentajeActual.Value);
 
-        // Actualizar el ancho porcentual de la barra de terraformación
+        // Escalar la barra de terraformación de 0 a 1 en el eje X respecto a su tamaño diseñado
         if (barTerraRelleno != null)
         {
-            barTerraRelleno.style.width = Length.Percent(porcentaje * 100f);
+            barTerraRelleno.style.transformOrigin = new TransformOrigin(Length.Percent(0), Length.Percent(50));
+            barTerraRelleno.style.scale = new Scale(new Vector2(porcentaje, 1f));
         }
     }
 
-    private void ActualizarVidaJugador()
+    private void ActualizarListaJugadores()
     {
-        PlayerController player = FindAnyObjectByType<PlayerController>();
+        // 1. Buscar todos los jugadores activos en la escena
+        PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
 
-        if (player != null)
+        PlayerController localPlayer = null;
+        List<PlayerController> remotePlayers = new List<PlayerController>();
+
+        // Identificar cuál es el cliente local de Netcode (Host / Client local)
+        foreach (var p in players)
         {
-            if (localPlayerCard != null && !localPlayerCard.visible)
+            if (p == null) continue;
+
+            if (p.IsLocalPlayer || p.IsOwner)
             {
-                localPlayerCard.visible = true;
+                localPlayer = p;
             }
+            else
+            {
+                remotePlayers.Add(p);
+            }
+        }
+
+        // Fallback para Singleplayer / Editor Offline: tomar el primer jugador como local
+        if (localPlayer == null && players.Length > 0)
+        {
+            localPlayer = players[0];
+            remotePlayers.Clear();
+            for (int i = 1; i < players.Length; i++)
+            {
+                remotePlayers.Add(players[i]);
+            }
+        }
+
+        // 2. Actualizar barra estática del jugador local (SIEMPRE se ejecuta)
+        if (localPlayer != null)
+        {
+            if (localPlayerCard != null && !localPlayerCard.visible) localPlayerCard.visible = true;
 
             if (localNameLabel != null)
             {
-                string nombre = player.playerName.Value.ToString();
+                string nombre = localPlayer.playerName.Value.ToString();
                 localNameLabel.text = string.IsNullOrEmpty(nombre) ? "Génesis" : nombre;
             }
 
             if (localHealthRelleno != null)
             {
-                float pct = player.vidaMaxima > 0f ? Mathf.Clamp01(player.vida / player.vidaMaxima) : 0f;
-                localHealthRelleno.style.width = Length.Percent(pct * 100f);
+                float pct = localPlayer.vidaMaxima > 0f ? Mathf.Clamp01(localPlayer.vida / localPlayer.vidaMaxima) : 0f;
+                
+                // Escalar el relleno de la salud de 0 a 1 en el eje X respecto a tu diseño del 100% en UI Builder
+                localHealthRelleno.style.transformOrigin = new TransformOrigin(Length.Percent(0), Length.Percent(50));
+                localHealthRelleno.style.scale = new Scale(new Vector2(pct, 1f));
             }
         }
         else
         {
-            if (localPlayerCard != null && localPlayerCard.visible)
+            if (localPlayerCard != null && localPlayerCard.visible) localPlayerCard.visible = false;
+        }
+
+        // 3. Para jugadores remotos/extra, verificar que el contenedor y plantilla estén asignados
+        if (extraPlayersContainer == null || playerBarTemplate == null) return;
+
+        // Limpiar barras dinámicas para jugadores extra que se desconectaron
+        List<ulong> idsParaEliminar = new List<ulong>();
+        foreach (var key in playerBars.Keys)
+        {
+            bool existe = false;
+            foreach (var p in remotePlayers)
             {
-                localPlayerCard.visible = false;
+                if (p != null && p.OwnerClientId == key)
+                {
+                    existe = true;
+                    break;
+                }
+            }
+            if (!existe)
+            {
+                idsParaEliminar.Add(key);
+            }
+        }
+
+        foreach (var id in idsParaEliminar)
+        {
+            if (playerBars.TryGetValue(id, out VisualElement barElement))
+            {
+                extraPlayersContainer.Remove(barElement);
+            }
+            playerBars.Remove(id);
+        }
+
+        // Crear o actualizar barras dinámicas para jugadores extra
+        foreach (var p in remotePlayers)
+        {
+            if (p == null) continue;
+
+            ulong clientId = p.OwnerClientId;
+
+            // Si no tiene barra de vida, instanciarla y agregarla
+            if (!playerBars.TryGetValue(clientId, out VisualElement barElement))
+            {
+                VisualElement tpl = playerBarTemplate.Instantiate();
+                barElement = tpl.Q<VisualElement>(null, "player-bar-card");
+                if (barElement == null) continue;
+
+                extraPlayersContainer.Add(barElement);
+                playerBars.Add(clientId, barElement);
+            }
+
+            // Actualizar Nombre
+            Label nameLabel = barElement.Q<Label>("player-name");
+            if (nameLabel != null)
+            {
+                string nombre = p.playerName.Value.ToString();
+                nameLabel.text = string.IsNullOrEmpty(nombre) ? $"Jugador {clientId}" : nombre;
+            }
+
+            // Actualizar Relleno de Barra mediante Escala X
+            VisualElement healthRelleno = barElement.Q<VisualElement>("health-relleno");
+            if (healthRelleno != null)
+            {
+                float pct = p.vidaMaxima > 0f ? Mathf.Clamp01(p.vida / p.vidaMaxima) : 0f;
+                healthRelleno.style.transformOrigin = new TransformOrigin(Length.Percent(0), Length.Percent(50));
+                healthRelleno.style.scale = new Scale(new Vector2(pct, 1f));
             }
         }
     }
