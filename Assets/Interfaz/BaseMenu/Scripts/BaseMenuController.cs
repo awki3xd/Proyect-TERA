@@ -66,6 +66,16 @@ public class BaseMenuController : MonoBehaviour
 
         root = uiDocument.rootVisualElement;
 
+        // Reactivar y restaurar a todos los jugadores que murieron en la ronda previa
+        PlayerController[] jugadores = FindObjectsOfType<PlayerController>(true);
+        foreach (PlayerController player in jugadores)
+        {
+            if (player != null)
+            {
+                player.ReactivarYRestaurar();
+            }
+        }
+
         InicializarReferencias();
         RegistrarEventos();
         GenerarMejorasAleatorias();
@@ -565,13 +575,13 @@ public class BaseMenuController : MonoBehaviour
     {
         Debug.Log("Confirmación de listo. Recargando armas del jugador y avanzando a la escena de gameplay 'Level'.");
 
-        // 1. Buscar todos los PlayerController en la escena y recargar sus armas equipadas según el inventario actualizado
-        PlayerController[] jugadores = FindObjectsOfType<PlayerController>();
+        // 1. Buscar todos los PlayerController en la escena (incluyendo deshabilitados/muertos) y restaurarlos
+        PlayerController[] jugadores = FindObjectsOfType<PlayerController>(true);
         foreach (PlayerController player in jugadores)
         {
             if (player != null)
             {
-                player.RecargarArmasEquipadas();
+                player.ReactivarYRestaurar();
             }
         }
 

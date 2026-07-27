@@ -34,20 +34,15 @@ public class ArmaController : MonoBehaviour
 
     private void Start()
     {
-        if (!inicializado)
-        {
-            InicializarEstadisticas();
-        }
+        ActualizarEstadisticas();
+        cooldownDisparo = 0f;
     }
 
     /// <summary>
-    /// Calcula las estadísticas finales del arma para la escena actual,
-    /// aplicando los multiplicadores directamente sobre las estadísticas de la estructura base.
+    /// Recalcula dinámicamente las estadísticas del arma basadas en los modificadores del personaje.
     /// </summary>
-    private void InicializarEstadisticas()
+    public void ActualizarEstadisticas()
     {
-        inicializado = true;
-
         if (datosArma != null)
         {
             // Copiar los datos base del ScriptableObject de base de datos de armas
@@ -59,25 +54,27 @@ public class ArmaController : MonoBehaviour
             if (datosPersonaje != null)
             {
                 // Las estadísticas del personaje actúan como modificadores porcentuales (Base 100 = 100%)
-                float multRango = datosPersonaje.rangoAtaque / 100f;
-                float multDaño = datosPersonaje.daño / 100f;
-                float multVelocidadAtaque = datosPersonaje.velocidadAtaque / 100f;
+                float multRango = Mathf.Max(0.1f, datosPersonaje.rangoAtaque / 100f);
+                float multDaño = Mathf.Max(0.1f, datosPersonaje.daño / 100f);
+                float multVelocidadAtaque = Mathf.Max(0.1f, datosPersonaje.velocidadAtaque / 100f);
 
                 estadisticasCalculadas.rango *= multRango;
                 estadisticasCalculadas.daño *= multDaño;
-                estadisticasCalculadas.cadencia *= multVelocidadAtaque;
+
+                // La cadencia es el tiempo en segundos entre disparos.
+                // A mayor velocidad de ataque del jugador, menor es el tiempo de espera entre disparos.
+                estadisticasCalculadas.cadencia /= multVelocidadAtaque;
             }
         }
         else
         {
             Debug.LogWarning("DatosArma no asignado en " + gameObject.name);
         }
-
-        cooldownDisparo = 0f;
     }
 
     private void Update()
     {
+        ActualizarEstadisticas();
         // 1. Buscar el enemigo más cercano (usando la búsqueda genérica por Tag)
         GameObject enemigoCercano = BuscarEnemigoMasCercano();
 

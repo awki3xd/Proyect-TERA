@@ -22,6 +22,9 @@ public class NodoEstandar : MonoBehaviour
     [Tooltip("Referencia a la barra de vida de la antena/nodo (asignada en inspector).")]
     public BarraVida barraVida;
 
+    public Sprite spriteDestruido;
+    public SpriteRenderer spriteRenderer;
+
     private Coroutine corrutinaReactivacion;
     private float tiempoUltimoSonidoCuracion = 0f;
 
@@ -77,6 +80,7 @@ public class NodoEstandar : MonoBehaviour
         {
             estaRoto = true;
             estaActivo = false;
+            spriteRenderer.sprite = spriteDestruido;
 
             if (corrutinaReactivacion != null)
             {
@@ -112,12 +116,16 @@ public class NodoEstandar : MonoBehaviour
     {
         if (estaRoto) return;
 
+        float vidaAntes = vidaActual;
         vidaActual = Mathf.Clamp(vidaActual + cantidad, 0f, vidaMaxima);
+        float curacionEfectiva = vidaActual - vidaAntes;
 
-        // Reproducir sonido de curación periódicamente si el nodo no está curado al máximo
-        if (vidaActual < vidaMaxima && Time.time - tiempoUltimoSonidoCuracion >= 0.4f)
+        // Reproducir sonido de curación y mostrar texto flotante si el nodo recibe curación
+        if (curacionEfectiva > 0.1f && Time.time - tiempoUltimoSonidoCuracion >= 0.4f)
         {
             tiempoUltimoSonidoCuracion = Time.time;
+            TextoDañoFlotante.CrearCuracion(transform.position, curacionEfectiva);
+
             if (SoundManager.Instance != null)
             {
                 SoundManager.Instance.PlaySFX(SoundID.CurarNodo);

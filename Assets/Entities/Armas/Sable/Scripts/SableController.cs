@@ -40,10 +40,8 @@ public class SableController : MonoBehaviour
 
     private void Start()
     {
-        if (!inicializado)
-        {
-            InicializarEstadisticas();
-        }
+        ActualizarEstadisticas();
+        cooldownAtaque = 0f;
 
         // Asegurarnos de que el collider inicie apagado
         if (hitboxCollider != null)
@@ -53,12 +51,10 @@ public class SableController : MonoBehaviour
     }
 
     /// <summary>
-    /// Calcula las estadísticas finales de rango, daño y cadencia.
+    /// Recalcula dinámicamente las estadísticas del sable basadas en los modificadores del personaje.
     /// </summary>
-    private void InicializarEstadisticas()
+    public void ActualizarEstadisticas()
     {
-        inicializado = true;
-
         if (datosArma != null)
         {
             estadisticasCalculadas.rango = datosArma.rango;
@@ -68,25 +64,28 @@ public class SableController : MonoBehaviour
 
             if (datosPersonaje != null)
             {
-                float multRango = datosPersonaje.rangoAtaque / 100f;
-                float multDaño = datosPersonaje.daño / 100f;
-                float multVelocidadAtaque = datosPersonaje.velocidadAtaque / 100f;
+                float multRango = Mathf.Max(0.1f, datosPersonaje.rangoAtaque / 100f);
+                float multDaño = Mathf.Max(0.1f, datosPersonaje.daño / 100f);
+                float multVelocidadAtaque = Mathf.Max(0.1f, datosPersonaje.velocidadAtaque / 100f);
 
                 estadisticasCalculadas.rango *= multRango;
                 estadisticasCalculadas.daño *= multDaño;
-                estadisticasCalculadas.cadencia *= multVelocidadAtaque;
+
+                // La cadencia es el tiempo en segundos entre tajos.
+                // A mayor velocidad de ataque del jugador, menor es el tiempo de espera entre tajos.
+                estadisticasCalculadas.cadencia /= multVelocidadAtaque;
             }
         }
         else
         {
             Debug.LogWarning("DatosArma no asignado en " + gameObject.name);
         }
-
-        cooldownAtaque = 0f;
     }
 
     private void Update()
     {
+        ActualizarEstadisticas();
+
         // Si está ejecutando el ataque físico (corrutina de swing), pausamos la rotación de apuntado
         if (esAtacando)
         {

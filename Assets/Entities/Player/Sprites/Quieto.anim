@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: caminando
+  m_Name: Quieto
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,9 +21,9 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -3678088015956857216, guid: 5e3f5eeb656ddf9469618db82ed1dce4, type: 3}
-    - time: 0.16666667
-      value: {fileID: -2765140723961714393, guid: 5e3f5eeb656ddf9469618db82ed1dce4, type: 3}
+      value: {fileID: 3117389380566408957, guid: a437c5794d5b2034eabd3f705fa0eb92, type: 3}
+    - time: 0.6666667
+      value: {fileID: 6978725330625930881, guid: a437c5794d5b2034eabd3f705fa0eb92, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -46,14 +46,14 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -3678088015956857216, guid: 5e3f5eeb656ddf9469618db82ed1dce4, type: 3}
-    - {fileID: -2765140723961714393, guid: 5e3f5eeb656ddf9469618db82ed1dce4, type: 3}
+    - {fileID: 3117389380566408957, guid: a437c5794d5b2034eabd3f705fa0eb92, type: 3}
+    - {fileID: 6978725330625930881, guid: a437c5794d5b2034eabd3f705fa0eb92, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.33333334
+    m_StopTime: 0.8333333
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
