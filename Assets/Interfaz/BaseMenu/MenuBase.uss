@@ -1,0 +1,6 @@
+.slot-selected {
+    scale: 1.4 1.4;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    transition-property: scale;
+    transition-duration: 0.15s;
+}

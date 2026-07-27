@@ -8,7 +8,6 @@ public class Pausa : MonoBehaviour
     [SerializeField] private AudioClip AudioClik;
     [SerializeField] private AudioSource _AudioSource;
 
-
     private VisualElement _Contenedor;
     private VisualElement _PanelAjustes;
     private VisualElement _Volumen;
@@ -20,10 +19,15 @@ public class Pausa : MonoBehaviour
     private Button _Menu;
     private Button _Volver;
 
-    private int _ContadorPausa = 0;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool procesandoAccion = false;
+
     void Start()
     {
+        if (UiDocument == null)
+            UiDocument = GetComponent<UIDocument>();
+
+        if (UiDocument == null) return;
+
         var root = UiDocument.rootVisualElement;
 
         _Contenedor = root.Q<VisualElement>("Contenedor");
@@ -37,62 +41,107 @@ public class Pausa : MonoBehaviour
         _Menu = root.Q<Button>("Menu");
         _Volver = root.Q<Button>("Volver");
 
-        _Pausa.clicked += () =>
+        // Ocultar menú de pausa visual al arrancar el nivel
+        EstablecerEstadoPausaVisual(false);
+
+        if (_Pausa != null)
         {
-            _ContadorPausa++;
-           _PanelAjustes.style.display = DisplayStyle.Flex;
-            _Tablero.style.display = DisplayStyle.None;
-            
+            _Pausa.clicked += OnPausaClicked;
+            _Pausa.RegisterCallback<ClickEvent>(evt => OnPausaClicked());
+        }
 
-                Debug.Log(_ContadorPausa);
-            _AudioSource.PlayOneShot(AudioClik);
-            
-
-        };
-
-        _Continuar.clicked += () =>
+        if (_Continuar != null)
         {
-            Debug.Log("Continuar");
-            _AudioSource.PlayOneShot(AudioClik);
-            _Tablero.style.display = DisplayStyle.Flex;
-            _PanelAjustes.style.display = DisplayStyle.None;
-        };
+            _Continuar.clicked += OnContinuarClicked;
+            _Continuar.RegisterCallback<ClickEvent>(evt => OnContinuarClicked());
+        }
 
-       
-        _Ajustes.clicked += () => 
+        if (_Ajustes != null)
         {
-            Debug.Log("Ajustes");
-            _AudioSource.PlayOneShot(AudioClik);
-            _Volumen.style.display = DisplayStyle.Flex;
-            _PanelAjustes.style.display = DisplayStyle.None;
-        };
+            _Ajustes.clicked += OnAjustesClicked;
+            _Ajustes.RegisterCallback<ClickEvent>(evt => OnAjustesClicked());
+        }
 
-        _Menu.clicked += () =>
+        if (_Menu != null)
         {
-            Debug.Log("Menu");
-            _AudioSource.PlayOneShot(AudioClik);
-            
-            if (Unity.Netcode.NetworkManager.Singleton != null)
-            {
-                Unity.Netcode.NetworkManager.Singleton.Shutdown();
-            }
-            
-            SceneManager.LoadSceneAsync("Menu");
-        };
+            _Menu.clicked += OnMenuClicked;
+            _Menu.RegisterCallback<ClickEvent>(evt => OnMenuClicked());
+        }
 
-        _Volver.clicked += () =>
+        if (_Volver != null)
         {
-            Debug.Log("Volver");
-            _AudioSource.PlayOneShot(AudioClik);
-            _PanelAjustes.style.display = DisplayStyle.Flex;
-            _Volumen.style.display = DisplayStyle.None;
-        };
+            _Volver.clicked += OnVolverClicked;
+            _Volver.RegisterCallback<ClickEvent>(evt => OnVolverClicked());
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnPausaClicked()
     {
-        
+        PlaySound();
+        if (LevelManager.Instance != null) LevelManager.Instance.PausarJuego();
     }
 
+    private void OnContinuarClicked()
+    {
+        PlaySound();
+        if (LevelManager.Instance != null) LevelManager.Instance.ReanudarJuego();
+    }
+
+    private void OnAjustesClicked()
+    {
+        PlaySound();
+        if (_Volumen != null) _Volumen.style.display = DisplayStyle.Flex;
+        if (_PanelAjustes != null) _PanelAjustes.style.display = DisplayStyle.None;
+    }
+
+    private void OnVolverClicked()
+    {
+        PlaySound();
+        if (_PanelAjustes != null) _PanelAjustes.style.display = DisplayStyle.Flex;
+        if (_Volumen != null) _Volumen.style.display = DisplayStyle.None;
+    }
+
+    private void OnMenuClicked()
+    {
+        if (procesandoAccion) return;
+        procesandoAccion = true;
+
+        PlaySound();
+        Time.timeScale = 1f;
+
+        if (Unity.Netcode.NetworkManager.Singleton != null)
+        {
+            Unity.Netcode.NetworkManager.Singleton.Shutdown();
+        }
+
+        SceneManager.LoadScene("Menu");
+    }
+
+    private void PlaySound()
+    {
+        if (_AudioSource != null && AudioClik != null)
+        {
+            _AudioSource.PlayOneShot(AudioClik);
+        }
+    }
+
+    public void EstablecerEstadoPausaVisual(bool pausado)
+    {
+        if (_Contenedor != null)
+        {
+            _Contenedor.style.display = pausado ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        if (pausado)
+        {
+            if (_PanelAjustes != null) _PanelAjustes.style.display = DisplayStyle.Flex;
+            if (_Volumen != null) _Volumen.style.display = DisplayStyle.None;
+            if (_Tablero != null) _Tablero.style.display = DisplayStyle.None;
+        }
+        else
+        {
+            if (_PanelAjustes != null) _PanelAjustes.style.display = DisplayStyle.None;
+            if (_Volumen != null) _Volumen.style.display = DisplayStyle.None;
+        }
+    }
 }
