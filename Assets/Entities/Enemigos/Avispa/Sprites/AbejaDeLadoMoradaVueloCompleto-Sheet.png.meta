@@ -1,19 +1,28 @@
 fileFormatVersion: 2
-guid: 1698d93e1fc540c43bb03029e62585d5
+guid: f7526717ab538aa4090188dd7cdc3a0e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4459677210193543077
-    second: vida-terra HUD_0
+      213: 2345938443482806252
+    second: AbejaDeLadoMoradaVueloCompleto-Sheet_0
   - first:
-      213: 5013247292153317939
-    second: vida-terra HUD_1
+      213: -4942955490432036934
+    second: AbejaDeLadoMoradaVueloCompleto-Sheet_1
   - first:
-      213: -3143055521200603430
-    second: vida-terra HUD_2
+      213: -1203471151813586710
+    second: AbejaDeLadoMoradaVueloCompleto-Sheet_2
   - first:
-      213: 8592394909808685837
-    second: vida-terra HUD_3
+      213: 8095586594716334675
+    second: AbejaDeLadoMoradaVueloCompleto-Sheet_3
+  - first:
+      213: -6294534201191920330
+    second: AbejaDeLadoMoradaVueloCompleto-Sheet_4
+  - first:
+      213: 4476961565045080397
+    second: AbejaDeLadoMoradaVueloCompleto-Sheet_5
+  - first:
+      213: 7845926270322495334
+    second: AbejaDeLadoMoradaVueloCompleto-Sheet_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,89 +118,133 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: vida-terra HUD_0
+      name: AbejaDeLadoMoradaVueloCompleto-Sheet_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 269
-        width: 919
-        height: 220
+        x: 0
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5afbd765bc4f3ed30800000000000000
-      internalID: 4459677210193543077
+      spriteID: ce7b9b4c5927e8020800000000000000
+      internalID: 2345938443482806252
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: vida-terra HUD_1
+      name: AbejaDeLadoMoradaVueloCompleto-Sheet_1
       rect:
         serializedVersion: 2
-        x: 956
-        y: 389
-        width: 781
-        height: 170
+        x: 64
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 33accf3d9d1a29540800000000000000
-      internalID: 5013247292153317939
+      spriteID: abf4b3c9b28176bb0800000000000000
+      internalID: -4942955490432036934
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: vida-terra HUD_2
+      name: AbejaDeLadoMoradaVueloCompleto-Sheet_2
       rect:
         serializedVersion: 2
-        x: 957
-        y: 198
-        width: 781
-        height: 170
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: adef185f7af9164d0800000000000000
-      internalID: -3143055521200603430
+      spriteID: ae098ba1d596c4fe0800000000000000
+      internalID: -1203471151813586710
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: vida-terra HUD_3
+      name: AbejaDeLadoMoradaVueloCompleto-Sheet_3
       rect:
         serializedVersion: 2
-        x: 952
-        y: 7
-        width: 781
-        height: 170
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d03750165a15e3770800000000000000
-      internalID: 8592394909808685837
+      spriteID: 35a3b7a9d1d495070800000000000000
+      internalID: 8095586594716334675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AbejaDeLadoMoradaVueloCompleto-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63d886f6e7255a8a0800000000000000
+      internalID: -6294534201191920330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AbejaDeLadoMoradaVueloCompleto-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d41c69dc2dc512e30800000000000000
+      internalID: 4476961565045080397
       vertices: []
       indices: 
       edges: []
@@ -200,7 +253,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: af046603d6661e247b6354a6319e13ab
+    spriteID: ef66156ac743b30489d7e1a6ef7712d1
     internalID: 0
     vertices: []
     indices: 
@@ -210,10 +263,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      vida-terra HUD_0: 4459677210193543077
-      vida-terra HUD_1: 5013247292153317939
-      vida-terra HUD_2: -3143055521200603430
-      vida-terra HUD_3: 8592394909808685837
+      AbejaDeLadoMoradaVueloCompleto-Sheet_0: 2345938443482806252
+      AbejaDeLadoMoradaVueloCompleto-Sheet_1: -4942955490432036934
+      AbejaDeLadoMoradaVueloCompleto-Sheet_2: -1203471151813586710
+      AbejaDeLadoMoradaVueloCompleto-Sheet_3: 8095586594716334675
+      AbejaDeLadoMoradaVueloCompleto-Sheet_4: -6294534201191920330
+      AbejaDeLadoMoradaVueloCompleto-Sheet_5: 4476961565045080397
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
