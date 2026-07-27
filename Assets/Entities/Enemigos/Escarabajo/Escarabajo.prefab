@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vida: 200
-  velocidadMovimiento: 2
+  velocidadMovimiento: 1
   distanciaDelNodo: 1.3
   prefabMaterial: {fileID: 6170809395044725060, guid: 10b8833a03cea08459238a1a544d51b3, type: 3}
   estadoActual: 0
