@@ -566,7 +566,7 @@ public class BaseMenuController : MonoBehaviour
         Debug.Log("Confirmación de listo. Recargando armas del jugador y avanzando a la escena de gameplay 'Level'.");
 
         // 1. Buscar todos los PlayerController en la escena y recargar sus armas equipadas según el inventario actualizado
-        PlayerController[] jugadores = FindObjectsByType<PlayerController>();
+        PlayerController[] jugadores = FindObjectsOfType<PlayerController>();
         foreach (PlayerController player in jugadores)
         {
             if (player != null)
