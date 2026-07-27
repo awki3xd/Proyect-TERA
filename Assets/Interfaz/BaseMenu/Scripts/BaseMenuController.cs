@@ -563,9 +563,19 @@ public class BaseMenuController : MonoBehaviour
 
     private void OnListoClicked()
     {
-        Debug.Log("Confirmación de listo. Avanzando a la escena de gameplay 'Level'.");
+        Debug.Log("Confirmación de listo. Recargando armas del jugador y avanzando a la escena de gameplay 'Level'.");
 
-        // 1. Si NetworkManager no está escuchando (offline/singleplayer), iniciar Host local para que Netcode genere el PlayerPrefab
+        // 1. Buscar todos los PlayerController en la escena y recargar sus armas equipadas según el inventario actualizado
+        PlayerController[] jugadores = FindObjectsByType<PlayerController>();
+        foreach (PlayerController player in jugadores)
+        {
+            if (player != null)
+            {
+                player.RecargarArmasEquipadas();
+            }
+        }
+
+        // 2. Si NetworkManager no está escuchando (offline/singleplayer), iniciar Host local para que Netcode genere el PlayerPrefab
         if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsListening)
         {
             var transport = NetworkManager.Singleton.GetComponent<Unity.Netcode.Transports.UTP.UnityTransport>();
@@ -576,7 +586,7 @@ public class BaseMenuController : MonoBehaviour
             NetworkManager.Singleton.StartHost();
         }
 
-        // 2. Cargar la escena 'Level' mediante NetworkSceneManager para instanciar correctamente al jugador y los nodos
+        // 3. Cargar la escena 'Level' mediante NetworkSceneManager para instanciar correctamente al jugador y los nodos
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer)
         {
             NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
