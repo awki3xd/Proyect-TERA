@@ -13,5 +13,4 @@
             <ui:Button text="Volver" name="Volver" style="position: relative; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/Botones.png?fileID=846010472778899471&amp;guid=f9762b8b6166dd64f8cd51a144eb0773&amp;type=3#Botones_0&quot;); -unity-font-style: bold-and-italic; color: rgb(255, 251, 251); font-size: 50px; width: 500px; height: 100px; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:Button name="Pausa" emoji-fallback-support="true" focusable="false" class="Botones" style="width: 100px; height: 100px; background-image: url(&quot;project://database/Assets/Interfaz/Menu/Imagenes/Botones.png?fileID=-7907714960023122294&amp;guid=f9762b8b6166dd64f8cd51a144eb0773&amp;type=3#Botones_2&quot;); background-size: 100% 100%; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; -unity-font-style: normal; -unity-text-align: upper-left; white-space: pre; position: absolute; top: 14px; left: 753px;" />
 </ui:UXML>

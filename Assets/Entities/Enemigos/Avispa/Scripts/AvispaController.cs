@@ -19,11 +19,15 @@ public class AvispaController : MonoBehaviour
     [Tooltip("Tiempo de recarga entre disparos del francotirador.")]
     public float velocidadAtaque = 3.5f;
 
-    [Header("Referencias de Prefabs")]
+    [Header("Referencias de Prefabs y Recompensas")]
     [Tooltip("Prefab de la bala de la avispa (con ValaMoscaController y EntidadDaño con destruirAlImpactar = false).")]
     public GameObject prefabProyectil;
     [Tooltip("Prefab del material o recurso que soltará al morir.")]
     public GameObject prefabMaterial;
+    [Tooltip("Prefab del cofre de armas élite.")]
+    public GameObject prefabCofre;
+    [Tooltip("Referencia al ScriptableObject DatosNivel para calcular probabilidad de drop.")]
+    public DatosNivel datosNivel;
 
     [Header("Configuración de IA")]
     [Tooltip("Distancia respecto al centro (0,0) a la que se detendrá permanentemente.")]
@@ -54,6 +58,11 @@ public class AvispaController : MonoBehaviour
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         animator = GetComponentInChildren<Animator>();
+
+        if (datosNivel == null)
+        {
+            datosNivel = Resources.Load<DatosNivel>("DatosNivel");
+        }
 
         if (!inicializado)
         {
@@ -293,6 +302,26 @@ public class AvispaController : MonoBehaviour
             Instantiate(prefabMaterial, transform.position, Quaternion.identity);
         }
 
+        // 4. Evaluar probabilidad de drop de cofre de armas según el nivel
+        int nivelActual = datosNivel != null ? datosNivel.numeroNivel : 1;
+        float probCofre = CalcularProbabilidadCofre(nivelActual);
+
+        if (prefabCofre != null && Random.value <= probCofre)
+        {
+            Instantiate(prefabCofre, transform.position, Quaternion.identity);
+            Debug.Log($"[Avispa Muerte] ¡Cofre generado en Nivel {nivelActual}! (Probabilidad: {probCofre * 100:F0}%).");
+        }
+
         Destroy(gameObject);
+    }
+
+    private float CalcularProbabilidadCofre(int nivel)
+    {
+        if (nivel <= 2) return 1.0f;       // 100% en Niveles 1 y 2
+        if (nivel <= 5) return 0.75f;      // 75% en Niveles 3 a 5
+        if (nivel <= 10) return 0.65f;     // 65% en Niveles 6 a 10
+        if (nivel <= 15) return 0.50f;     // 50% en Niveles 11 a 15
+        if (nivel <= 20) return 0.20f;     // 20% en Niveles 16 a 20
+        return 0.10f;                      // 10% en Nivel > 20
     }
 }

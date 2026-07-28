@@ -32,6 +32,9 @@ public class SpawnEnemigos : MonoBehaviour
     public DatosGlobalesEnemigos datosEnemigosLocales;
 
     private bool alternarGrupo = false;
+    private Coroutine corrutinaIndividual;
+    private Coroutine corrutinaGrupal;
+    private Coroutine corrutinaEliteForzado;
 
     private void Start()
     {
@@ -47,9 +50,64 @@ public class SpawnEnemigos : MonoBehaviour
             datosEnemigosLocales = Instantiate(datosGlobalesEnemigos);
         }
 
-        // Iniciar rutinas procedurales de oleadas
-        StartCoroutine(SpawneoIndividualCo());
-        StartCoroutine(SpawneoGrupalCo());
+        // Iniciar rutinas procedurales de oleadas y guardar sus referencias
+        corrutinaIndividual = StartCoroutine(SpawneoIndividualCo());
+        corrutinaGrupal = StartCoroutine(SpawneoGrupalCo());
+
+        // Forzar un único spawneo de enemigo élite a los 15 segundos si estamos en la Oleada/Nivel 1
+        int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
+        if (nivel == 1)
+        {
+            corrutinaEliteForzado = StartCoroutine(SpawneoForzadoEliteNivel1Co());
+        }
+    }
+
+    private IEnumerator SpawneoForzadoEliteNivel1Co()
+    {
+        yield return new WaitForSeconds(15f);
+
+        int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
+        if (nivel == 1)
+        {
+            Vector2 puntoSpawneo = ObtenerPuntoSpawneoAleatorio();
+            // Elegir aleatoriamente entre Escarabajo o Avispa
+            GameObject prefabElite = (Random.value < 0.5f && prefabEscarabajo != null) ? prefabEscarabajo : prefabAvispa;
+            if (prefabElite == null) prefabElite = prefabEscarabajo ?? prefabAvispa;
+
+            if (prefabElite != null)
+            {
+                InstanciarPrefabEspecifico(prefabElite, puntoSpawneo);
+                Debug.Log($"[SpawnEnemigos] Spawneo forzado de élite ({prefabElite.name}) en Nivel 1 a los 15 segundos.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Pausa y detiene instantáneamente todas las corrutinas de spawneo de enemigos al ganar la partida.
+    /// </summary>
+    public void DetenerSpawneo()
+    {
+        if (corrutinaIndividual != null)
+        {
+            StopCoroutine(corrutinaIndividual);
+            corrutinaIndividual = null;
+        }
+
+        if (corrutinaGrupal != null)
+        {
+            StopCoroutine(corrutinaGrupal);
+            corrutinaGrupal = null;
+        }
+
+        if (corrutinaEliteForzado != null)
+        {
+            StopCoroutine(corrutinaEliteForzado);
+            corrutinaEliteForzado = null;
+        }
+
+        StopAllCoroutines();
+        enabled = false;
+        Debug.Log("[SpawnEnemigos] Corrutinas de spawneo de enemigos pausadas instantáneamente.");
     }
 
     /// <summary>
