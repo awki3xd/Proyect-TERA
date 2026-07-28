@@ -100,6 +100,14 @@ public class BaseMenuController : MonoBehaviour
             }
         }
 
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            if (datosNivelSO != null && datosNivelSO.numeroNivel < 9)
+            {
+                datosNivelSO.numeroNivel = 9;
+            }
+        }
+
         RegistrarMensajeriaRed();
         InicializarReferencias();
         RegistrarEventos();

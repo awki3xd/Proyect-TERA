@@ -43,6 +43,16 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         BuscarReferenciasAutomaticas();
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            if (datosNivel != null && datosNivel.numeroNivel < 9)
+            {
+                datosNivel.numeroNivel = 9;
+                Debug.Log($"[LevelManager Multijugador] Nivel inicial forzado a {datosNivel.numeroNivel}.");
+            }
+        }
+
         SincronizarJugadoresEnRedEnNivel();
     }
 
