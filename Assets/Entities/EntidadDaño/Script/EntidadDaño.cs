@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 
 public class EntidadDaño : MonoBehaviour
 {
@@ -19,6 +20,22 @@ public class EntidadDaño : MonoBehaviour
     [Header("Comportamiento de Impacto")]
     [Tooltip("Define si el objeto de daño se autodestruye al impactar un objetivo válido (ej: Balas).")]
     public bool destruirAlImpactar = true;
+
+    private void DestruirObjetoSafely()
+    {
+        var netObj = GetComponent<NetworkObject>();
+        if (netObj != null && netObj.IsSpawned)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                netObj.Despawn(true);
+            }
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     /// <summary>
     /// Inicializa los parámetros de daño y origen dinámicamente al instanciar el objeto.
@@ -44,7 +61,7 @@ public class EntidadDaño : MonoBehaviour
 
                     if (destruirAlImpactar)
                     {
-                        Destroy(gameObject);
+                        DestruirObjetoSafely();
                     }
                 }
             }
@@ -61,7 +78,7 @@ public class EntidadDaño : MonoBehaviour
                         // Después de aplicar el daño, este objeto se destruye si está configurado para ello
                         if (destruirAlImpactar)
                         {
-                            Destroy(gameObject);
+                            DestruirObjetoSafely();
                         }
                     }
                 }
@@ -79,7 +96,7 @@ public class EntidadDaño : MonoBehaviour
                     escorpion.RecibirDaño(daño);
                     if (destruirAlImpactar)
                     {
-                        Destroy(gameObject);
+                        DestruirObjetoSafely();
                     }
                 }
                 else
@@ -90,7 +107,7 @@ public class EntidadDaño : MonoBehaviour
                         mosca.RecibirDaño(daño);
                         if (destruirAlImpactar)
                         {
-                            Destroy(gameObject);
+                            DestruirObjetoSafely();
                         }
                     }
                     else
@@ -101,7 +118,7 @@ public class EntidadDaño : MonoBehaviour
                             avispa.RecibirDaño(daño);
                             if (destruirAlImpactar)
                             {
-                                Destroy(gameObject);
+                                DestruirObjetoSafely();
                             }
                         }
                         else
@@ -112,7 +129,7 @@ public class EntidadDaño : MonoBehaviour
                                 escarabajo.RecibirDaño(daño);
                                 if (destruirAlImpactar)
                                 {
-                                    Destroy(gameObject);
+                                    DestruirObjetoSafely();
                                 }
                             }
                         }

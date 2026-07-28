@@ -32,12 +32,19 @@ public class SpawnEnemigos : MonoBehaviour
     public DatosGlobalesEnemigos datosEnemigosLocales;
 
     private bool alternarGrupo = false;
+    private bool permitiraSpawneo = true;
     private Coroutine corrutinaIndividual;
     private Coroutine corrutinaGrupal;
     private Coroutine corrutinaEliteForzado;
 
+    private void OnDisable()
+    {
+        DetenerSpawneo();
+    }
+
     private void Start()
     {
+        permitiraSpawneo = true;
         // Solo el Servidor/Host debe ejecutar las rutinas de spawneo de enemigos si Netcode esta activo
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && !NetworkManager.Singleton.IsServer)
         {
@@ -87,6 +94,8 @@ public class SpawnEnemigos : MonoBehaviour
     /// </summary>
     public void DetenerSpawneo()
     {
+        permitiraSpawneo = false;
+
         if (corrutinaIndividual != null)
         {
             StopCoroutine(corrutinaIndividual);

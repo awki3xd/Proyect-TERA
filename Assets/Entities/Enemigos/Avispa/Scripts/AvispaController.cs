@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 public class AvispaController : MonoBehaviour
 {
@@ -209,6 +210,14 @@ public class AvispaController : MonoBehaviour
         Quaternion rot = Quaternion.Euler(0f, 0f, angulo);
 
         GameObject proyectil = Instantiate(prefabProyectil, posDisparo, rot);
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            var netObj = proyectil.GetComponent<NetworkObject>();
+            if (netObj != null)
+            {
+                netObj.Spawn();
+            }
+        }
 
         // Sonido de disparo francotirador/enemigo
         if (SoundManager.Instance != null)
@@ -299,7 +308,12 @@ public class AvispaController : MonoBehaviour
         // 3. Spawnear recurso drop
         if (prefabMaterial != null)
         {
-            Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            GameObject matObj = Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            {
+                var netObjMat = matObj.GetComponent<NetworkObject>();
+                if (netObjMat != null) netObjMat.Spawn();
+            }
         }
 
         // 4. Evaluar probabilidad de drop de cofre de armas según el nivel
@@ -308,8 +322,23 @@ public class AvispaController : MonoBehaviour
 
         if (prefabCofre != null && Random.value <= probCofre)
         {
-            Instantiate(prefabCofre, transform.position, Quaternion.identity);
+            GameObject cofreObj = Instantiate(prefabCofre, transform.position, Quaternion.identity);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            {
+                var netObjCofre = cofreObj.GetComponent<NetworkObject>();
+                if (netObjCofre != null) netObjCofre.Spawn();
+            }
             Debug.Log($"[Avispa Muerte] ¡Cofre generado en Nivel {nivelActual}! (Probabilidad: {probCofre * 100:F0}%).");
+        }
+
+        var netObj = GetComponent<NetworkObject>();
+        if (netObj != null && netObj.IsSpawned)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                netObj.Despawn(true);
+            }
+            yield break;
         }
 
         Destroy(gameObject);

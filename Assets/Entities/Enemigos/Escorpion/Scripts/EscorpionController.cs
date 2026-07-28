@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 public class EscorpionController : MonoBehaviour
 {
@@ -362,10 +363,28 @@ public class EscorpionController : MonoBehaviour
         // 4. Instanciar el material (Bridgmanita) de forma independiente en su posición
         if (prefabMaterial != null)
         {
-            Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            GameObject matObj = Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            {
+                var netObjMat = matObj.GetComponent<NetworkObject>();
+                if (netObjMat != null)
+                {
+                    netObjMat.Spawn();
+                }
+            }
         }
 
         // 5. Destruir el enemigo
+        var netObj = GetComponent<NetworkObject>();
+        if (netObj != null && netObj.IsSpawned)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                netObj.Despawn(true);
+            }
+            yield break;
+        }
+
         Destroy(gameObject);
     }
 }

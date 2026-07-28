@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 public class EscarabajoController : MonoBehaviour
 {
@@ -358,7 +359,12 @@ public class EscarabajoController : MonoBehaviour
         // Spawnear drop de material
         if (prefabMaterial != null)
         {
-            Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            GameObject matObj = Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            {
+                var netObjMat = matObj.GetComponent<NetworkObject>();
+                if (netObjMat != null) netObjMat.Spawn();
+            }
         }
 
         // Evaluar probabilidad de drop de cofre de armas según el nivel
@@ -367,8 +373,23 @@ public class EscarabajoController : MonoBehaviour
 
         if (prefabCofre != null && Random.value <= probCofre)
         {
-            Instantiate(prefabCofre, transform.position, Quaternion.identity);
+            GameObject cofreObj = Instantiate(prefabCofre, transform.position, Quaternion.identity);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            {
+                var netObjCofre = cofreObj.GetComponent<NetworkObject>();
+                if (netObjCofre != null) netObjCofre.Spawn();
+            }
             Debug.Log($"[Escarabajo Muerte] ¡Cofre generado en Nivel {nivelActual}! (Probabilidad: {probCofre * 100:F0}%).");
+        }
+
+        var netObj = GetComponent<NetworkObject>();
+        if (netObj != null && netObj.IsSpawned)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                netObj.Despawn(true);
+            }
+            yield break;
         }
 
         Destroy(gameObject);

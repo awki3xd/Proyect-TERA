@@ -36,6 +36,14 @@ public class DatosInventario : ScriptableObject
     }
 
     /// <summary>
+    /// Asigna directamente la cantidad total de materiales desde el servidor/red.
+    /// </summary>
+    public void EstablecerMateriales(int cantidad)
+    {
+        materiales = Mathf.Max(0, cantidad);
+    }
+
+    /// <summary>
     /// Descuenta materiales si hay suficiente saldo disponible.
     /// Devuelve true si se pudo realizar la compra.
     /// </summary>

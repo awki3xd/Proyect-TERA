@@ -13,6 +13,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Multijugador")]
     public NetworkVariable<FixedString32Bytes> playerName = new NetworkVariable<FixedString32Bytes>("Jugador", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<bool> isReady = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public static NetworkVariable<int> networkMateriales = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private TextMeshPro textoNombre;
 
     [Header("Referencias a Slots de Armas")]
@@ -69,20 +70,50 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (datosPersonaje != null)
+        {
+            datosPersonaje = Instantiate(datosPersonaje);
+        }
+        if (datosInventario != null)
+        {
+            datosInventario = Instantiate(datosInventario);
+        }
+
+        NetworkObject netObj = GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.DestroyWithScene = false;
+        }
     }
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        NetworkObject netObj = GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.DestroyWithScene = false;
+        }
         
         textoNombre = GetComponentInChildren<TextMeshPro>();
 
         if (IsOwner)
         {
-            string myName = PlayerPrefs.GetString("PlayerName", "Jugador");
+            string currentVal = playerName.Value.ToString();
+            string myName = (!string.IsNullOrWhiteSpace(currentVal) && currentVal != "Jugador")
+                ? currentVal
+                : PlayerPrefs.GetString("PlayerName", "");
+
+            if (string.IsNullOrWhiteSpace(myName) || myName == "Jugador")
+            {
+                myName = IsServer ? "Jugador 1" : "Jugador 2";
+            }
             ActualizarTextoNombre(myName); // Actualizar localmente de inmediato
             SetPlayerNameServerRpc(myName); // Enviar al servidor para que los demás lo vean
         }
@@ -91,22 +122,56 @@ public class PlayerController : NetworkBehaviour
         {
             ActualizarTextoNombre(newValue.ToString());
         };
+
+        isReady.OnValueChanged += (oldValue, newValue) =>
+        {
+            var menu = BaseMenuController.Instance ?? FindFirstObjectByType<BaseMenuController>();
+            if (menu != null)
+            {
+                menu.RefrescarEstadoListoUI();
+            }
+        };
+
+        networkMateriales.OnValueChanged += (oldVal, newVal) =>
+        {
+            if (datosInventario != null)
+            {
+                datosInventario.EstablecerMateriales(newVal);
+            }
+        };
         
-        ActualizarTextoNombre(playerName.Value.ToString());
+        if (!string.IsNullOrEmpty(playerName.Value.ToString()))
+        {
+            ActualizarTextoNombre(playerName.Value.ToString());
+        }
     }
 
     [ServerRpc]
     private void SetPlayerNameServerRpc(string newName)
     {
+        if (string.IsNullOrWhiteSpace(newName) || newName == "Jugador")
+        {
+            newName = $"Jugador {OwnerClientId + 1}";
+        }
+
         playerName.Value = newName;
+        Debug.Log($"[PlayerController] Servidor asignó nombre exacto '{newName}' al jugador OwnerId={OwnerClientId}");
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void SetReadyStatusServerRpc(bool ready, ServerRpcParams rpcParams = default)
     {
-        if (rpcParams.Receive.SenderClientId == OwnerClientId || IsServer)
+        isReady.Value = ready;
+        Debug.Log($"[PlayerController] SetReadyStatusServerRpc ejecutado en servidor: OwnerClientId={OwnerClientId}, ready={ready}");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SumarMaterialesServerRpc(int cantidad)
+    {
+        networkMateriales.Value += cantidad;
+        if (datosInventario != null)
         {
-            isReady.Value = ready;
+            datosInventario.EstablecerMateriales(networkMateriales.Value);
         }
     }
 

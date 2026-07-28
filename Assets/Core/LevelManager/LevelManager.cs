@@ -43,6 +43,29 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         BuscarReferenciasAutomaticas();
+        SincronizarJugadoresEnRedEnNivel();
+    }
+
+    private void SincronizarJugadoresEnRedEnNivel()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            Debug.Log("[LevelManager] Re-sincronizando jugadores en red para la escena Level...");
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.PlayerObject != null)
+                {
+                    NetworkObject netObj = client.PlayerObject;
+                    if (netObj.IsSpawned)
+                    {
+                        ulong clientId = client.ClientId;
+                        Debug.Log($" -> Re-espawneando en red PlayerObject para cliente {clientId}...");
+                        netObj.Despawn(false);
+                        netObj.SpawnWithOwnership(clientId, true);
+                    }
+                }
+            }
+        }
     }
 
     private void OnDestroy()

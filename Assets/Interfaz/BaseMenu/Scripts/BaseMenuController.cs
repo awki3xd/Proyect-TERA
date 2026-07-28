@@ -41,6 +41,7 @@ public class BaseMenuController : MonoBehaviour
     private Button btnListo;
 
     // --- SISTEMA MULTIJUGADOR LISTO ---
+    private const string MESSAGE_PLAYER_READY = "Tera_PlayerReadyMessage";
     private bool yaListoPulsado = false;
     private bool nivelCargando = false;
 
@@ -63,8 +64,11 @@ public class BaseMenuController : MonoBehaviour
     private float valAleatoriaRegen;
     private int costoAleatoria;
 
+    public static BaseMenuController Instance { get; private set; }
+
     private void OnEnable()
     {
+        Instance = this;
         yaListoPulsado = false;
         nivelCargando = false;
 
@@ -81,6 +85,8 @@ public class BaseMenuController : MonoBehaviour
                 player.ReactivarYRestaurar();
         }
 
+        ImprimirEstadoJugadoresLog("OnEnable BaseMenu");
+
         // Resetear estado de listo de todos los jugadores en el servidor
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
         {
@@ -94,6 +100,7 @@ public class BaseMenuController : MonoBehaviour
             }
         }
 
+        RegistrarMensajeriaRed();
         InicializarReferencias();
         RegistrarEventos();
         GenerarMejorasAleatorias();
@@ -102,15 +109,94 @@ public class BaseMenuController : MonoBehaviour
 
     private void OnDisable()
     {
+        DesregistrarMensajeriaRed();
         DesregistrarEventos();
+    }
+
+    private void RegistrarMensajeriaRed()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.CustomMessagingManager != null)
+        {
+            if (NetworkManager.Singleton.IsServer)
+            {
+                NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler(MESSAGE_PLAYER_READY, OnPlayerReadyMessageReceived);
+                Debug.Log($"[BaseMenu Netcode] Handler '{MESSAGE_PLAYER_READY}' registrado en el Servidor.");
+            }
+        }
+    }
+
+    private void DesregistrarMensajeriaRed()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.CustomMessagingManager != null)
+        {
+            NetworkManager.Singleton.CustomMessagingManager.UnregisterNamedMessageHandler(MESSAGE_PLAYER_READY);
+        }
+    }
+
+    private void OnPlayerReadyMessageReceived(ulong senderClientId, FastBufferReader reader)
+    {
+        reader.ReadValueSafe(out ulong clientId);
+        Debug.Log($"[BaseMenu CustomMessage] ¡Servidor recibió mensaje 'Listo' del cliente ID: {clientId} (SenderClientId: {senderClientId})!");
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.ConnectedClientsList != null)
+        {
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.ClientId == clientId && client.PlayerObject != null)
+                {
+                    var pc = client.PlayerObject.GetComponent<PlayerController>();
+                    if (pc != null)
+                    {
+                        pc.isReady.Value = true;
+                        Debug.Log($"[BaseMenu CustomMessage] Servidor asignó exitosamente pc.isReady.Value = true para ClientId {clientId}");
+                    }
+                }
+            }
+        }
+
+        RefrescarEstadoListoUI();
+    }
+
+    private void ImprimirEstadoJugadoresLog(string contexto)
+    {
+        Debug.Log($"=== [BaseMenu TRACE - {contexto}] ===");
+        bool isServer = NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer;
+        ulong localId = NetworkManager.Singleton != null ? NetworkManager.Singleton.LocalClientId : 999;
+        Debug.Log($"Cliente Local ID: {localId}, Es Servidor/Host: {isServer}");
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            Debug.Log($"Total Clientes en Netcode ConnectedClientsList: {NetworkManager.Singleton.ConnectedClientsList.Count}");
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                string pInfo = "NULL";
+                if (client.PlayerObject != null)
+                {
+                    var pc = client.PlayerObject.GetComponent<PlayerController>();
+                    pInfo = pc != null ? $"PC_Name:{pc.name}, OwnerId:{pc.OwnerClientId}, isReady:{pc.isReady.Value}" : "Sin PlayerController";
+                }
+                Debug.Log($" -> Netcode ClientId: {client.ClientId}, PlayerObject: {pInfo}");
+            }
+        }
+
+        PlayerController[] enEscena = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        Debug.Log($"Total PlayerControllers en Escena (FindObjectsByType): {enEscena.Length}");
+        foreach (var pc in enEscena)
+        {
+            if (pc != null)
+            {
+                Debug.Log($" -> Escena PlayerController: {pc.name}, OwnerId:{pc.OwnerClientId}, IsOwner:{pc.IsOwner}, isReady:{pc.isReady.Value}, Activo:{pc.gameObject.activeInHierarchy}");
+            }
+        }
+        Debug.Log($"=================================================");
     }
 
     private void Update()
     {
         if (nivelCargando) return;
 
-        // Solo el host verifica si todos estan listos tras haber pulsado 'Listo'
-        if (yaListoPulsado && NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsListening)
+        // El host verifica si todos los jugadores conectados están listos
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
         {
             if (TodosListos())
             {
@@ -120,12 +206,73 @@ public class BaseMenuController : MonoBehaviour
             }
         }
 
-        // Actualizar texto del boton para dar feedback visual
+        // Actualizar texto del botón para dar feedback visual
         if (btnListo != null && yaListoPulsado)
         {
-            bool todos = TodosListos();
-            btnListo.text = todos ? "Cargando..." : "Esperando jugadores...";
+            RefrescarEstadoListoUI();
         }
+    }
+
+    public void RefrescarEstadoListoUI()
+    {
+        if (btnListo != null && yaListoPulsado)
+        {
+            int listos = 0;
+            int total = 1;
+
+            if (BaseMenuNetworkManager.Instance != null && BaseMenuNetworkManager.Instance.IsSpawned)
+            {
+                listos = BaseMenuNetworkManager.Instance.numListos.Value;
+                total = BaseMenuNetworkManager.Instance.totalClientes.Value;
+            }
+            else
+            {
+                listos = ContarJugadoresListos(out total);
+            }
+
+            btnListo.text = (listos >= total && total > 0) ? "Cargando..." : $"Esperando ({listos}/{total})...";
+        }
+    }
+
+    private int ContarJugadoresListos(out int totalJugadores)
+    {
+        int listos = 0;
+        int total = 0;
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            total = NetworkManager.Singleton.ConnectedClientsList.Count;
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.PlayerObject != null)
+                {
+                    var pc = client.PlayerObject.GetComponent<PlayerController>();
+                    if (pc != null && pc.isReady.Value)
+                    {
+                        listos++;
+                    }
+                }
+            }
+        }
+        else
+        {
+            PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            total = players.Length;
+            foreach (var pc in players)
+            {
+                if (pc != null && pc.isReady.Value)
+                {
+                    listos++;
+                }
+            }
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+            {
+                total = Mathf.Max(total, NetworkManager.Singleton.ConnectedClientsList.Count);
+            }
+        }
+
+        totalJugadores = Mathf.Max(1, total);
+        return listos;
     }
 
     private bool TodosListos()
@@ -133,17 +280,9 @@ public class BaseMenuController : MonoBehaviour
         if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
             return true; // Offline: siempre listo
 
-        PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        
-        int clientesEsperados = NetworkManager.Singleton.ConnectedClientsList.Count;
-        if (players.Length < clientesEsperados) return false;
-
-        foreach (var pc in players)
-        {
-            if (pc != null && !pc.isReady.Value)
-                return false;
-        }
-        return true;
+        int total;
+        int listos = ContarJugadoresListos(out total);
+        return total > 0 && listos >= total;
     }
 
     private void InicializarReferencias()
@@ -294,6 +433,12 @@ public class BaseMenuController : MonoBehaviour
 
     private PlayerController GetLocalPlayerController()
     {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClient != null && NetworkManager.Singleton.LocalClient.PlayerObject != null)
+        {
+            var pc = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerController>();
+            if (pc != null) return pc;
+        }
+
         PlayerController[] all = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var p in all)
         {
@@ -654,7 +799,8 @@ public class BaseMenuController : MonoBehaviour
         if (yaListoPulsado) return; // Evitar doble click
         yaListoPulsado = true;
 
-        Debug.Log("[BaseMenu] Listo pulsado.");
+        Debug.Log("[BaseMenu] Botón Listo pulsado.");
+        ImprimirEstadoJugadoresLog("OnListoClicked Presionado");
 
         // Restaurar jugadores
         PlayerController[] jugadores = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -664,47 +810,48 @@ public class BaseMenuController : MonoBehaviour
                 player.ReactivarYRestaurar();
         }
 
-        // Modo offline/singleplayer
-        if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsListening)
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
         {
-            var transport = NetworkManager.Singleton.GetComponent<Unity.Netcode.Transports.UTP.UnityTransport>();
-            if (transport != null)
-                transport.SetConnectionData("127.0.0.1", 7777);
-            NetworkManager.Singleton.StartHost();
-            return;
-        }
+            ulong myId = NetworkManager.Singleton.LocalClientId;
 
-        // Multijugador: marcar este jugador como listo en el servidor
-        PlayerController localPlayer = GetLocalPlayerController();
-        if (localPlayer != null)
-        {
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            if (NetworkManager.Singleton.IsServer)
             {
-                localPlayer.isReady.Value = true;
-            }
-            else
-            {
-                localPlayer.SetReadyStatusServerRpc(true);
-            }
-            Debug.Log($"[BaseMenu] Jugador {localPlayer.playerName.Value} marcado como listo.");
-        }
-        else
-        {
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-            {
+                // El Host se marca a sí mismo como listo directamente en la lista oficial
+                Debug.Log($"[BaseMenu] HOST marcando su propio isReady = true (ClientId: {myId})...");
                 foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
                 {
-                    if (client.ClientId == NetworkManager.Singleton.LocalClientId && client.PlayerObject != null)
+                    if (client.ClientId == myId && client.PlayerObject != null)
                     {
                         var pc = client.PlayerObject.GetComponent<PlayerController>();
                         if (pc != null) pc.isReady.Value = true;
                     }
                 }
             }
+            else
+            {
+                // El Cliente envía un mensaje de red directo al Servidor por CustomMessagingManager
+                Debug.Log($"[BaseMenu] CLIENTE enviando mensaje de red directo '{MESSAGE_PLAYER_READY}' al Servidor desde cliente ID: {myId}...");
+                using (var writer = new FastBufferWriter(sizeof(ulong), Unity.Collections.Allocator.Temp))
+                {
+                    writer.WriteValueSafe(myId);
+                    NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage(MESSAGE_PLAYER_READY, NetworkManager.ServerClientId, writer);
+                }
+            }
+
+            // Fallback secundario mediante PlayerController si estuviera disponible
+            PlayerController localPlayer = GetLocalPlayerController();
+            if (localPlayer != null && !NetworkManager.Singleton.IsServer)
+            {
+                localPlayer.SetReadyStatusServerRpc(true);
+            }
+        }
+        else
+        {
+            // Singleplayer / Offline
+            SceneManager.LoadScene("Level");
         }
 
-        if (btnListo != null)
-            btnListo.text = "Esperando jugadores...";
+        RefrescarEstadoListoUI();
     }
 
     // --- CLASES INTERNAS DE ORGANIZACION ---
