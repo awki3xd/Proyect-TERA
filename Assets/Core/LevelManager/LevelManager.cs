@@ -19,6 +19,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private SpawnEnemigos spawnEnemigos;
     [SerializeField] private Pausa pausaUI;
 
+    [Header("Configuración Multijugador")]
+    [Tooltip("Nivel/Oleada en el que comenzará la partida al jugar en modo online.")]
+    [SerializeField] private int nivelInicialOnline = 9;
+
     [Header("Estado de Nivel")]
     private bool partidaFinalizada = false;
     private bool victoriaProcesada = false;
@@ -46,9 +50,9 @@ public class LevelManager : MonoBehaviour
 
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
         {
-            if (datosNivel != null && datosNivel.numeroNivel < 9)
+            if (datosNivel != null && datosNivel.numeroNivel < nivelInicialOnline)
             {
-                datosNivel.numeroNivel = 9;
+                datosNivel.numeroNivel = nivelInicialOnline;
                 Debug.Log($"[LevelManager Multijugador] Nivel inicial fijado a {datosNivel.numeroNivel}.");
             }
         }
