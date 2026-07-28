@@ -101,7 +101,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   datosPersonaje: {fileID: 11400000, guid: 359f00985c3733848ac6740c92636b8b, type: 2}
-  datosInventario: {fileID: 11400000, guid: 0f0cf33713422b2489212156de864751, type: 2}
   datosArma: {fileID: 11400000, guid: d4cae9266c9111340998887279c73f3a, type: 2}
-  ranuraArma: 1
   "ca\xF1onPistola": {fileID: 0}
+  puedeDisparar: 0
