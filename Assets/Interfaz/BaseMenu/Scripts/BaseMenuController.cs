@@ -423,6 +423,13 @@ public class BaseMenuController : MonoBehaviour
 
     public void RefrescarPantalla()
     {
+        PlayerController localPC = GetLocalPlayerController();
+        if (localPC != null)
+        {
+            if (localPC.datosInventario != null) inventarioSO = localPC.datosInventario;
+            if (localPC.datosPersonaje != null) playerStatsSO = localPC.datosPersonaje;
+        }
+
         RecalcularEstadisticasEnemigos();
         ActualizarHeader();
         ActualizarEstadisticasJugador();
@@ -655,6 +662,12 @@ public class BaseMenuController : MonoBehaviour
             seccionOrigen = SeccionUI.Ninguna;
 
             RefrescarPantalla();
+
+            PlayerController localPC = GetLocalPlayerController();
+            if (localPC != null)
+            {
+                localPC.RecargarArmasEquipadas();
+            }
         }
     }
 
