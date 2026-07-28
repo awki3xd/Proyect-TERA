@@ -198,11 +198,12 @@ public class LevelManager : MonoBehaviour
         if (spawnEnemigos != null)
             spawnEnemigos.enabled = false;
 
-        // Bloquear inputs del jugador deshabilitando el controlador de movimiento
-        PlayerController[] jugadores = FindObjectsOfType<PlayerController>();
+        // Bloquear inputs del jugador solo deteniendo velocidad, sin deshabilitar el script
+        // (deshabilitar PlayerController rompe la gestion de escenas de Netcode)
+        PlayerController[] jugadores = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var p in jugadores)
         {
-            if (p != null) p.enabled = false;
+            if (p == null) continue;
             Rigidbody2D rb = p.GetComponent<Rigidbody2D>();
             if (rb != null) rb.linearVelocity = Vector2.zero;
         }
@@ -295,13 +296,7 @@ public class LevelManager : MonoBehaviour
 
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer)
         {
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                if (client.PlayerObject != null)
-                {
-                    client.PlayerObject.Despawn();
-                }
-            }
+            // NO hacer Despawn de jugadores antes del LoadScene; Netcode los migra automaticamente
             NetworkManager.Singleton.SceneManager.LoadScene("Derrota", LoadSceneMode.Single);
         }
         else
