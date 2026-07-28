@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class SpawnEnemigos : MonoBehaviour
 {
@@ -34,6 +35,12 @@ public class SpawnEnemigos : MonoBehaviour
 
     private void Start()
     {
+        // Solo el Servidor/Host debe ejecutar las rutinas de spawneo de enemigos si Netcode esta activo
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && !NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
+
         // Usar los datos globales calculados previamente en la base
         if (datosGlobalesEnemigos != null)
         {
@@ -170,6 +177,15 @@ public class SpawnEnemigos : MonoBehaviour
         if (prefab == null) return;
 
         GameObject objEnemigo = Instantiate(prefab, posicion, Quaternion.identity);
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            NetworkObject netObj = objEnemigo.GetComponent<NetworkObject>();
+            if (netObj != null)
+            {
+                netObj.Spawn();
+            }
+        }
 
         EscorpionController escorpion = objEnemigo.GetComponent<EscorpionController>();
         if (escorpion != null)

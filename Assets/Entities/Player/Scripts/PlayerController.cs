@@ -69,9 +69,6 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
-        // Mantener al jugador vivo entre cambios de escena sin depender de Netcode
-        DontDestroyOnLoad(gameObject);
-
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -104,10 +101,13 @@ public class PlayerController : NetworkBehaviour
         playerName.Value = newName;
     }
 
-    [ServerRpc]
-    public void SetReadyStatusServerRpc(bool ready)
+    [ServerRpc(RequireOwnership = false)]
+    public void SetReadyStatusServerRpc(bool ready, ServerRpcParams rpcParams = default)
     {
-        isReady.Value = ready;
+        if (rpcParams.Receive.SenderClientId == OwnerClientId || IsServer)
+        {
+            isReady.Value = ready;
+        }
     }
 
     private void ActualizarTextoNombre(string nombre)

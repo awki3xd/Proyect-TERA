@@ -40,6 +40,10 @@ public class BaseMenuController : MonoBehaviour
     private Button[] slotsEquipados = new Button[4];
     private Button btnListo;
 
+    // --- SISTEMA MULTIJUGADOR LISTO ---
+    private bool yaListoPulsado = false;
+    private bool nivelCargando = false;
+
     // --- VARIABLES DE CONTROL DE SELECCION ---
     private int indiceOrigen = -1;
     private SeccionUI seccionOrigen = SeccionUI.Ninguna;
@@ -61,18 +65,32 @@ public class BaseMenuController : MonoBehaviour
 
     private void OnEnable()
     {
+        yaListoPulsado = false;
+        nivelCargando = false;
+
         uiDocument = GetComponent<UIDocument>();
         if (uiDocument == null) return;
 
         root = uiDocument.rootVisualElement;
 
         // Reactivar y restaurar a todos los jugadores que murieron en la ronda previa
-        PlayerController[] jugadores = FindObjectsOfType<PlayerController>(true);
+        PlayerController[] jugadores = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (PlayerController player in jugadores)
         {
             if (player != null)
-            {
                 player.ReactivarYRestaurar();
+        }
+
+        // Resetear estado de listo de todos los jugadores en el servidor
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+        {
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.PlayerObject != null)
+                {
+                    var pc = client.PlayerObject.GetComponent<PlayerController>();
+                    if (pc != null) pc.isReady.Value = false;
+                }
             }
         }
 
@@ -85,6 +103,47 @@ public class BaseMenuController : MonoBehaviour
     private void OnDisable()
     {
         DesregistrarEventos();
+    }
+
+    private void Update()
+    {
+        if (nivelCargando) return;
+
+        // Solo el host verifica si todos estan listos tras haber pulsado 'Listo'
+        if (yaListoPulsado && NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsListening)
+        {
+            if (TodosListos())
+            {
+                nivelCargando = true;
+                Debug.Log("[BaseMenu] Todos los jugadores listos. Cargando Level...");
+                NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
+            }
+        }
+
+        // Actualizar texto del boton para dar feedback visual
+        if (btnListo != null && yaListoPulsado)
+        {
+            bool todos = TodosListos();
+            btnListo.text = todos ? "Cargando..." : "Esperando jugadores...";
+        }
+    }
+
+    private bool TodosListos()
+    {
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
+            return true; // Offline: siempre listo
+
+        PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        
+        int clientesEsperados = NetworkManager.Singleton.ConnectedClientsList.Count;
+        if (players.Length < clientesEsperados) return false;
+
+        foreach (var pc in players)
+        {
+            if (pc != null && !pc.isReady.Value)
+                return false;
+        }
+        return true;
     }
 
     private void InicializarReferencias()
@@ -238,8 +297,11 @@ public class BaseMenuController : MonoBehaviour
         PlayerController[] all = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var p in all)
         {
-            if (p != null && p.IsOwner)
-                return p;
+            if (p != null)
+            {
+                if (p.IsOwner) return p;
+                if (NetworkManager.Singleton != null && p.OwnerClientId == NetworkManager.Singleton.LocalClientId) return p;
+            }
         }
         return null;
     }
@@ -589,38 +651,60 @@ public class BaseMenuController : MonoBehaviour
 
     private void OnListoClicked()
     {
-        Debug.Log("Confirmación de listo. Recargando armas del jugador y avanzando a la escena de gameplay 'Level'.");
+        if (yaListoPulsado) return; // Evitar doble click
+        yaListoPulsado = true;
 
-        // 1. Buscar todos los PlayerController en la escena (incluyendo deshabilitados/muertos) y restaurarlos
-        PlayerController[] jugadores = FindObjectsOfType<PlayerController>(true);
+        Debug.Log("[BaseMenu] Listo pulsado.");
+
+        // Restaurar jugadores
+        PlayerController[] jugadores = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (PlayerController player in jugadores)
         {
             if (player != null)
-            {
                 player.ReactivarYRestaurar();
-            }
         }
 
-        // 2. Si NetworkManager no está escuchando (offline/singleplayer), iniciar Host local para que Netcode genere el PlayerPrefab
+        // Modo offline/singleplayer
         if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsListening)
         {
             var transport = NetworkManager.Singleton.GetComponent<Unity.Netcode.Transports.UTP.UnityTransport>();
             if (transport != null)
-            {
                 transport.SetConnectionData("127.0.0.1", 7777);
-            }
             NetworkManager.Singleton.StartHost();
+            return;
         }
 
-        // 3. Cargar la escena 'Level' mediante NetworkSceneManager para instanciar correctamente al jugador y los nodos
-        if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer)
+        // Multijugador: marcar este jugador como listo en el servidor
+        PlayerController localPlayer = GetLocalPlayerController();
+        if (localPlayer != null)
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("Level", LoadSceneMode.Single);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                localPlayer.isReady.Value = true;
+            }
+            else
+            {
+                localPlayer.SetReadyStatusServerRpc(true);
+            }
+            Debug.Log($"[BaseMenu] Jugador {localPlayer.playerName.Value} marcado como listo.");
         }
         else
         {
-            SceneManager.LoadScene("Level");
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+                {
+                    if (client.ClientId == NetworkManager.Singleton.LocalClientId && client.PlayerObject != null)
+                    {
+                        var pc = client.PlayerObject.GetComponent<PlayerController>();
+                        if (pc != null) pc.isReady.Value = true;
+                    }
+                }
+            }
         }
+
+        if (btnListo != null)
+            btnListo.text = "Esperando jugadores...";
     }
 
     // --- CLASES INTERNAS DE ORGANIZACION ---
