@@ -233,11 +233,27 @@ public class BaseMenuController : MonoBehaviour
         DibujarSlots();
     }
 
+    private PlayerController GetLocalPlayerController()
+    {
+        PlayerController[] all = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var p in all)
+        {
+            if (p != null && p.IsOwner)
+                return p;
+        }
+        return null;
+    }
+
     private void ActualizarHeader()
     {
         if (headerUI.NombreJugador != null)
         {
-            string nombre = PlayerPrefs.GetString("PlayerName", "Génesis");
+            PlayerController local = GetLocalPlayerController();
+            string nombre;
+            if (local != null && !string.IsNullOrWhiteSpace(local.playerName.Value.ToString()))
+                nombre = local.playerName.Value.ToString();
+            else
+                nombre = PlayerPrefs.GetString("PlayerName", "Génesis");
             headerUI.NombreJugador.text = nombre;
         }
 

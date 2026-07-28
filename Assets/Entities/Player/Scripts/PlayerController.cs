@@ -69,11 +69,11 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
+        // Mantener al jugador vivo entre cambios de escena sin depender de Netcode
+        DontDestroyOnLoad(gameObject);
+
         rb = GetComponent<Rigidbody2D>();
-        // Garantizamos que las físicas de colisión 2D no roten a Génesis
         rb.freezeRotation = true;
-        
-        // Obtener el SpriteRenderer principal de Génesis
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
