@@ -49,7 +49,7 @@ public class LevelManager : MonoBehaviour
             if (datosNivel != null && datosNivel.numeroNivel < 9)
             {
                 datosNivel.numeroNivel = 9;
-                Debug.Log($"[LevelManager Multijugador] Nivel inicial forzado a {datosNivel.numeroNivel}.");
+                Debug.Log($"[LevelManager Multijugador] Nivel inicial fijado a {datosNivel.numeroNivel}.");
             }
         }
 
