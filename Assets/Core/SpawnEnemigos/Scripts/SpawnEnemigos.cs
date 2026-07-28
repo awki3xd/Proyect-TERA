@@ -22,6 +22,8 @@ public class SpawnEnemigos : MonoBehaviour
     public GameObject prefabAvispa;
     [Tooltip("Prefab del enemigo Escarabajo (escudo).")]
     public GameObject prefabEscarabajo;
+    [Tooltip("Prefab del enemigo Jefe Araña.")]
+    public GameObject prefabAraña;
 
     [Header("Configuración de Spawneo")]
     [Tooltip("Radio de la circunferencia alrededor del centro (0,0) desde la cual nacerán los enemigos fuera de pantalla.")]
@@ -36,6 +38,7 @@ public class SpawnEnemigos : MonoBehaviour
     private Coroutine corrutinaIndividual;
     private Coroutine corrutinaGrupal;
     private Coroutine corrutinaEliteForzado;
+    private Coroutine corrutinaJefeForzado;
 
     private void OnDisable()
     {
@@ -61,11 +64,38 @@ public class SpawnEnemigos : MonoBehaviour
         corrutinaIndividual = StartCoroutine(SpawneoIndividualCo());
         corrutinaGrupal = StartCoroutine(SpawneoGrupalCo());
 
-        // Forzar un único spawneo de enemigo élite a los 15 segundos si estamos en la Oleada/Nivel 1
         int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
+
+        // Forzar un único spawneo de enemigo élite a los 15 segundos si estamos en la Oleada/Nivel 1
         if (nivel == 1)
         {
             corrutinaEliteForzado = StartCoroutine(SpawneoForzadoEliteNivel1Co());
+        }
+
+        // Forzar spawneo del Jefe Araña a los 5 segundos si el nivel es múltiplo de 10 (Nivel 10, 20, 30, etc.)
+        if (nivel > 0 && nivel % 10 == 0)
+        {
+            corrutinaJefeForzado = StartCoroutine(SpawneoJefeDecadaCo());
+        }
+    }
+
+    private IEnumerator SpawneoJefeDecadaCo()
+    {
+        yield return new WaitForSeconds(5f);
+
+        int nivel = datosNivel != null ? datosNivel.numeroNivel : 1;
+        if (nivel > 0 && nivel % 10 == 0)
+        {
+            Vector2 puntoSpawneo = ObtenerPuntoSpawneoAleatorio();
+            if (prefabAraña != null)
+            {
+                InstanciarPrefabEspecifico(prefabAraña, puntoSpawneo);
+                Debug.Log($"[SpawnEnemigos] Spawneo de Jefe Araña en Nivel múltiplo de 10 (Nivel {nivel}) a los 5 segundos.");
+            }
+            else
+            {
+                Debug.LogWarning("[SpawnEnemigos] Referencia 'prefabAraña' no asignada en el Inspector para el nivel múltiplo de 10.");
+            }
         }
     }
 
@@ -114,6 +144,12 @@ public class SpawnEnemigos : MonoBehaviour
             corrutinaEliteForzado = null;
         }
 
+        if (corrutinaJefeForzado != null)
+        {
+            StopCoroutine(corrutinaJefeForzado);
+            corrutinaJefeForzado = null;
+        }
+
         StopAllCoroutines();
         enabled = false;
         Debug.Log("[SpawnEnemigos] Corrutinas de spawneo de enemigos pausadas instantáneamente.");
@@ -138,6 +174,12 @@ public class SpawnEnemigos : MonoBehaviour
 
             // Cantidad baja (1 a 4 enemigos sueltos por intervalo)
             int cantidad = Mathf.Clamp(Mathf.CeilToInt(nivel * 0.25f), 1, 4);
+
+            // En niveles múltiplos de 10 (nivel del Jefe), la cantidad total de enemigos se reduce a la mitad
+            if (nivel > 0 && nivel % 10 == 0)
+            {
+                cantidad = Mathf.Max(1, cantidad / 2);
+            }
 
             for (int i = 0; i < cantidad; i++)
             {
@@ -176,6 +218,12 @@ public class SpawnEnemigos : MonoBehaviour
             int minGrupo = Mathf.Clamp(2 + Mathf.FloorToInt((nivel - 1) * 0.3f), 2, 6);
             int maxGrupo = Mathf.Clamp(4 + Mathf.FloorToInt((nivel - 1) * 0.5f), 4, 12);
             int cantidadEnGrupo = Random.Range(minGrupo, maxGrupo + 1);
+
+            // En niveles múltiplos de 10 (nivel del Jefe), la cantidad total de enemigos de la horda disminuye a la mitad
+            if (nivel > 0 && nivel % 10 == 0)
+            {
+                cantidadEnGrupo = Mathf.Max(1, cantidadEnGrupo / 2);
+            }
 
             // Probabilidad de spawnear una unidad especial en el grupo (5% en Nivel 1 -> 100% en Nivel 20)
             float probabilidadEspecial = Mathf.Lerp(0.05f, 1.0f, factorNivel);
@@ -279,6 +327,13 @@ public class SpawnEnemigos : MonoBehaviour
         if (escarabajo != null)
         {
             escarabajo.Inicializar(datosEnemigosLocales, posicion);
+            return;
+        }
+
+        ArañaController araña = objEnemigo.GetComponent<ArañaController>();
+        if (araña != null)
+        {
+            araña.Inicializar(datosEnemigosLocales, posicion);
             return;
         }
     }

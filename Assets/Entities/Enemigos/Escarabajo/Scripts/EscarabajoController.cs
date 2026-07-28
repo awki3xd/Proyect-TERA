@@ -356,14 +356,18 @@ public class EscarabajoController : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        // Spawnear drop de material
+        // Spawnear 3 materiales dispersos (+/- 0.5f unidades)
         if (prefabMaterial != null)
         {
-            GameObject matObj = Instantiate(prefabMaterial, transform.position, Quaternion.identity);
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            for (int i = 0; i < 3; i++)
             {
-                var netObjMat = matObj.GetComponent<NetworkObject>();
-                if (netObjMat != null) netObjMat.Spawn();
+                Vector2 offset = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
+                GameObject matObj = Instantiate(prefabMaterial, (Vector2)transform.position + offset, Quaternion.identity);
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+                {
+                    var netObjMat = matObj.GetComponent<NetworkObject>();
+                    if (netObjMat != null) netObjMat.Spawn();
+                }
             }
         }
 

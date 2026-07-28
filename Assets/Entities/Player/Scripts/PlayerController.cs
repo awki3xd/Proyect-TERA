@@ -467,12 +467,15 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    [HideInInspector]
+    public float multiplicadorRalentizacion = 1f;
+
     private void FixedUpdate()
     {
         if (!IsOwner) return;
 
-        // Mover físicamente utilizando la velocidad real precalculada
-        rb.linearVelocity = entradaMovimiento * velocidadReal;
+        // Mover físicamente utilizando la velocidad real precalculada y multiplicador de ralentización
+        rb.linearVelocity = entradaMovimiento * velocidadReal * multiplicadorRalentizacion;
     }
 
     /// <summary>
