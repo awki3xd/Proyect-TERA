@@ -16,6 +16,10 @@ public class HudController : MonoBehaviour
     [Tooltip("Referencia a DatosNivel para conocer el nivel actual en partida.")]
     [SerializeField] private DatosNivel datosNivel;
 
+    [Header("Referencias de Datos")]
+    [Tooltip("Referencia a Inventario.")]
+    [SerializeField] private DatosInventario inventario;
+
     private UIDocument uiDocument;
     private VisualElement root;
 
@@ -92,6 +96,22 @@ public class HudController : MonoBehaviour
     {
         ActualizarTerraformacion();
         ActualizarListaJugadores();
+        ActualizarMateriales();
+    }
+
+    public void ActualizarMateriales()
+    {
+        if (inventario != null)
+        {
+            int materiales = inventario.Materiales; 
+            
+            // Buscar el Label de materiales
+            Label labelMateriales = root.Q<Label>("Cantidad");
+            if (labelMateriales != null)
+            {
+                labelMateriales.text = materiales.ToString();
+            }
+        }
     }
 
     public void MostrarCartelTemporizado(string titulo, string subtitulo, float duracion)

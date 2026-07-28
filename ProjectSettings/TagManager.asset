@@ -8,6 +8,7 @@ TagManager:
   - Material
   - Enemigo
   - Bala
+  - Cofre
   layers:
   - Default
   - TransparentFX

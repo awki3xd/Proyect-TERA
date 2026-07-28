@@ -907,6 +907,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerBarTemplate: {fileID: 0}
   datosNivel: {fileID: 11400000, guid: 3b4724f5b9146884798d553c15e50020, type: 2}
+  inventario: {fileID: 11400000, guid: 0f0cf33713422b2489212156de864751, type: 2}
 --- !u!114 &1079491668
 MonoBehaviour:
   m_ObjectHideFlags: 0

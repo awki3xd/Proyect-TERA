@@ -196,7 +196,9 @@ public class LevelManager : MonoBehaviour
         Debug.Log("[LevelManager] ¡Victoria Alcanzada! Disparando onda de terraformación verde.");
 
         if (spawnEnemigos != null)
-            spawnEnemigos.enabled = false;
+        {
+            spawnEnemigos.DetenerSpawneo();
+        }
 
         // Bloquear inputs del jugador deshabilitando el controlador de movimiento
         PlayerController[] jugadores = FindObjectsOfType<PlayerController>();
@@ -277,7 +279,24 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"[LevelManager] Derrota: {motivo}");
 
         if (spawnEnemigos != null)
-            spawnEnemigos.enabled = false;
+        {
+            spawnEnemigos.DetenerSpawneo();
+        }
+
+        // Bloquear inputs de movimiento y detener física de todos los jugadores al perder
+        PlayerController[] jugadores = FindObjectsOfType<PlayerController>(true);
+        foreach (var p in jugadores)
+        {
+            if (p != null)
+            {
+                p.enabled = false;
+                Rigidbody2D rb = p.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector2.zero;
+                }
+            }
+        }
 
         if (HudController.Instance != null)
         {

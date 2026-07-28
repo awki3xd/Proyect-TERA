@@ -46,7 +46,11 @@ public class ProyectilController : MonoBehaviour, IProyectil
         EntidadDaño dañoScript = GetComponent<EntidadDaño>();
         if (dañoScript != null)
         {
-            dañoScript.Inicializar(datos.daño, datos.origen, true);
+            // El Rifle (Sniper) atraviesa a todos los enemigos sin destruirse al impactar (destruirAlImpactar = false)
+            bool esRifle = !string.IsNullOrEmpty(datos.arma) && datos.arma.ToLower() == "rifle";
+            bool destruirAlImpactar = !esRifle;
+
+            dañoScript.Inicializar(datos.daño, datos.origen, destruirAlImpactar);
         }
     }
 
