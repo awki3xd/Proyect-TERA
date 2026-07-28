@@ -225,6 +225,17 @@ public class GestorTerraformacion : NetworkBehaviour
                 }
             }
 
+            // Detección dinámica de presencia de un Jefe en la escena
+            ArañaController jefePresente = FindFirstObjectByType<ArañaController>();
+            if (jefePresente != null)
+            {
+                distanciaPorSalto = 0.1f; // Velocidad pausada mientras el Jefe esté con vida
+            }
+            else
+            {
+                distanciaPorSalto = 0.2f; // Velocidad normal sin Jefe o tras derrotarlo
+            }
+
             if (sumaActivos > 0f)
             {
                 // Crecimiento normal hacia adelante

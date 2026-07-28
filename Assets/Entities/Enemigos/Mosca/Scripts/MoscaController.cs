@@ -107,21 +107,26 @@ public class MoscaController : MonoBehaviour
     {
         if (estaMuerto) return;
 
+        BuscarJugadorMasCercano();
+
         // Descontar el cooldown de disparo
         if (cooldownDisparo > 0f)
         {
             cooldownDisparo -= Time.deltaTime;
         }
 
-        // Medir distancia al jugador
+        // Medir distancia al jugador activo más cercano
         float distAlPlayer = playerTransform != null ? Vector2.Distance(transform.position, playerTransform.position) : float.MaxValue;
+
+        // Umbral estricto de desenganche de disparo (distancia de detención + 1.2 unidades)
+        float limiteDesenganche = distanciaDeteccion + 1.2f;
 
         // Máquina de estados
         switch (estadoActual)
         {
             case EstadoMosca.PatrullandoCentro:
-                // Si el jugador entra al doble de la distancia de parada (rango de persecución amplio), lo perseguimos
-                if (distAlPlayer <= distanciaDeteccion * 2f)
+                // Si el jugador entra al rango de persecución amplio, lo perseguimos
+                if (distAlPlayer <= distanciaDeteccion * 2.5f)
                 {
                     estadoActual = EstadoMosca.PersiguiendoPlayer;
                 }
@@ -133,16 +138,16 @@ public class MoscaController : MonoBehaviour
                 {
                     estadoActual = EstadoMosca.AtacandoPlayer;
                 }
-                // Si el jugador se aleja demasiado (fuera del rango de persecución), volvemos a patrullar al centro
-                else if (distAlPlayer > distanciaDeteccion * 2f)
+                // Si el jugador se aleja demasiado, volvemos a patrullar al centro
+                else if (distAlPlayer > distanciaDeteccion * 3f)
                 {
                     estadoActual = EstadoMosca.PatrullandoCentro;
                 }
                 break;
 
             case EstadoMosca.AtacandoPlayer:
-                // Si el jugador se aleja más allá de nuestro rango máximo de disparo, volvemos a perseguirlo
-                if (distAlPlayer > rangoDisparo)
+                // Si el jugador se aleja más allá del límite estricto de desenganche, VOLVER A PERSEGUIRLO inmediatamente
+                if (distAlPlayer > limiteDesenganche)
                 {
                     estadoActual = EstadoMosca.PersiguiendoPlayer;
                 }
@@ -245,6 +250,27 @@ public class MoscaController : MonoBehaviour
                 dañoScript.Inicializar(daño, EntidadDaño.OrigenDaño.Enemigo, true);
             }
         }
+    }
+
+    private void BuscarJugadorMasCercano()
+    {
+        PlayerController[] jugadores = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+        Transform masCercano = null;
+        float minDist = float.MaxValue;
+
+        foreach (var p in jugadores)
+        {
+            if (p != null && p.gameObject.activeSelf)
+            {
+                float dist = Vector2.Distance(transform.position, p.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    masCercano = p.transform;
+                }
+            }
+        }
+        playerTransform = masCercano;
     }
 
     /// <summary>
