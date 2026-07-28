@@ -22,14 +22,16 @@ public class CameraTargetSetup : MonoBehaviour
 
     private IEnumerator Start()
     {
-        // Esperar a que el jugador local se conecte y se instancie en la red
-        while (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsConnectedClient || NetworkManager.Singleton.LocalClient.PlayerObject == null)
+        // Esperar a que el jugador local se conecte y se instancie en la red con un tiempo límite de 5 segundos
+        float timeout = 5.0f;
+        while (timeout > 0 && (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsConnectedClient || NetworkManager.Singleton.LocalClient.PlayerObject == null))
         {
+            timeout -= Time.deltaTime;
             yield return null;
         }
 
-        // Esperar un frame extra para garantizar que GeneradorNodos ya haya instanciado los nodos
-        yield return null;
+        // Esperar un momento extra para que la sincronización finalice
+        yield return new WaitForSeconds(0.2f);
 
         // 1. Buscar el TargetGroup si no fue arrastrado al inspector
         if (targetGroup == null)
@@ -49,15 +51,14 @@ public class CameraTargetSetup : MonoBehaviour
             targetGroup.Targets.Clear();
         }
 
-        // 2. Buscar al jugador local (el que nos pertenece) e incorporarlo al grupo
-        GameObject player = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-        if (player != null)
+        // 2. Buscar a TODOS los jugadores instanciados en la escena e incorporarlos al grupo
+        PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+        foreach (var p in players)
         {
-            targetGroup.AddMember(player.transform, pesoJugador, radioJugador);
-        }
-        else
-        {
-            Debug.LogWarning("No se encontró al jugador local para añadir al Target Group.");
+            if (p != null)
+            {
+                targetGroup.AddMember(p.transform, pesoJugador, radioJugador);
+            }
         }
 
         // 3. Buscar todos los Nodos generados en la escena por su Tag e incorporarlos

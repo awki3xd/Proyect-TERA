@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 public class EscarabajoController : MonoBehaviour
 {
@@ -361,7 +362,12 @@ public class EscarabajoController : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 Vector2 offset = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
-                Instantiate(prefabMaterial, (Vector2)transform.position + offset, Quaternion.identity);
+                GameObject matObj = Instantiate(prefabMaterial, (Vector2)transform.position + offset, Quaternion.identity);
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+                {
+                    var netObjMat = matObj.GetComponent<NetworkObject>();
+                    if (netObjMat != null) netObjMat.Spawn();
+                }
             }
         }
 
@@ -371,8 +377,23 @@ public class EscarabajoController : MonoBehaviour
 
         if (prefabCofre != null && Random.value <= probCofre)
         {
-            Instantiate(prefabCofre, transform.position, Quaternion.identity);
+            GameObject cofreObj = Instantiate(prefabCofre, transform.position, Quaternion.identity);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            {
+                var netObjCofre = cofreObj.GetComponent<NetworkObject>();
+                if (netObjCofre != null) netObjCofre.Spawn();
+            }
             Debug.Log($"[Escarabajo Muerte] ¡Cofre generado en Nivel {nivelActual}! (Probabilidad: {probCofre * 100:F0}%).");
+        }
+
+        var netObj = GetComponent<NetworkObject>();
+        if (netObj != null && netObj.IsSpawned)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                netObj.Despawn(true);
+            }
+            yield break;
         }
 
         Destroy(gameObject);

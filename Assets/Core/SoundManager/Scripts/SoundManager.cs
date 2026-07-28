@@ -108,11 +108,7 @@ public class SoundManager : MonoBehaviour
 
         if (tablaSonidos.TryGetValue(id, out SoundEffect sound))
         {
-            if (sound.clip == null)
-            {
-                Debug.LogWarning($"El clip de sonido para {id} está vacío en la biblioteca.");
-                return;
-            }
+            if (sound.clip == null) return;
 
             // Aplicar variación de pitch orgánica si está habilitada
             float pitchActual = sound.pitchBase;
@@ -124,10 +120,6 @@ public class SoundManager : MonoBehaviour
             // Reproducir usando PlayOneShot para que múltiples sonidos se escuchen simultáneamente sin cortarse
             sfxSource.pitch = pitchActual;
             sfxSource.PlayOneShot(sound.clip, sound.volumen);
-        }
-        else
-        {
-            Debug.LogWarning($"El sonido {id} no está registrado en el SoundManager.");
         }
     }
 

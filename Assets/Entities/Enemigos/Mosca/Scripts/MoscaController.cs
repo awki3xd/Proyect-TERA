@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 public class MoscaController : MonoBehaviour
 {
@@ -106,6 +107,11 @@ public class MoscaController : MonoBehaviour
     private void Update()
     {
         if (estaMuerto) return;
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && !NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
 
         BuscarJugadorMasCercano();
 
@@ -228,6 +234,14 @@ public class MoscaController : MonoBehaviour
         Quaternion rot = Quaternion.Euler(0f, 0f, angulo);
 
         GameObject proyectil = Instantiate(prefabProyectil, posDisparo, rot);
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            var netObj = proyectil.GetComponent<NetworkObject>();
+            if (netObj != null)
+            {
+                netObj.Spawn();
+            }
+        }
 
         // Reproducir sonido de disparo enemigo
         if (SoundManager.Instance != null)
@@ -365,10 +379,28 @@ public class MoscaController : MonoBehaviour
         // 4. Instanciar Bridgmanita / Recurso
         if (prefabMaterial != null)
         {
-            Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            GameObject matObj = Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+            {
+                var netObjMat = matObj.GetComponent<NetworkObject>();
+                if (netObjMat != null)
+                {
+                    netObjMat.Spawn();
+                }
+            }
         }
 
         // 5. Destruir el objeto
+        var netObj = GetComponent<NetworkObject>();
+        if (netObj != null && netObj.IsSpawned)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                netObj.Despawn(true);
+            }
+            yield break;
+        }
+
         Destroy(gameObject);
     }
 }

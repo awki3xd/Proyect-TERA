@@ -116,8 +116,32 @@ public class RecolecciónImán : MonoBehaviour
         {
             Debug.LogWarning("DatosInventario no asignado en RecolecciónImán.");
         }
-        
-        Destroy(materialObj);
+
+        // Sincronizar en red para que ambos jugadores compartan los materiales recolectados
+        if (Unity.Netcode.NetworkManager.Singleton != null && Unity.Netcode.NetworkManager.Singleton.IsListening)
+        {
+            if (Unity.Netcode.NetworkManager.Singleton.IsServer)
+            {
+                PlayerController.networkMateriales.Value += cantidadMateriales;
+            }
+            else if (playerController != null)
+            {
+                playerController.SumarMaterialesServerRpc(cantidadMateriales);
+            }
+        }
+
+        var netObjMat = materialObj.GetComponent<Unity.Netcode.NetworkObject>();
+        if (netObjMat != null && netObjMat.IsSpawned)
+        {
+            if (Unity.Netcode.NetworkManager.Singleton != null && Unity.Netcode.NetworkManager.Singleton.IsServer)
+            {
+                netObjMat.Despawn(true);
+            }
+        }
+        else
+        {
+            Destroy(materialObj);
+        }
     }
 
     private void RecolectarCofre(GameObject cofreObj)

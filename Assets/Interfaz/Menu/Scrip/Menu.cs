@@ -9,6 +9,7 @@ public class Menu : MonoBehaviour
     [SerializeField] private UIDocument _UIDocument;
     [SerializeField] private AudioClip _clip;
     [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private DatosNivel _datosNivel;
 
     private VisualElement _CreditosImg;
     private VisualElement _ConfiguracionPartida;
@@ -76,6 +77,7 @@ public class Menu : MonoBehaviour
                 _ConfiguracionPartida.style.display = DisplayStyle.None;
                 _AjustesSonido.style.display = DisplayStyle.None;
                 if (_PanelOnline != null) _PanelOnline.style.display = DisplayStyle.Flex;
+                if (_datosNivel != null) _datosNivel.numeroNivel = 9;
             };
         }
 

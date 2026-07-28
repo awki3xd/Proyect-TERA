@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 
 public class ValaMoscaController : MonoBehaviour
 {
@@ -49,7 +50,18 @@ public class ValaMoscaController : MonoBehaviour
         // Control de autodestrucción si supera el rango de alcance máximo
         if (Vector2.Distance(transform.position, posicionInicial) >= rangoMaximo)
         {
-            Destroy(gameObject);
+            var netObj = GetComponent<NetworkObject>();
+            if (netObj != null && netObj.IsSpawned)
+            {
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                {
+                    netObj.Despawn(true);
+                }
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

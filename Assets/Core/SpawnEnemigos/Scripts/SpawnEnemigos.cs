@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class SpawnEnemigos : MonoBehaviour
 {
@@ -33,13 +34,26 @@ public class SpawnEnemigos : MonoBehaviour
     public DatosGlobalesEnemigos datosEnemigosLocales;
 
     private bool alternarGrupo = false;
+    private bool permitiraSpawneo = true;
     private Coroutine corrutinaIndividual;
     private Coroutine corrutinaGrupal;
     private Coroutine corrutinaEliteForzado;
     private Coroutine corrutinaJefeForzado;
 
+    private void OnDisable()
+    {
+        DetenerSpawneo();
+    }
+
     private void Start()
     {
+        permitiraSpawneo = true;
+        // Solo el Servidor/Host debe ejecutar las rutinas de spawneo de enemigos si Netcode esta activo
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && !NetworkManager.Singleton.IsServer)
+        {
+            return;
+        }
+
         // Usar los datos globales calculados previamente en la base
         if (datosGlobalesEnemigos != null)
         {
@@ -110,6 +124,8 @@ public class SpawnEnemigos : MonoBehaviour
     /// </summary>
     public void DetenerSpawneo()
     {
+        permitiraSpawneo = false;
+
         if (corrutinaIndividual != null)
         {
             StopCoroutine(corrutinaIndividual);
@@ -276,6 +292,15 @@ public class SpawnEnemigos : MonoBehaviour
         if (prefab == null) return;
 
         GameObject objEnemigo = Instantiate(prefab, posicion, Quaternion.identity);
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            NetworkObject netObj = objEnemigo.GetComponent<NetworkObject>();
+            if (netObj != null)
+            {
+                netObj.Spawn();
+            }
+        }
 
         EscorpionController escorpion = objEnemigo.GetComponent<EscorpionController>();
         if (escorpion != null)

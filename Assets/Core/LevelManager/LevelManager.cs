@@ -43,6 +43,39 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         BuscarReferenciasAutomaticas();
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            if (datosNivel != null && datosNivel.numeroNivel < 9)
+            {
+                datosNivel.numeroNivel = 9;
+                Debug.Log($"[LevelManager Multijugador] Nivel inicial fijado a {datosNivel.numeroNivel}.");
+            }
+        }
+
+        SincronizarJugadoresEnRedEnNivel();
+    }
+
+    private void SincronizarJugadoresEnRedEnNivel()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            Debug.Log("[LevelManager] Re-sincronizando jugadores en red para la escena Level...");
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.PlayerObject != null)
+                {
+                    NetworkObject netObj = client.PlayerObject;
+                    if (netObj.IsSpawned)
+                    {
+                        ulong clientId = client.ClientId;
+                        Debug.Log($" -> Re-espawneando en red PlayerObject para cliente {clientId}...");
+                        netObj.Despawn(false);
+                        netObj.SpawnWithOwnership(clientId, true);
+                    }
+                }
+            }
+        }
     }
 
     private void OnDestroy()
@@ -200,11 +233,12 @@ public class LevelManager : MonoBehaviour
             spawnEnemigos.DetenerSpawneo();
         }
 
-        // Bloquear inputs del jugador deshabilitando el controlador de movimiento
-        PlayerController[] jugadores = FindObjectsOfType<PlayerController>();
+        // Bloquear inputs del jugador solo deteniendo velocidad, sin deshabilitar el script
+        // (deshabilitar PlayerController rompe la gestion de escenas de Netcode)
+        PlayerController[] jugadores = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var p in jugadores)
         {
-            if (p != null) p.enabled = false;
+            if (p == null) continue;
             Rigidbody2D rb = p.GetComponent<Rigidbody2D>();
             if (rb != null) rb.linearVelocity = Vector2.zero;
         }
@@ -314,13 +348,7 @@ public class LevelManager : MonoBehaviour
 
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer)
         {
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                if (client.PlayerObject != null)
-                {
-                    client.PlayerObject.Despawn();
-                }
-            }
+            // NO hacer Despawn de jugadores antes del LoadScene; Netcode los migra automaticamente
             NetworkManager.Singleton.SceneManager.LoadScene("Derrota", LoadSceneMode.Single);
         }
         else
