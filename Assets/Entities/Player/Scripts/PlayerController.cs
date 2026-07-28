@@ -14,6 +14,16 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<FixedString32Bytes> playerName = new NetworkVariable<FixedString32Bytes>("Jugador", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<bool> isReady = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public static NetworkVariable<int> networkMateriales = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    
+    [Header("Multijugador Armas Equipadas")]
+    public NetworkVariable<FixedString32Bytes> netWeapon0 = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<FixedString32Bytes> netWeapon1 = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<FixedString32Bytes> netWeapon2 = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<FixedString32Bytes> netWeapon3 = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    [Header("Catálogo Global de Armas (Para Sincronización Red)")]
+    public List<GameObject> catalogoArmas = new List<GameObject>();
+
     private TextMeshPro textoNombre;
 
     [Header("Referencias a Slots de Armas")]
@@ -139,10 +149,24 @@ public class PlayerController : NetworkBehaviour
                 datosInventario.EstablecerMateriales(newVal);
             }
         };
-        
+
+        netWeapon0.OnValueChanged += (oldV, newV) => ActualizarArmaEnSlotVisual(0, newV.ToString());
+        netWeapon1.OnValueChanged += (oldV, newV) => ActualizarArmaEnSlotVisual(1, newV.ToString());
+        netWeapon2.OnValueChanged += (oldV, newV) => ActualizarArmaEnSlotVisual(2, newV.ToString());
+        netWeapon3.OnValueChanged += (oldV, newV) => ActualizarArmaEnSlotVisual(3, newV.ToString());
+
         if (!string.IsNullOrEmpty(playerName.Value.ToString()))
         {
             ActualizarTextoNombre(playerName.Value.ToString());
+        }
+
+        // Si ya existen armas sincronizadas en red para este jugador remoto, cargarlas
+        if (!IsOwner)
+        {
+            if (!string.IsNullOrEmpty(netWeapon0.Value.ToString())) ActualizarArmaEnSlotVisual(0, netWeapon0.Value.ToString());
+            if (!string.IsNullOrEmpty(netWeapon1.Value.ToString())) ActualizarArmaEnSlotVisual(1, netWeapon1.Value.ToString());
+            if (!string.IsNullOrEmpty(netWeapon2.Value.ToString())) ActualizarArmaEnSlotVisual(2, netWeapon2.Value.ToString());
+            if (!string.IsNullOrEmpty(netWeapon3.Value.ToString())) ActualizarArmaEnSlotVisual(3, netWeapon3.Value.ToString());
         }
     }
 
@@ -156,6 +180,16 @@ public class PlayerController : NetworkBehaviour
 
         playerName.Value = newName;
         Debug.Log($"[PlayerController] Servidor asignó nombre exacto '{newName}' al jugador OwnerId={OwnerClientId}");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SincronizarArmasServerRpc(string w0, string w1, string w2, string w3)
+    {
+        netWeapon0.Value = w0;
+        netWeapon1.Value = w1;
+        netWeapon2.Value = w2;
+        netWeapon3.Value = w3;
+        Debug.Log($"[PlayerController] Servidor sincronizó armas para OwnerClientId={OwnerClientId}: [{w0}, {w1}, {w2}, {w3}]");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -328,6 +362,8 @@ public class PlayerController : NetworkBehaviour
 
         if (datosInventario == null) return;
 
+        string w0 = "", w1 = "", w2 = "", w3 = "";
+
         // 2. Instanciar según el ScriptableObject datosInventario actualizado
         for (int i = 0; i < 4; i++)
         {
@@ -336,35 +372,114 @@ public class PlayerController : NetworkBehaviour
                 GameObject weaponPrefab = datosInventario.armasEquipadas[i];
                 if (weaponPrefab != null)
                 {
-                    GameObject armaObj = Instantiate(weaponPrefab, slotsArmas[i].position, slotsArmas[i].rotation, slotsArmas[i]);
-                    armasInstanciadas[i] = armaObj;
+                    InstanciarArmaEnSlotLocal(i, weaponPrefab);
 
-                    ArmaController armaScript = armaObj.GetComponent<ArmaController>();
-                    if (armaScript != null)
-                    {
-                        armaScript.datosPersonaje = datosPersonaje;
-                    }
-                    else
-                    {
-                        SableController sableScript = armaObj.GetComponent<SableController>();
-                        if (sableScript != null)
-                        {
-                            sableScript.datosPersonaje = datosPersonaje;
-                        }
-                        else
-                        {
-                            MotosierraController motosierraScript = armaObj.GetComponent<MotosierraController>();
-                            if (motosierraScript != null)
-                            {
-                                motosierraScript.datosPersonaje = datosPersonaje;
-                            }
-                        }
-                    }
+                    if (i == 0) w0 = weaponPrefab.name;
+                    if (i == 1) w1 = weaponPrefab.name;
+                    if (i == 2) w2 = weaponPrefab.name;
+                    if (i == 3) w3 = weaponPrefab.name;
                 }
             }
         }
 
         ActualizarOrdenCapas(true);
+
+        if (IsOwner && NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            SincronizarArmasServerRpc(w0, w1, w2, w3);
+        }
+    }
+
+    private void InstanciarArmaEnSlotLocal(int slotIndex, GameObject weaponPrefab)
+    {
+        if (slotIndex < 0 || slotIndex >= slotsArmas.Length || slotsArmas[slotIndex] == null || weaponPrefab == null) return;
+
+        GameObject armaObj = Instantiate(weaponPrefab, slotsArmas[slotIndex].position, slotsArmas[slotIndex].rotation, slotsArmas[slotIndex]);
+        armasInstanciadas[slotIndex] = armaObj;
+
+        ArmaController armaScript = armaObj.GetComponent<ArmaController>();
+        if (armaScript != null)
+        {
+            armaScript.datosPersonaje = datosPersonaje;
+        }
+        else
+        {
+            SableController sableScript = armaObj.GetComponent<SableController>();
+            if (sableScript != null)
+            {
+                sableScript.datosPersonaje = datosPersonaje;
+            }
+            else
+            {
+                MotosierraController motosierraScript = armaObj.GetComponent<MotosierraController>();
+                if (motosierraScript != null)
+                {
+                    motosierraScript.datosPersonaje = datosPersonaje;
+                }
+            }
+        }
+    }
+
+    private void ActualizarArmaEnSlotVisual(int slotIndex, string nombrePrefab)
+    {
+        if (IsOwner) return; // El dueño gestiona sus armas directamente por datosInventario
+
+        if (slotIndex < 0 || slotIndex >= 4) return;
+
+        if (armasInstanciadas[slotIndex] != null)
+        {
+            Destroy(armasInstanciadas[slotIndex]);
+            armasInstanciadas[slotIndex] = null;
+        }
+
+        if (string.IsNullOrWhiteSpace(nombrePrefab)) return;
+
+        GameObject prefab = BuscarPrefabArma(nombrePrefab);
+        if (prefab != null)
+        {
+            InstanciarArmaEnSlotLocal(slotIndex, prefab);
+            ActualizarOrdenCapas(mirandoDerecha);
+            Debug.Log($"[PlayerController Red] Arma '{nombrePrefab}' instanciada en slot {slotIndex} para jugador remoto OwnerId={OwnerClientId}");
+        }
+    }
+
+    private GameObject BuscarPrefabArma(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre)) return null;
+
+        // 1. Catálogo manual asignado
+        foreach (var p in catalogoArmas)
+        {
+            if (p != null && p.name.Equals(nombre, System.StringComparison.OrdinalIgnoreCase))
+                return p;
+        }
+
+        // 2. Inventario local
+        if (datosInventario != null)
+        {
+            if (datosInventario.armasEquipadas != null)
+            {
+                foreach (var p in datosInventario.armasEquipadas)
+                {
+                    if (p != null && p.name.Equals(nombre, System.StringComparison.OrdinalIgnoreCase))
+                        return p;
+                }
+            }
+            if (datosInventario.bolsa != null)
+            {
+                foreach (var p in datosInventario.bolsa)
+                {
+                    if (p != null && p.name.Equals(nombre, System.StringComparison.OrdinalIgnoreCase))
+                        return p;
+                }
+            }
+        }
+
+        // 3. Resources fallback
+        GameObject loaded = Resources.Load<GameObject>($"Armas/{nombre}");
+        if (loaded != null) return loaded;
+
+        return null;
     }
 
     private void InstanciarArmasEquipadas()
