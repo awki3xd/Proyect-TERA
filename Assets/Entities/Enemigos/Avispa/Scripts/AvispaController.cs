@@ -296,10 +296,14 @@ public class AvispaController : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        // 3. Spawnear recurso drop
+        // 3. Spawnear 3 materiales dispersos (+/- 0.5f unidades)
         if (prefabMaterial != null)
         {
-            Instantiate(prefabMaterial, transform.position, Quaternion.identity);
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 offset = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
+                Instantiate(prefabMaterial, (Vector2)transform.position + offset, Quaternion.identity);
+            }
         }
 
         // 4. Evaluar probabilidad de drop de cofre de armas según el nivel

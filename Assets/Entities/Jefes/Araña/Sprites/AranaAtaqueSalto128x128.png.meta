@@ -1,70 +1,55 @@
 fileFormatVersion: 2
-guid: 00455fcdc95d9e648bc9f98bbb4524f7
+guid: 14133c29a18e22a4b9d625b80d6a8107
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6075376633381222380
-    second: BpuQGp_0
+      213: -5511127187449464391
+    second: AranaAtaqueSalto128x128_0
   - first:
-      213: 8463385286736808047
-    second: BpuQGp_1
+      213: 4193743116211938356
+    second: AranaAtaqueSalto128x128_1
   - first:
-      213: -2049902791404089999
-    second: BpuQGp_2
+      213: 6670156070833078078
+    second: AranaAtaqueSalto128x128_2
   - first:
-      213: -3461298170881785900
-    second: BpuQGp_3
+      213: -6346423221776757551
+    second: AranaAtaqueSalto128x128_3
   - first:
-      213: -349668327863903022
-    second: BpuQGp_4
+      213: 2552922775297770763
+    second: AranaAtaqueSalto128x128_4
   - first:
-      213: 843867750273177810
-    second: BpuQGp_5
+      213: 5873886740842343930
+    second: AranaAtaqueSalto128x128_5
   - first:
-      213: -3334361568786499860
-    second: BpuQGp_6
+      213: 6254106176332656976
+    second: AranaAtaqueSalto128x128_6
   - first:
-      213: 7654693540510787829
-    second: BpuQGp_7
+      213: -4435365103226361305
+    second: AranaAtaqueSalto128x128_7
   - first:
-      213: -4650505534896444969
-    second: BpuQGp_8
+      213: -8873065468730430372
+    second: AranaAtaqueSalto128x128_8
   - first:
-      213: -6584873338632316590
-    second: BpuQGp_9
+      213: 5225860248509096930
+    second: AranaAtaqueSalto128x128_9
   - first:
-      213: 6549295788886870113
-    second: BpuQGp_10
+      213: -5791887956487237853
+    second: AranaAtaqueSalto128x128_10
   - first:
-      213: -6919066359420663200
-    second: BpuQGp_11
+      213: 3052676579610782439
+    second: AranaAtaqueSalto128x128_11
   - first:
-      213: -74684081357728290
-    second: BpuQGp_12
+      213: -9060173844088820237
+    second: AranaAtaqueSalto128x128_12
   - first:
-      213: 6571686633654099984
-    second: BpuQGp_13
+      213: 8428966912992843382
+    second: AranaAtaqueSalto128x128_13
   - first:
-      213: -2459966618252278024
-    second: BpuQGp_14
+      213: 6601682590067319175
+    second: AranaAtaqueSalto128x128_14
   - first:
-      213: -894431840761129985
-    second: BpuQGp_15
-  - first:
-      213: 3424193397652197915
-    second: BpuQGp_16
-  - first:
-      213: 4908379941197753259
-    second: BpuQGp_17
-  - first:
-      213: -2682083230885702324
-    second: BpuQGp_18
-  - first:
-      213: -5747791478268894154
-    second: BpuQGp_19
-  - first:
-      213: -6725789391519229550
-    second: BpuQGp_20
+      213: 452107146373378308
+    second: AranaAtaqueSalto128x128_15
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -111,7 +96,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -132,7 +117,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -160,453 +145,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BpuQGp_0
+      name: AranaAtaqueSalto128x128_0
       rect:
         serializedVersion: 2
-        x: 24
-        y: 189
-        width: 22
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4188a92042defaba0800000000000000
-      internalID: -6075376633381222380
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_1
-      rect:
-        serializedVersion: 2
-        x: 94
-        y: 184
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f68073dc31cf37570800000000000000
-      internalID: 8463385286736808047
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_2
-      rect:
-        serializedVersion: 2
-        x: 174
-        y: 184
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 17d0746a5484d83e0800000000000000
-      internalID: -2049902791404089999
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_3
-      rect:
-        serializedVersion: 2
-        x: 254
-        y: 184
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4dfb1eef6aff6ffc0800000000000000
-      internalID: -3461298170881785900
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_4
-      rect:
-        serializedVersion: 2
-        x: 334
-        y: 184
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2dc9778228ab52bf0800000000000000
-      internalID: -349668327863903022
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_5
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 109
-        width: 22
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2d8d0747f3506bb00800000000000000
-      internalID: 843867750273177810
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_6
-      rect:
-        serializedVersion: 2
-        x: 94
-        y: 104
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ce634c3c1d7f9b1d0800000000000000
-      internalID: -3334361568786499860
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_7
-      rect:
-        serializedVersion: 2
-        x: 174
-        y: 104
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5f86f92083fea3a60800000000000000
-      internalID: 7654693540510787829
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_8
-      rect:
-        serializedVersion: 2
-        x: 254
-        y: 104
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7d9628efad5167fb0800000000000000
-      internalID: -4650505534896444969
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_9
-      rect:
-        serializedVersion: 2
-        x: 334
-        y: 104
-        width: 42
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 25951ef2694dd94a0800000000000000
-      internalID: -6584873338632316590
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_10
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 24
-        width: 16
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 168409102d5c3ea50800000000000000
-      internalID: 6549295788886870113
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_11
-      rect:
-        serializedVersion: 2
-        x: 79
-        y: 24
-        width: 17
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 06a406d0ec98aff90800000000000000
-      internalID: -6919066359420663200
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_12
-      rect:
-        serializedVersion: 2
-        x: 159
-        y: 14
-        width: 42
-        height: 52
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ed5db44493ba6fef0800000000000000
-      internalID: -74684081357728290
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_13
-      rect:
-        serializedVersion: 2
-        x: 239
-        y: 34
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 010a22ecc22533b50800000000000000
-      internalID: 6571686633654099984
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_14
-      rect:
-        serializedVersion: 2
-        x: 319
-        y: 39
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8f601c7e4617cddd0800000000000000
-      internalID: -2459966618252278024
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_15
-      rect:
-        serializedVersion: 2
-        x: 404
-        y: 24
-        width: 67
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ff352afcaf65693f0800000000000000
-      internalID: -894431840761129985
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_16
-      rect:
-        serializedVersion: 2
-        x: 484
-        y: 24
-        width: 67
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b121c45c0cd258f20800000000000000
-      internalID: 3424193397652197915
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_17
-      rect:
-        serializedVersion: 2
-        x: 249
-        y: 29
-        width: 12
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: babaeb10d811e1440800000000000000
-      internalID: 4908379941197753259
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_18
-      rect:
-        serializedVersion: 2
-        x: 334
-        y: 24
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c459605038357cad0800000000000000
-      internalID: -2682083230885702324
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_19
-      rect:
-        serializedVersion: 2
-        x: 244
-        y: 14
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 634e3c68a1ebb30b0800000000000000
-      internalID: -5747791478268894154
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BpuQGp_20
-      rect:
-        serializedVersion: 2
-        x: 324
+        x: 2
         y: 9
-        width: 12
-        height: 12
+        width: 118
+        height: 107
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -615,8 +160,338 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 299d764ee2239a2a0800000000000000
-      internalID: -6725789391519229550
+      spriteID: 9b9b310b50b8483b0800000000000000
+      internalID: -5511127187449464391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_1
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 7
+        width: 120
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4346d01152b233a30800000000000000
+      internalID: 4193743116211938356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3
+        width: 123
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3fbb6e3b97219c50800000000000000
+      internalID: 6670156070833078078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_3
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 5
+        width: 121
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dcc4bf54b9fce7a0800000000000000
+      internalID: -6346423221776757551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_4
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 5
+        width: 121
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b05c0a8fcbdcd6320800000000000000
+      internalID: 2552922775297770763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_5
+      rect:
+        serializedVersion: 2
+        x: 642
+        y: 5
+        width: 121
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afde8ce9edc348150800000000000000
+      internalID: 5873886740842343930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_6
+      rect:
+        serializedVersion: 2
+        x: 770
+        y: 5
+        width: 121
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05172e38e6c0bc650800000000000000
+      internalID: 6254106176332656976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_7
+      rect:
+        serializedVersion: 2
+        x: 898
+        y: 5
+        width: 121
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72a670d20fa6272c0800000000000000
+      internalID: -4435365103226361305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_8
+      rect:
+        serializedVersion: 2
+        x: 1026
+        y: 7
+        width: 120
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5ca98bb7f98cd480800000000000000
+      internalID: -8873065468730430372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_9
+      rect:
+        serializedVersion: 2
+        x: 1168
+        y: 10
+        width: 86
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e3283e453cf58840800000000000000
+      internalID: 5225860248509096930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_10
+      rect:
+        serializedVersion: 2
+        x: 1296
+        y: 12
+        width: 86
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32f07be17941f9fa0800000000000000
+      internalID: -5791887956487237853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_11
+      rect:
+        serializedVersion: 2
+        x: 1410
+        y: 48
+        width: 121
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7eaead5ec294d5a20800000000000000
+      internalID: 3052676579610782439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_12
+      rect:
+        serializedVersion: 2
+        x: 1538
+        y: 47
+        width: 121
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fdecc344ebc34280800000000000000
+      internalID: -9060173844088820237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_13
+      rect:
+        serializedVersion: 2
+        x: 1666
+        y: 47
+        width: 121
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6769570bfb4b9f470800000000000000
+      internalID: 8428966912992843382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_14
+      rect:
+        serializedVersion: 2
+        x: 1794
+        y: 9
+        width: 118
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 781e7d4a653ed9b50800000000000000
+      internalID: 6601682590067319175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AranaAtaqueSalto128x128_15
+      rect:
+        serializedVersion: 2
+        x: 1922
+        y: 9
+        width: 118
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4013004ed05364600800000000000000
+      internalID: 452107146373378308
       vertices: []
       indices: 
       edges: []
@@ -635,27 +510,22 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BpuQGp_0: -6075376633381222380
-      BpuQGp_1: 8463385286736808047
-      BpuQGp_10: 6549295788886870113
-      BpuQGp_11: -6919066359420663200
-      BpuQGp_12: -74684081357728290
-      BpuQGp_13: 6571686633654099984
-      BpuQGp_14: -2459966618252278024
-      BpuQGp_15: -894431840761129985
-      BpuQGp_16: 3424193397652197915
-      BpuQGp_17: 4908379941197753259
-      BpuQGp_18: -2682083230885702324
-      BpuQGp_19: -5747791478268894154
-      BpuQGp_2: -2049902791404089999
-      BpuQGp_20: -6725789391519229550
-      BpuQGp_3: -3461298170881785900
-      BpuQGp_4: -349668327863903022
-      BpuQGp_5: 843867750273177810
-      BpuQGp_6: -3334361568786499860
-      BpuQGp_7: 7654693540510787829
-      BpuQGp_8: -4650505534896444969
-      BpuQGp_9: -6584873338632316590
+      AranaAtaqueSalto128x128_0: -5511127187449464391
+      AranaAtaqueSalto128x128_1: 4193743116211938356
+      AranaAtaqueSalto128x128_10: -5791887956487237853
+      AranaAtaqueSalto128x128_11: 3052676579610782439
+      AranaAtaqueSalto128x128_12: -9060173844088820237
+      AranaAtaqueSalto128x128_13: 8428966912992843382
+      AranaAtaqueSalto128x128_14: 6601682590067319175
+      AranaAtaqueSalto128x128_15: 452107146373378308
+      AranaAtaqueSalto128x128_2: 6670156070833078078
+      AranaAtaqueSalto128x128_3: -6346423221776757551
+      AranaAtaqueSalto128x128_4: 2552922775297770763
+      AranaAtaqueSalto128x128_5: 5873886740842343930
+      AranaAtaqueSalto128x128_6: 6254106176332656976
+      AranaAtaqueSalto128x128_7: -4435365103226361305
+      AranaAtaqueSalto128x128_8: -8873065468730430372
+      AranaAtaqueSalto128x128_9: 5225860248509096930
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
