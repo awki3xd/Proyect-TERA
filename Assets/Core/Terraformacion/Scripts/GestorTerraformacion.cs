@@ -36,6 +36,20 @@ public class GestorTerraformacion : NetworkBehaviour
         shapePasto = GetComponent<SpriteShapeController>();
     }
 
+    private void Start()
+    {
+        if (datosNivel == null)
+        {
+            datosNivel = Resources.Load<DatosNivel>("DatosNivel");
+        }
+
+        if (datosNivel != null && datosNivel.numeroNivel > 0 && datosNivel.numeroNivel % 10 == 0)
+        {
+            distanciaPorSalto = 0.05f;
+            Debug.Log($"[GestorTerraformacion] Nivel múltiplo de 10 (Nivel {datosNivel.numeroNivel}). 'distanciaPorSalto' reducida a {distanciaPorSalto}f para prolongar la partida del Jefe.");
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         // Cuando el servidor cambie el valor, todos los clientes redibujarán el pasto automáticamente

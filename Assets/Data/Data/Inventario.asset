@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   habilidadEspecial: {fileID: 0}
   armasEquipadas:
-  - {fileID: 8678393073452726527, guid: 7c7fd299a1e0b144288e212201e3017a, type: 3}
   - {fileID: 7997188561020744048, guid: 41b4ab6db3d959c42af2d20723ad4cf8, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8740895637569247120, guid: b9446c2c50bea974c968c5cca615f2e6, type: 3}
+  - {fileID: 1956426435535428300, guid: f57f509fe16c94b43891f0f5935ff97d, type: 3}
+  - {fileID: 1956426435535428300, guid: f57f509fe16c94b43891f0f5935ff97d, type: 3}
   bolsa:
   - {fileID: 8678393073452726527, guid: 7c7fd299a1e0b144288e212201e3017a, type: 3}
   - {fileID: 8740895637569247120, guid: b9446c2c50bea974c968c5cca615f2e6, type: 3}
@@ -34,5 +34,5 @@ MonoBehaviour:
   - {fileID: 8678393073452726527, guid: 7c7fd299a1e0b144288e212201e3017a, type: 3}
   - {fileID: 1956426435535428300, guid: f57f509fe16c94b43891f0f5935ff97d, type: 3}
   - {fileID: 7997188561020744048, guid: 41b4ab6db3d959c42af2d20723ad4cf8, type: 3}
-  materiales: 510
+  materiales: 1802
   estaReparando: 0

@@ -159,6 +159,12 @@ public class SpawnEnemigos : MonoBehaviour
             // Cantidad baja (1 a 4 enemigos sueltos por intervalo)
             int cantidad = Mathf.Clamp(Mathf.CeilToInt(nivel * 0.25f), 1, 4);
 
+            // En niveles múltiplos de 10 (nivel del Jefe), la cantidad total de enemigos se reduce a la mitad
+            if (nivel > 0 && nivel % 10 == 0)
+            {
+                cantidad = Mathf.Max(1, cantidad / 2);
+            }
+
             for (int i = 0; i < cantidad; i++)
             {
                 Vector2 puntoSpawneo = ObtenerPuntoSpawneoAleatorio();
@@ -196,6 +202,12 @@ public class SpawnEnemigos : MonoBehaviour
             int minGrupo = Mathf.Clamp(2 + Mathf.FloorToInt((nivel - 1) * 0.3f), 2, 6);
             int maxGrupo = Mathf.Clamp(4 + Mathf.FloorToInt((nivel - 1) * 0.5f), 4, 12);
             int cantidadEnGrupo = Random.Range(minGrupo, maxGrupo + 1);
+
+            // En niveles múltiplos de 10 (nivel del Jefe), la cantidad total de enemigos de la horda disminuye a la mitad
+            if (nivel > 0 && nivel % 10 == 0)
+            {
+                cantidadEnGrupo = Mathf.Max(1, cantidadEnGrupo / 2);
+            }
 
             // Probabilidad de spawnear una unidad especial en el grupo (5% en Nivel 1 -> 100% en Nivel 20)
             float probabilidadEspecial = Mathf.Lerp(0.05f, 1.0f, factorNivel);

@@ -279,8 +279,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8a1f7dfb6e7b04ebfc9b511cb502eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vidaMaxima: 500
-  vida: 500
+  vidaMaxima: 1500
+  vida: 1500
   "da\xF1o": 20
   velocidadMovimiento: 2.5
   velocidadAtaque: 2.5
@@ -293,8 +293,8 @@ MonoBehaviour:
   prefabCofre: {fileID: 1484793381695410760, guid: 46add48ed68c1e34bbdd7bb9481d08fa, type: 3}
   datosNivel: {fileID: 11400000, guid: 3b4724f5b9146884798d553c15e50020, type: 2}
   barraVidaJefe: {fileID: 1380137085378135964}
-  cantidadProyectilesEstrella: 24
-  cooldownCharcoAcido: 5
+  cantidadProyectilesEstrella: 16
+  cooldownCharcoAcido: 3
   estadoActual: 0
 --- !u!1 &4580516292060942818
 GameObject:

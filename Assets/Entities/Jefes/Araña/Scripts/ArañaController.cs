@@ -222,7 +222,7 @@ public class ArañaController : MonoBehaviour
 
             case EstadoAraña.Orbitando:
                 // Movimiento de órbita elíptica variada alrededor de (0,0)
-                anguloOrbita += (velocidadMovimiento / 8f) * Time.fixedDeltaTime;
+                anguloOrbita += (velocidadMovimiento / 6f) * Time.fixedDeltaTime;
                 
                 // Variación ondulante en el radio para que no sea un círculo perfecto
                 float radioDinamico = 8f + Mathf.Sin(Time.time * 2f) * 1.5f;
@@ -242,11 +242,11 @@ public class ArañaController : MonoBehaviour
                     Vector2 dirJugador = ((Vector2)playerObjetivo.position - (Vector2)transform.position).normalized;
 
                     // Mantener un margen prudencial de ~5 unidades respecto al jugador
-                    if (distAlJugador > 6f)
+                    if (distAlJugador > 4f)
                     {
                         rb.linearVelocity = dirJugador * velocidadMovimiento;
                     }
-                    else if (distAlJugador < 4f)
+                    else if (distAlJugador < 2f)
                     {
                         // Retroceder ligeramente si el jugador se acerca demasiado
                         rb.linearVelocity = -dirJugador * (velocidadMovimiento * 0.8f);

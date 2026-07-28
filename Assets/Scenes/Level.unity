@@ -873,6 +873,7 @@ MonoBehaviour:
   prefabMosca: {fileID: 7215460188042463579, guid: 324bf07e5de31454ab86e8069d0ec444, type: 3}
   prefabAvispa: {fileID: 2791749864697176644, guid: 2a4c1c565a69de745838aacc66895356, type: 3}
   prefabEscarabajo: {fileID: 2399993438599839046, guid: 775cd02bcbec4a0458094bbfb836dfc7, type: 3}
+  "prefabAra\xF1a": {fileID: 3630045405099874291, guid: e5adae976c4eb164094426458c54097d, type: 3}
   radioSpawneo: 20
   datosEnemigosLocales: {fileID: 0}
 --- !u!1 &1079491666

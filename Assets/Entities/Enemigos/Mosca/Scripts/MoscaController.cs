@@ -29,8 +29,8 @@ public class MoscaController : MonoBehaviour
     [Header("Configuración de Rangos de IA")]
     [Tooltip("Distancia a la que la mosca se detendrá y cambiará a modo disparo.")]
     public float distanciaDeteccion = 4f;
-    [Tooltip("Rango máximo del proyectil/disparo. Debe ser mayor a la distancia de detección (ej: 6) para evitar bucles infinitos de movimiento.")]
-    public float rangoDisparo = 6f;
+    [Tooltip("Rango máximo de disparo/desenganche. Si el jugador se aleja más allá de esta distancia, la mosca vuelve a perseguirlo.")]
+    public float rangoDisparo = 5.5f;
     [Tooltip("Distancia hacia adelante desde el centro de la mosca donde se instanciará el disparo.")]
     public float offsetDistanciaDisparo = 0.5f;
 
