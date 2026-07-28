@@ -115,6 +115,18 @@ public class EntidadDaño : MonoBehaviour
                                     Destroy(gameObject);
                                 }
                             }
+                            else
+                            {
+                                ArañaController araña = other.GetComponent<ArañaController>();
+                                if (araña != null)
+                                {
+                                    araña.RecibirDaño(daño);
+                                    if (destruirAlImpactar)
+                                    {
+                                        Destroy(gameObject);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
